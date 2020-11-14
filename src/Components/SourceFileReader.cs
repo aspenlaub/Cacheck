@@ -50,9 +50,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return false;
             }
 
+            if (!double.TryParse(line.Substring(datePositions[dates.Count - 1] + 10), out var amount)) {
+                return false;
+            }
+
             posting = new Posting {
                 Date = dates[0],
-                Amount = double.Parse(line.Substring(datePositions[dates.Count - 1] + 10)),
+                Amount = amount,
                 Remark = line.Substring(datePositions[0] + 10, datePositions[dates.Count - 1] - datePositions[0] - 10)
             };
             return true;
