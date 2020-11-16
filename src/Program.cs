@@ -68,7 +68,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
                 errorsAndInfos.Errors.ToList().ForEach(e => Console.WriteLine(e));
                 return;
             }
-            var detailedAggregation = aggregator.AggregatePostings(allPostings, secret2.Cast<IPostingClassification>().ToList(), errorsAndInfos);
+            errorsAndInfos = new ErrorsAndInfos();
+            var detailedAggregation = aggregator.AggregatePostings(allPostings, secret2.Cast<IPostingClassification>().ToList(), errorsAndInfos).OrderBy(a => a.Key).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 errorsAndInfos.Errors.ToList().ForEach(e => Console.WriteLine(e));
                 return;
@@ -76,13 +77,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
 
             Console.WriteLine();
 
+            var keyLength = detailedAggregation.Select(a => a.Key.Length).Max();
             foreach (var s in
                 from result in detailedAggregation
                 let s = result.Value.ToString("0.##")
-                select $"Sum {result.Key}: {s}") {
+                select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
                 Console.WriteLine(s);
             }
 
+            Console.WriteLine();
+
+            foreach (var info in errorsAndInfos.Infos) {
+                Console.WriteLine(info);
+            }
+
+            Console.WriteLine();
+
+            foreach (var s in
+                from result in detailedAggregation
+                let s = (result.Value / 12).ToString("0.##")
+                select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
+                Console.WriteLine(s);
+            }
         }
     }
 }
