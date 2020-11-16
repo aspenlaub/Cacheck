@@ -26,5 +26,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities {
             Assert.IsTrue(sourceFolder.Exists(), "Source folder \"{secret.SourceFolder}\" does not exist");
             Assert.IsTrue(Directory.GetFiles(sourceFolder.FullName, "*.txt" ).ToList().Count > 0, "Source folder does not contain any text file");
         }
+
+        [TestMethod]
+        public async Task CanGetPostingClassifications() {
+            var container = new ContainerBuilder().UseCacheckAndPegh(new DummyCsArgumentPrompter()).Build();
+            var secretRepository = container.Resolve<ISecretRepository>();
+            var errorsAndInfos = new ErrorsAndInfos();
+            var secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+            Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+            Assert.IsTrue(secret.Count >= 5, "At least five classifications expected");
+            Assert.IsTrue(secret.Any(s => s.Credit));
+            Assert.IsTrue(secret.Any(s => !s.Credit));
+        }
     }
 }

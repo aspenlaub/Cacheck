@@ -12,6 +12,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         public static ContainerBuilder UseCacheckAndPegh(this ContainerBuilder builder, ICsArgumentPrompter csArgumentPrompter) {
             builder.UsePegh(csArgumentPrompter);
             builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
+            builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
             return builder;
         }
 
@@ -19,6 +20,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         public static IServiceCollection UseCacheckAndPegh(this IServiceCollection services, ICsArgumentPrompter csArgumentPrompter) {
             services.UsePegh(csArgumentPrompter);
             services.AddTransient<ISourceFileReader, SourceFileReader>();
+            services.AddTransient<IPostingAggregator, PostingAggregator>();
 
             return services;
         }
