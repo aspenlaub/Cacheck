@@ -28,6 +28,6 @@
     <None Remove="Test\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="PeghCore" Version="2.0.538.1143" />
+    <PackageReference Include="PeghCore" Version="2.0.541.373" />
   </ItemGroup>
 </Project>
