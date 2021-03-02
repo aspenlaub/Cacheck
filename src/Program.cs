@@ -44,6 +44,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
                 allPostings.AddRange(postings);
             }
 
+            if (allPostings.Any()) {
+                var maxDate = allPostings.Max(p => p.Date);
+                var minDate = maxDate.AddYears(-1).AddDays(1);
+                Console.WriteLine($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
+                allPostings.RemoveAll(p => p.Date < minDate);
+            }
+
             var aggregator = container.Resolve<IPostingAggregator>();
             var pureDebitCreditAggregation = aggregator.AggregatePostings(allPostings, new List<IPostingClassification> {
                 new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
