@@ -84,12 +84,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
 
             Console.WriteLine();
 
-            var keyLength = detailedAggregation.Select(a => a.Key.Length).Max();
-            foreach (var s in
-                from result in detailedAggregation
-                let s = result.Value.ToString("0.##")
-                select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
-                Console.WriteLine(s);
+            var keyLength = 0;
+            if (detailedAggregation.Any()) {
+                keyLength = detailedAggregation.Select(a => a.Key.Length).Max();
+                foreach (var s in
+                    from result in detailedAggregation
+                    let s = result.Value.ToString("0.##")
+                    select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
+                    Console.WriteLine(s);
+                }
             }
 
             Console.WriteLine();

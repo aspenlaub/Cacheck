@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
@@ -23,8 +22,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities {
             var resolver = container.Resolve<IFolderResolver>();
             var sourceFolder = resolver.Resolve(secret.SourceFolder, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-            Assert.IsTrue(sourceFolder.Exists(), "Source folder \"{secret.SourceFolder}\" does not exist");
-            Assert.IsTrue(Directory.GetFiles(sourceFolder.FullName, "*.txt" ).ToList().Count > 0, "Source folder does not contain any text file");
+            Assert.IsTrue(sourceFolder.Exists(), $"Source folder \"{secret.SourceFolder}\" does not exist");
         }
 
         [TestMethod]
