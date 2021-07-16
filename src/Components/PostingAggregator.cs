@@ -12,15 +12,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 var classifications = postingClassifications.Where(c
                     => posting.Remark.Contains(c.Clue, StringComparison.OrdinalIgnoreCase) && (c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)
                     ).ToList();
-                if (classifications.Count == 0) {
-                    if (Math.Abs(posting.Amount) <= 250) { continue; }
-
-                    errorsAndInfos.Infos.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
-                    continue;
-                }
-
-                if (classifications.Count > 1) {
-                    errorsAndInfos.Errors.Add($"Classification of '{posting.Remark}' is ambiguous between '{classifications[0].Clue}' and '{classifications[1].Clue}'");
+                switch (classifications.Count) {
+                    case 0 when Math.Abs(posting.Amount) <= 250:
+                        continue;
+                    case 0:
+                        errorsAndInfos.Infos.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
+                        continue;
+                    case > 1:
+                        errorsAndInfos.Errors.Add($"Classification of '{posting.Remark}' is ambiguous between '{classifications[0].Clue}' and '{classifications[1].Clue}'");
+                        break;
                 }
 
                 var classification = (classifications[0].Credit ? "(+)" : "(-)") + classifications[0].Classification;

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>Aspenlaub.Net.GitHub.CSharp.Cacheck.App</AssemblyName>
+    <RootNamespace>Aspenlaub.Net.GitHub.CSharp.Cacheck.App</RootNamespace>
+    <ApplicationIcon>cacheck.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="cacheck.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="CacheckApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="cacheck.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="VishizhukelNet" Version="2.0.674.484" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cacheck.csproj" />
+  </ItemGroup>
+
+</Project>

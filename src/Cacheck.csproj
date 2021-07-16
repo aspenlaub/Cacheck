@@ -23,8 +23,14 @@
     <NuspecFile>Cacheck.nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="App\**" />
+    <Compile Remove="GUI\**" />
     <Compile Remove="Test\**" />
+    <EmbeddedResource Remove="App\**" />
+    <EmbeddedResource Remove="GUI\**" />
     <EmbeddedResource Remove="Test\**" />
+    <None Remove="App\**" />
+    <None Remove="GUI\**" />
     <None Remove="Test\**" />
   </ItemGroup>
   <ItemGroup>

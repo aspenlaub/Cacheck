@@ -10,8 +10,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
     public class SourceFileReaderTest {
-        protected static DateTime DateOne => new DateTime(2020, 11, 14);
-        protected static DateTime DateTwo => new DateTime(2020, 11, 15);
+        protected static DateTime DateOne => new(2020, 11, 14);
+        protected static DateTime DateTwo => new(2020, 11, 15);
         protected const double AmountOne = 2470.19, AmountTwo = -1970.24;
         protected const string RemarkOne = "This Is Not A Remark", RemarkTwo = "This Is Not Remarkable";
 
