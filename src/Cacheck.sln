@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck", "Cacheck.csproj", "{0B0CF006-3DE6-476E-8575-E99756DC5224}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck", "Cacheck.csproj", "{8DEA2439-3D04-401F-8B02-6F936B3C46AF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck.Test", "Test\Cacheck.Test.csproj", "{E5CC5362-E9EC-4C3C-B600-324B6C332B4E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck.App", "App\Cacheck.App.csproj", "{8DEA2439-3D04-401F-8B02-6F936B3C46AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck.Core", "Core\Cacheck.Core.csproj", "{0B0CF006-3DE6-476E-8575-E99756DC5224}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cacheck.Integration.Test", "Integration\Test\Cacheck.Integration.Test.csproj", "{34FB3C2E-DD2E-4A3C-BABA-067656EE4F32}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck.Test", "Test\Cacheck.Test.csproj", "{E5CC5362-E9EC-4C3C-B600-324B6C332B4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

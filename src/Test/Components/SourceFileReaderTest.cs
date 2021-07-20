@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Autofac;

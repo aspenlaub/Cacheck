@@ -23,6 +23,6 @@
     <PackageReference Include="MSTest.TestFramework" Version="2.2.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cacheck.csproj" />
+    <ProjectReference Include="..\Core\Cacheck.Core.csproj" />
   </ItemGroup>
 </Project>
