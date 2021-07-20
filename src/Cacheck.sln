@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck.Test", "Test\Cachec
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cacheck.App", "App\Cacheck.App.csproj", "{8DEA2439-3D04-401F-8B02-6F936B3C46AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cacheck.Integration.Test", "Integration\Test\Cacheck.Integration.Test.csproj", "{34FB3C2E-DD2E-4A3C-BABA-067656EE4F32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8DEA2439-3D04-401F-8B02-6F936B3C46AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DEA2439-3D04-401F-8B02-6F936B3C46AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DEA2439-3D04-401F-8B02-6F936B3C46AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34FB3C2E-DD2E-4A3C-BABA-067656EE4F32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34FB3C2E-DD2E-4A3C-BABA-067656EE4F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34FB3C2E-DD2E-4A3C-BABA-067656EE4F32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34FB3C2E-DD2E-4A3C-BABA-067656EE4F32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

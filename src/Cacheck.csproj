@@ -25,12 +25,15 @@
   <ItemGroup>
     <Compile Remove="App\**" />
     <Compile Remove="GUI\**" />
+    <Compile Remove="Integration\**" />
     <Compile Remove="Test\**" />
     <EmbeddedResource Remove="App\**" />
     <EmbeddedResource Remove="GUI\**" />
+    <EmbeddedResource Remove="Integration\**" />
     <EmbeddedResource Remove="Test\**" />
     <None Remove="App\**" />
     <None Remove="GUI\**" />
+    <None Remove="Integration\**" />
     <None Remove="Test\**" />
   </ItemGroup>
   <ItemGroup>

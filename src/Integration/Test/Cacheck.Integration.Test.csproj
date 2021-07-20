@@ -1,28 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Aspenlaub.Net.GitHub.CSharp.Cacheck.Test</AssemblyName>
-    <RootNamespace>Aspenlaub.Net.GitHub.CSharp.Cacheck.Test</RootNamespace>
+    <AssemblyName>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</AssemblyName>
+    <RootNamespace>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</RootNamespace>
     <GenerateBuildInfoConfigFile>false</GenerateBuildInfoConfigFile>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <Deterministic>false</Deterministic>
-    <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.Cacheck.Test</AssemblyTitle>
-    <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.Cacheck.Test</AssemblyProduct>
+    <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</AssemblyTitle>
+    <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</AssemblyProduct>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.5" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.5" />
     <PackageReference Include="coverlet.collector" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.5" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.5" />
+    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.705.1230" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cacheck.csproj" />
+    <ProjectReference Include="..\..\Test\Cacheck.Test.csproj" />
   </ItemGroup>
 </Project>
