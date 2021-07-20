@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Autofac;
@@ -24,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
 
         [TestMethod]
         public void CanReadPostingsFromTestFolder() {
-            var container = new ContainerBuilder().UseCacheckAndPegh(new DummyCsArgumentPrompter()).Build();
+            var container = new ContainerBuilder().UseCacheckAndPegh().Build();
             var files = Directory.GetFiles(Folders.IntegrationTestFolder.FullName, "*.txt").ToList();
             var reader = container.Resolve<ISourceFileReader>();
             var expectedPostings = TestDataGenerator.TestPostings;

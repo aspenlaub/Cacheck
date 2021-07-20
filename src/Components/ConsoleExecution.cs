@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Autofac;
@@ -17,8 +17,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             vConsole = console;
         }
 
-        public async Task ExecuteAsync(bool isIntegrationTest) {
-            var container = new ContainerBuilder().UseCacheckAndPegh(new DummyCsArgumentPrompter()).Build();
+        public async Task ExecuteAsync(IContainer container, bool isIntegrationTest) {
+            if (container == null) {
+                throw new ArgumentNullException(nameof(container));
+            }
             IFolder sourceFolder;
             var errorsAndInfos = new ErrorsAndInfos();
             var secretRepository = container.Resolve<ISecretRepository>();
@@ -28,14 +30,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             } else {
                 var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
-                    errorsAndInfos.Errors.ToList().ForEach(e => vConsole.WriteLine(e));
+                    await WriteErrorsAsync(errorsAndInfos);
                     return;
                 }
 
                 var resolver = container.Resolve<IFolderResolver>();
-                sourceFolder = resolver.Resolve(secret.SourceFolder, errorsAndInfos);
+                sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
-                    errorsAndInfos.Errors.ToList().ForEach(e => vConsole.WriteLine(e));
+                    await WriteErrorsAsync(errorsAndInfos);
                     return;
                 }
             }
@@ -44,21 +46,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var reader = container.Resolve<ISourceFileReader>();
             var allPostings = new List<IPosting>();
             foreach (var file in files) {
-                vConsole.WriteLine($"File: {file}");
+                await vConsole.WriteLineAsync($"File: {file}");
                 var postings = reader.ReadPostings(file, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
-                    errorsAndInfos.Errors.ToList().ForEach(e => vConsole.WriteLine(e));
+                    await WriteErrorsAsync(errorsAndInfos);
                     return;
                 }
 
-                vConsole.WriteLine($"{postings.Count} posting/-s found");
+                await vConsole.WriteLineAsync($"{postings.Count} posting/-s found");
                 allPostings.AddRange(postings);
             }
 
             if (allPostings.Any()) {
                 var maxDate = allPostings.Max(p => p.Date);
                 var minDate = maxDate.AddYears(-1).AddDays(1);
-                vConsole.WriteLine($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
+                await vConsole.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
                 allPostings.RemoveAll(p => p.Date < minDate);
             }
 
@@ -68,32 +70,32 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }
             }, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
-                errorsAndInfos.Errors.ToList().ForEach(e => vConsole.WriteLine(e));
+                await WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
-            vConsole.WriteLine();
+            await vConsole.WriteLineAsync();
 
             foreach (var s in
                         from result in pureDebitCreditAggregation
                         let s = result.Value.ToString("0.##")
                         select $"Sum {result.Key}: {s}") {
-                vConsole.WriteLine(s);
+                await vConsole.WriteLineAsync(s);
             }
 
             var secret2 = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
-                errorsAndInfos.Errors.ToList().ForEach(e => vConsole.WriteLine(e));
+                await WriteErrorsAsync(errorsAndInfos);
                 return;
             }
             errorsAndInfos = new ErrorsAndInfos();
             var detailedAggregation = aggregator.AggregatePostings(allPostings, secret2.Cast<IPostingClassification>().ToList(), errorsAndInfos).OrderBy(a => a.Key).ToList();
             if (errorsAndInfos.AnyErrors()) {
-                errorsAndInfos.Errors.ToList().ForEach(e => vConsole.WriteLine(e));
+                await WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
-            vConsole.WriteLine();
+            await vConsole.WriteLineAsync();
 
             var keyLength = 0;
             if (detailedAggregation.Any()) {
@@ -102,23 +104,30 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                     from result in detailedAggregation
                     let s = result.Value.ToString("0.##")
                     select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
-                    vConsole.WriteLine(s);
+                    await vConsole.WriteLineAsync(s);
                 }
             }
 
-            vConsole.WriteLine();
+            await vConsole.WriteLineAsync();
 
             foreach (var info in errorsAndInfos.Infos) {
-                vConsole.WriteLine(info);
+                await vConsole.WriteLineAsync(info);
             }
 
-            vConsole.WriteLine();
+            await vConsole.WriteLineAsync();
 
             foreach (var s in
                 from result in detailedAggregation
                 let s = (result.Value / 12).ToString("0.##")
                 select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
-                vConsole.WriteLine(s);
+                await vConsole.WriteLineAsync(s);
+            }
+        }
+
+        protected async Task WriteErrorsAsync(IErrorsAndInfos errorsAndInfos) {
+            var errors = errorsAndInfos.Errors.ToList();
+            foreach (var error in errors) {
+                await vConsole.WriteLineAsync(error);
             }
         }
     }

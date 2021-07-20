@@ -1,6 +1,8 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
+﻿using System.Threading.Tasks;
+
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
     public interface IConsole {
-        void WriteLine();
-        void WriteLine(string s);
+        Task WriteLineAsync();
+        Task WriteLineAsync(string s);
     }
 }

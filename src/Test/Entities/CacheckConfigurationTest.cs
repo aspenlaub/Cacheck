@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -13,21 +12,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities {
     public class CacheckConfigurationTest {
         [TestMethod]
         public async Task CanGetCacheckConfiguration() {
-            var container = new ContainerBuilder().UseCacheckAndPegh(new DummyCsArgumentPrompter()).Build();
+            var container = new ContainerBuilder().UseCacheckAndPegh().Build();
             var secretRepository = container.Resolve<ISecretRepository>();
             var errorsAndInfos = new ErrorsAndInfos();
             var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.IsFalse(string.IsNullOrEmpty(secret.SourceFolder), "Source folder is empty");
             var resolver = container.Resolve<IFolderResolver>();
-            var sourceFolder = resolver.Resolve(secret.SourceFolder, errorsAndInfos);
+            var sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.IsTrue(sourceFolder.Exists(), $"Source folder \"{secret.SourceFolder}\" does not exist");
         }
 
         [TestMethod]
         public async Task CanGetPostingClassifications() {
-            var container = new ContainerBuilder().UseCacheckAndPegh(new DummyCsArgumentPrompter()).Build();
+            var container = new ContainerBuilder().UseCacheckAndPegh().Build();
             var secretRepository = container.Resolve<ISecretRepository>();
             var errorsAndInfos = new ErrorsAndInfos();
             var secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
