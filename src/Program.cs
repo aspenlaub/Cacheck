@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
@@ -12,21 +13,28 @@ using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
     internal class Program {
-        private static async Task Main() {
+        private static async Task Main(string[] args) {
             var container = new ContainerBuilder().UseCacheckAndPegh(new DummyCsArgumentPrompter()).Build();
-            var secretRepository = container.Resolve<ISecretRepository>();
+            IFolder sourceFolder;
             var errorsAndInfos = new ErrorsAndInfos();
-            var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                errorsAndInfos.Errors.ToList().ForEach(e => Console.WriteLine(e));
-                return;
-            }
+            var secretRepository = container.Resolve<ISecretRepository>();
 
-            var resolver = container.Resolve<IFolderResolver>();
-            var sourceFolder = resolver.Resolve(secret.SourceFolder, errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                errorsAndInfos.Errors.ToList().ForEach(e => Console.WriteLine(e));
-                return;
+            var isIntegrationTest = args.Any(a => a == "/UnitTest");
+            if (isIntegrationTest) {
+                sourceFolder = Folders.IntegrationTestFolder;
+            } else {
+                var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
+                if (errorsAndInfos.AnyErrors()) {
+                    errorsAndInfos.Errors.ToList().ForEach(e => Console.WriteLine(e));
+                    return;
+                }
+
+                var resolver = container.Resolve<IFolderResolver>();
+                sourceFolder = resolver.Resolve(secret.SourceFolder, errorsAndInfos);
+                if (errorsAndInfos.AnyErrors()) {
+                    errorsAndInfos.Errors.ToList().ForEach(e => Console.WriteLine(e));
+                    return;
+                }
             }
 
             var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
