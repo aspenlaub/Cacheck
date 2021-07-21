@@ -23,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                         break;
                 }
 
-                var classification = (classifications[0].Credit ? "(+)" : "(-)") + classifications[0].Classification;
+                var classification = (classifications[0].Credit ? "(+)" : "(-)") + " " + classifications[0].Classification;
                 if (!result.ContainsKey(classification)) {
                     result[classification] = 0;
                 }

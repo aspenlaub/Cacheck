@@ -17,14 +17,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
 
         protected override Dictionary<string, ITextBox> TextBoxNamesToTextBoxDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
             return new() {
-                { nameof(status.Model.ConsoleOutput), status.Model.ConsoleOutput },
+                { nameof(status.Model.Summary), status.Model.Summary },
+                { nameof(status.Model.Average), status.Model.Average },
+                { nameof(status.Model.Log), status.Model.Log },
                 { nameof(status.Model.Status), status.Model.Status }
             };
         }
 
         protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
             return new() {
-                { nameof(status.Model.ConsoleOutput), vCacheckHandlers.ConsoleOutputTextHandler }
+                { nameof(status.Model.Summary), vCacheckHandlers.SummaryTextHandler },
+                { nameof(status.Model.Average), vCacheckHandlers.AverageTextHandler },
+                { nameof(status.Model.Log), vCacheckHandlers.LogTextHandler },
             };
         }
     }

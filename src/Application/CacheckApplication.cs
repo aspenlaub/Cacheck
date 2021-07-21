@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Commands;
@@ -35,9 +36,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
         }
 
         protected override void CreateCommandsAndHandlers() {
-            var consoleOutputTextHandler = new ConsoleOutputTextHandler(Model, this);
             Handlers = new CacheckHandlers {
-                ConsoleOutputTextHandler = consoleOutputTextHandler
+                SummaryTextHandler = new ConsoleOutputTextHandler(Model, this, m => m.Summary),
+                AverageTextHandler = new ConsoleOutputTextHandler(Model, this, m => m.Average),
+                LogTextHandler = new ConsoleOutputTextHandler(Model, this, m => m.Log),
             };
             Commands = new CacheckCommands();
 
@@ -53,13 +55,31 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
             return new TashTaskHandlingStatus<ICacheckApplicationModel>(Model, Process.GetCurrentProcess().Id);
         }
 
-        public async Task WriteLineAsync() {
-            await WriteLineAsync("");
+        public async Task WriteLineAsync(ConsoleOutputType outputType) {
+            await WriteLineAsync(outputType, "");
         }
 
-        public async Task WriteLineAsync(string s) {
-            s = Model.ConsoleOutput.Text + (string.IsNullOrEmpty(Model.ConsoleOutput.Text) ? "" : "\r\n") + s;
-            await Handlers.ConsoleOutputTextHandler.TextChangedAsync(s);
+        public async Task WriteLineAsync(ConsoleOutputType outputType, string s) {
+            ITextBox textBox;
+            ISimpleTextHandler textHandler;
+            switch (outputType) {
+                case ConsoleOutputType.Log:
+                    textBox = Model.Log;
+                    textHandler = Handlers.LogTextHandler;
+                    break;
+                case ConsoleOutputType.Summary:
+                    textBox = Model.Summary;
+                    textHandler = Handlers.SummaryTextHandler;
+                    break;
+                case ConsoleOutputType.Average:
+                    textBox = Model.Average;
+                    textHandler = Handlers.AverageTextHandler;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(outputType));
+            }
+            s = textBox.Text + (string.IsNullOrEmpty(textBox.Text) ? "" : "\r\n") + s;
+            await textHandler.TextChangedAsync(s);
         }
     }
 }

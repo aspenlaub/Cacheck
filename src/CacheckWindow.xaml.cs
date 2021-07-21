@@ -38,7 +38,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             await vCacheckApp.OnLoadedAsync();
 
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            guiToAppGate.RegisterAsyncTextBoxCallback(ConsoleOutput, t => vCacheckApp.Handlers.ConsoleOutputTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncTextBoxCallback(Summary, t => vCacheckApp.Handlers.SummaryTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncTextBoxCallback(Average, t => vCacheckApp.Handlers.AverageTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => vCacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 
             vTashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), vCacheckApp.TashHandler, guiToAppGate);
             if (!await vTashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {

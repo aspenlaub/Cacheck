@@ -47,7 +47,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             var result = Sut.AggregatePostings(new List<IPosting> { Posting1 }, new List<IPostingClassification> { PostingClassification1 }, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(1, result.Count);
-            var classification = "(+)" + PostingClassification1.Classification;
+            var classification = "(+) " + PostingClassification1.Classification;
             Assert.IsTrue(result.ContainsKey(classification));
             Assert.AreEqual(Posting1.Amount, result[classification]);
         }
@@ -58,7 +58,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             var result = Sut.AggregatePostings(new List<IPosting> { Posting1 }, new List<IPostingClassification> { PostingClassification1, PostingClassification4 }, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(1, result.Count);
-            var classification = "(+)" + PostingClassification1.Classification;
+            var classification = "(+) " + PostingClassification1.Classification;
             Assert.IsTrue(result.ContainsKey(classification));
             Assert.AreEqual(Posting1.Amount, result[classification]);
         }
@@ -69,10 +69,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             var result = Sut.AggregatePostings(new List<IPosting> { Posting1, Posting2, Posting3, Posting4 }, new List<IPostingClassification> { PostingClassificationD, PostingClassificationC }, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(2, result.Count);
-            var classification = "(-)" + PostingClassificationD.Classification;
+            var classification = "(-) " + PostingClassificationD.Classification;
             Assert.IsTrue(result.ContainsKey(classification));
             Assert.AreEqual(-(Posting2.Amount + Posting4.Amount), result[classification]);
-            classification = "(+)" + PostingClassificationC.Classification;
+            classification = "(+) " + PostingClassificationC.Classification;
             Assert.IsTrue(result.ContainsKey(classification));
             Assert.AreEqual(Posting1.Amount + Posting3.Amount, result[classification]);
         }

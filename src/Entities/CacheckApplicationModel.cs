@@ -5,6 +5,8 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplicationModel {
-        public ITextBox ConsoleOutput { get; } = new TextBox();
+        public ITextBox Summary { get; } = new TextBox();
+        public ITextBox Average { get; } = new TextBox();
+        public ITextBox Log { get; } = new TextBox();
     }
 }

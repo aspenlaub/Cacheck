@@ -46,21 +46,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var reader = container.Resolve<ISourceFileReader>();
             var allPostings = new List<IPosting>();
             foreach (var file in files) {
-                await vConsole.WriteLineAsync($"File: {file}");
+                await vConsole.WriteLineAsync(ConsoleOutputType.Log, $"File: {file}");
                 var postings = reader.ReadPostings(file, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
                     await WriteErrorsAsync(errorsAndInfos);
                     return;
                 }
 
-                await vConsole.WriteLineAsync($"{postings.Count} posting/-s found");
+                await vConsole.WriteLineAsync(ConsoleOutputType.Log, $"{postings.Count} posting/-s found");
                 allPostings.AddRange(postings);
             }
 
             if (allPostings.Any()) {
                 var maxDate = allPostings.Max(p => p.Date);
                 var minDate = maxDate.AddYears(-1).AddDays(1);
-                await vConsole.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
+                await vConsole.WriteLineAsync(ConsoleOutputType.Log, $"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
                 allPostings.RemoveAll(p => p.Date < minDate);
             }
 
@@ -74,13 +74,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            await vConsole.WriteLineAsync();
-
             foreach (var s in
                         from result in pureDebitCreditAggregation
                         let s = result.Value.ToString("0.##")
                         select $"Sum {result.Key}: {s}") {
-                await vConsole.WriteLineAsync(s);
+                await vConsole.WriteLineAsync(ConsoleOutputType.Summary, s);
             }
 
             var secret2 = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
@@ -95,7 +93,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            await vConsole.WriteLineAsync();
+            await vConsole.WriteLineAsync(ConsoleOutputType.Summary);
 
             var keyLength = 0;
             if (detailedAggregation.Any()) {
@@ -104,30 +102,28 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                     from result in detailedAggregation
                     let s = result.Value.ToString("0.##")
                     select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
-                    await vConsole.WriteLineAsync(s);
+                    await vConsole.WriteLineAsync(ConsoleOutputType.Summary, s);
                 }
             }
 
-            await vConsole.WriteLineAsync();
+            await vConsole.WriteLineAsync(ConsoleOutputType.Summary);
 
             foreach (var info in errorsAndInfos.Infos) {
-                await vConsole.WriteLineAsync(info);
+                await vConsole.WriteLineAsync(ConsoleOutputType.Summary, info);
             }
-
-            await vConsole.WriteLineAsync();
 
             foreach (var s in
                 from result in detailedAggregation
                 let s = (result.Value / 12).ToString("0.##")
                 select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
-                await vConsole.WriteLineAsync(s);
+                await vConsole.WriteLineAsync(ConsoleOutputType.Average, s);
             }
         }
 
         protected async Task WriteErrorsAsync(IErrorsAndInfos errorsAndInfos) {
             var errors = errorsAndInfos.Errors.ToList();
             foreach (var error in errors) {
-                await vConsole.WriteLineAsync(error);
+                await vConsole.WriteLineAsync(ConsoleOutputType.Log, error);
             }
         }
     }

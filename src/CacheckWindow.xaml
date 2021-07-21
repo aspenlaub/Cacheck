@@ -8,12 +8,22 @@
         Icon="cacheck.ico"
         Loaded="OnLoaded"  Closing="OnClosing">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <TextBox Grid.Column="0" Grid.Row="0" Name="ConsoleOutput" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
+        <TabControl x:Name="CacheckTabControl" Grid.Column="0" Grid.Row="0">
+            <TabItem x:Name="SummaryTab" Header="Summary" Padding="60,5,60,5">
+                <Grid x:Name="SummaryTabSheet">
+                    <TextBox Grid.Column="0" Grid.Row="0" Name="Summary" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="AverageTab" Header="Average" Padding="60,5,60,5">
+                <Grid x:Name="AverageTabSheet">
+                    <TextBox Grid.Column="0" Grid.Row="0" Name="Average" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="LogTab" Header="Log" Padding="60,5,60,5">
+                <Grid x:Name="LogTabSheet">
+                    <TextBox Grid.Column="0" Grid.Row="0" Name="Log" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

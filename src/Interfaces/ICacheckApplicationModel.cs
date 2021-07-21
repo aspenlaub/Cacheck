@@ -2,6 +2,8 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
     public interface ICacheckApplicationModel : IApplicationModel {
-        ITextBox ConsoleOutput { get; }
+        ITextBox Summary { get; }
+        ITextBox Average { get; }
+        ITextBox Log { get; }
     }
 }
