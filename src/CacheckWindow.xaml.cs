@@ -49,8 +49,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
 
             vTashTimer.CreateAndStartTimer(vCacheckApp.CreateTashTaskHandlingStatus());
 
-            var consoleExecution = Container.Resolve<IConsoleExecution>();
-            await consoleExecution.ExecuteAsync(Container, CacheckApp.IsIntegrationTest);
+            var dataCollector = Container.Resolve<IDataCollector>();
+            await dataCollector.CollectAndShowAsync(Container, CacheckApp.IsIntegrationTest);
         }
 
         public void Dispose() {

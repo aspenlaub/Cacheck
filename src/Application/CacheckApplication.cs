@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Commands;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
@@ -13,7 +14,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
-    public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>, ICacheckApplicationModel>, IConsole {
+    public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>, ICacheckApplicationModel>, IDataPresenter {
         public ICacheckHandlers Handlers { get; private set; }
         public ICacheckCommands Commands { get; private set; }
         public ITashHandler<ICacheckApplicationModel> TashHandler { get; private set; }
@@ -37,9 +38,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
 
         protected override void CreateCommandsAndHandlers() {
             Handlers = new CacheckHandlers {
-                SummaryTextHandler = new ConsoleOutputTextHandler(Model, this, m => m.Summary),
-                AverageTextHandler = new ConsoleOutputTextHandler(Model, this, m => m.Average),
-                LogTextHandler = new ConsoleOutputTextHandler(Model, this, m => m.Log),
+                SummaryTextHandler = new CacheckTextHandler(Model, this, m => m.Summary),
+                AverageTextHandler = new CacheckTextHandler(Model, this, m => m.Average),
+                LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             };
             Commands = new CacheckCommands();
 
@@ -55,23 +56,30 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
             return new TashTaskHandlingStatus<ICacheckApplicationModel>(Model, Process.GetCurrentProcess().Id);
         }
 
-        public async Task WriteLineAsync(ConsoleOutputType outputType) {
+        public async Task WriteErrorsAsync(IErrorsAndInfos errorsAndInfos) {
+            var errors = errorsAndInfos.Errors.ToList();
+            foreach (var error in errors) {
+                await WriteLineAsync(DataPresentationOutputType.Log, error);
+            }
+        }
+
+        public async Task WriteLineAsync(DataPresentationOutputType outputType) {
             await WriteLineAsync(outputType, "");
         }
 
-        public async Task WriteLineAsync(ConsoleOutputType outputType, string s) {
+        public async Task WriteLineAsync(DataPresentationOutputType outputType, string s) {
             ITextBox textBox;
             ISimpleTextHandler textHandler;
             switch (outputType) {
-                case ConsoleOutputType.Log:
+                case DataPresentationOutputType.Log:
                     textBox = Model.Log;
                     textHandler = Handlers.LogTextHandler;
                     break;
-                case ConsoleOutputType.Summary:
+                case DataPresentationOutputType.Summary:
                     textBox = Model.Summary;
                     textHandler = Handlers.SummaryTextHandler;
                     break;
-                case ConsoleOutputType.Average:
+                case DataPresentationOutputType.Average:
                     textBox = Model.Average;
                     textHandler = Handlers.AverageTextHandler;
                     break;

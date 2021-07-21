@@ -5,12 +5,12 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Enums;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
-    public class ConsoleOutputTextHandler : ISimpleTextHandler {
+    public class CacheckTextHandler : ISimpleTextHandler {
         private readonly ICacheckApplicationModel vModel;
         private readonly IGuiAndAppHandler vGuiAndAppHandler;
         private readonly Func<ICacheckApplicationModel, ITextBox> vTextBoxGetter;
 
-        public ConsoleOutputTextHandler(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler, Func<ICacheckApplicationModel, ITextBox> textBoxGetter) {
+        public CacheckTextHandler(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler, Func<ICacheckApplicationModel, ITextBox> textBoxGetter) {
             vModel = model;
             vGuiAndAppHandler = guiAndAppHandler;
             vTextBoxGetter = textBoxGetter;
