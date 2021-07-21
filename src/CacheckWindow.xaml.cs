@@ -1,18 +1,25 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Automation;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
+using IContainer = Autofac.IContainer;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
     /// <summary>
     /// Interaction logic for CacheckWindow.xaml
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public partial class CacheckWindow {
+    public partial class CacheckWindow : IDisposable {
         private static IContainer Container { get; set; }
+
         private CacheckApplication vCacheckApp;
+        private ITashTimer<ICacheckApplicationModel> vTashTimer;
 
         public CacheckWindow() {
             InitializeComponent();
@@ -33,8 +40,23 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
             guiToAppGate.RegisterAsyncTextBoxCallback(ConsoleOutput, t => vCacheckApp.Handlers.ConsoleOutputTextHandler.TextChangedAsync(t));
 
+            vTashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), vCacheckApp.TashHandler, guiToAppGate);
+            if (!await vTashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
+                Close();
+            }
+
+            vTashTimer.CreateAndStartTimer(vCacheckApp.CreateTashTaskHandlingStatus());
+
             var consoleExecution = Container.Resolve<IConsoleExecution>();
             await consoleExecution.ExecuteAsync(Container, CacheckApp.IsIntegrationTest);
+        }
+
+        public void Dispose() {
+            vTashTimer?.StopTimerAndConfirmDead(false);
+        }
+
+        private void OnClosing(object sender, CancelEventArgs e) {
+            vTashTimer?.StopTimerAndConfirmDead(false);
         }
     }
 }
