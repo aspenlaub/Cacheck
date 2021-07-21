@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Autofac;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Components {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class ConsoleExecution : IConsoleExecution {
         private readonly IConsole vConsole;
 

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -13,7 +12,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities {
     public class CacheckConfigurationTest {
         [TestMethod]
         public async Task CanGetCacheckConfiguration() {
-            var container = new ContainerBuilder().UseCacheckAndPegh().Build();
+            var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
             var secretRepository = container.Resolve<ISecretRepository>();
             var errorsAndInfos = new ErrorsAndInfos();
             var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
@@ -27,7 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities {
 
         [TestMethod]
         public async Task CanGetPostingClassifications() {
-            var container = new ContainerBuilder().UseCacheckAndPegh().Build();
+            var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
             var secretRepository = container.Resolve<ISecretRepository>();
             var errorsAndInfos = new ErrorsAndInfos();
             var secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);

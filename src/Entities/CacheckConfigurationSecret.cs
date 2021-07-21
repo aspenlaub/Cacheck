@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class CacheckConfigurationSecret : ISecret<CacheckConfiguration> {
         private CacheckConfiguration vDefaultValue;
 

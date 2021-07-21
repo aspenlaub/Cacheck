@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Automation;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 

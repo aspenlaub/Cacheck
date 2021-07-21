@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Components {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class SourceFileReader : ISourceFileReader {
         public IList<IPosting> ReadPostings(string fileName, IErrorsAndInfos errorsAndInfos) {
             var postings = new List<IPosting>();

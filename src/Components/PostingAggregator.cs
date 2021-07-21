@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Components {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingAggregator : IPostingAggregator {
         public IDictionary<string, double> AggregatePostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
             var result = new Dictionary<string, double>();

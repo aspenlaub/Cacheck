@@ -1,4 +1,4 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces {
+﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
     public interface IPostingClassification {
         bool Credit { get; }
         string Clue { get; }

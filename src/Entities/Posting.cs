@@ -1,7 +1,7 @@
 ﻿using System;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class Posting : IPosting {
         public DateTime Date { get; set; }
         public double Amount { get; set; }

@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     [XmlRoot("CacheckConfiguration")]
     public class CacheckConfiguration : IGuid, ISecretResult<CacheckConfiguration> {
         [XmlAttribute("guid")]

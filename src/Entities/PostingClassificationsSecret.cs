@@ -1,6 +1,6 @@
 ﻿using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities {
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class PostingClassificationsSecret : ISecret<PostingClassifications> {
         private PostingClassifications vDefaultValue;
 

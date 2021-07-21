@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Components;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Helpers;

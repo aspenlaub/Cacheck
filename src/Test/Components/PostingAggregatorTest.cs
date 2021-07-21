@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Components;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Core.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
