@@ -6,11 +6,17 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingAggregator : IPostingAggregator {
+        private readonly IPostingClassificationMatcher vPostingClassificationMatcher;
+
+        public PostingAggregator(IPostingClassificationMatcher postingClassificationMatcher) {
+            vPostingClassificationMatcher = postingClassificationMatcher;
+        }
+
         public IDictionary<string, double> AggregatePostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
             var result = new Dictionary<string, double>();
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c
-                    => posting.Remark.Contains(c.Clue, StringComparison.OrdinalIgnoreCase) && (c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)
+                    => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c) && (c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)
                     ).ToList();
                 switch (classifications.Count) {
                     case 0 when Math.Abs(posting.Amount) <= 250:

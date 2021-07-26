@@ -22,6 +22,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             builder.RegisterType<CacheckGuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
             builder.RegisterType<DataCollector>().As<IDataCollector>();
             builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
+            builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
             builder.RegisterType<PostingCollector>().As<IPostingCollector>();
             builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
             builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();
