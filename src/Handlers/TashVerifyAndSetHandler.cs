@@ -28,6 +28,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
             return new() {
                 { nameof(status.Model.Summary), vCacheckHandlers.SummaryTextHandler },
                 { nameof(status.Model.Average), vCacheckHandlers.AverageTextHandler },
+                { nameof(status.Model.MonthlyDelta), vCacheckHandlers.MonthlyDeltaTextHandler },
                 { nameof(status.Model.Log), vCacheckHandlers.LogTextHandler },
             };
         }

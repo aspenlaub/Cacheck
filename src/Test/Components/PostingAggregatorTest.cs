@@ -10,13 +10,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
     public class PostingAggregatorTest {
-        private readonly PostingTestData vTestData = new PostingTestData();
+        private readonly PostingTestData vTestData = new();
 
         protected static IPostingAggregator Sut;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
-            Sut = new PostingAggregator(new PostingClassificationMatcher());
+            Sut = new PostingAggregator(new PostingClassificationFormatter(), new PostingClassificationMatcher());
         }
 
         [TestMethod]

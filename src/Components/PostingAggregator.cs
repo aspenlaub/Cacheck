@@ -6,9 +6,11 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingAggregator : IPostingAggregator {
+        private readonly IPostingClassificationFormatter vPostingClassificationFormatter;
         private readonly IPostingClassificationMatcher vPostingClassificationMatcher;
 
-        public PostingAggregator(IPostingClassificationMatcher postingClassificationMatcher) {
+        public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher) {
+            vPostingClassificationFormatter = postingClassificationFormatter;
             vPostingClassificationMatcher = postingClassificationMatcher;
         }
 
@@ -16,7 +18,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var result = new Dictionary<string, double>();
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c
-                    => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c) && (c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)
+                    => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c) && (c.IgnoreCredit || c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)
                     ).ToList();
                 switch (classifications.Count) {
                     case 0 when Math.Abs(posting.Amount) <= 250:
@@ -29,12 +31,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                         break;
                 }
 
-                var classification = (classifications[0].Credit ? "(+)" : "(-)") + " " + classifications[0].Classification;
-                if (!result.ContainsKey(classification)) {
-                    result[classification] = 0;
+                var classification = classifications[0];
+                var formattedClassification = vPostingClassificationFormatter.Format(classification);
+                if (!result.ContainsKey(formattedClassification)) {
+                    result[formattedClassification] = 0;
                 }
 
-                result[classification] = result[classification] + Math.Abs(posting.Amount);
+                result[formattedClassification] = result[formattedClassification] + (classification.IgnoreCredit ? posting.Amount : Math.Abs(posting.Amount));
             }
             return result;
         }

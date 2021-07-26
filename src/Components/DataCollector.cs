@@ -12,12 +12,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         private readonly IPostingCollector vPostingCollector;
         private readonly ISummaryCalculator vSummaryCalculator;
         private readonly IAverageCalculator vAverageCalculator;
+        private readonly IMonthlyDeltaCalculator vMonthlyDeltaCalculator;
 
-        public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator) {
+        public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator) {
             vDataPresenter = dataPresenter;
             vPostingCollector = postingCollector;
             vSummaryCalculator = summaryCalculator;
             vAverageCalculator = averageCalculator;
+            vMonthlyDeltaCalculator = monthlyDeltaCalculator;
         }
 
         public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
@@ -35,6 +37,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             await vSummaryCalculator.CalculateAndShowSummaryAsync(container, allPostings, postingClassifications);
             await vAverageCalculator.CalculateAndShowAverageAsync(container, allPostings, postingClassifications);
+            await vMonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(container, allPostings);
         }
     }
 }

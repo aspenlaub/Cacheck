@@ -40,6 +40,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
             guiToAppGate.RegisterAsyncTextBoxCallback(Summary, t => vCacheckApp.Handlers.SummaryTextHandler.TextChangedAsync(t));
             guiToAppGate.RegisterAsyncTextBoxCallback(Average, t => vCacheckApp.Handlers.AverageTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncTextBoxCallback(MonthlyDelta, t => vCacheckApp.Handlers.MonthlyDeltaTextHandler.TextChangedAsync(t));
             guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => vCacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 
             vTashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), vCacheckApp.TashHandler, guiToAppGate);

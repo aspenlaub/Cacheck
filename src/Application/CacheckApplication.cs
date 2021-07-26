@@ -40,6 +40,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
             Handlers = new CacheckHandlers {
                 SummaryTextHandler = new CacheckTextHandler(Model, this, m => m.Summary),
                 AverageTextHandler = new CacheckTextHandler(Model, this, m => m.Average),
+                MonthlyDeltaTextHandler = new CacheckTextHandler(Model, this, m => m.MonthlyDelta),
                 LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             };
             Commands = new CacheckCommands();
@@ -82,6 +83,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
                 case DataPresentationOutputType.Average:
                     textBox = Model.Average;
                     textHandler = Handlers.AverageTextHandler;
+                    break;
+                case DataPresentationOutputType.MonthlyDelta:
+                    textBox = Model.MonthlyDelta;
+                    textHandler = Handlers.MonthlyDeltaTextHandler;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(outputType));

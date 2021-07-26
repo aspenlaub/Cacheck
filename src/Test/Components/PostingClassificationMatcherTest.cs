@@ -43,8 +43,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationD2));
             Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationD));
             Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationC));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationJuly));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationAugust));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationJuly));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationAugust));
             Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationSeptember));
 
             Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationC1));
@@ -54,8 +54,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationD));
             Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationC));
             Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationJuly));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationAugust));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationSeptember));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationAugust));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationSeptember));
         }
     }
 }

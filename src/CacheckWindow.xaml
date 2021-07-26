@@ -19,6 +19,11 @@
                     <TextBox Grid.Column="0" Grid.Row="0" Name="Average" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="MonthlyDeltaTab" Header="Monthly Delta" Padding="60,5,60,5">
+                <Grid x:Name="MonthlyDeltaTabSheet">
+                    <TextBox Grid.Column="0" Grid.Row="0" Name="MonthlyDelta" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
+                </Grid>
+            </TabItem>
             <TabItem x:Name="LogTab" Header="Log" Padding="60,5,60,5">
                 <Grid x:Name="LogTabSheet">
                     <TextBox Grid.Column="0" Grid.Row="0" Name="Log" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>

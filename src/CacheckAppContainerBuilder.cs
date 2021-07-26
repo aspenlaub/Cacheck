@@ -21,7 +21,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             builder.RegisterType<CacheckGuiAndApplicationSynchronizer>().WithParameter((p, _) => p.ParameterType == typeof(CacheckWindow), (_, _) => cacheckWindow).As<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>>();
             builder.RegisterType<CacheckGuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
             builder.RegisterType<DataCollector>().As<IDataCollector>();
+            builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
             builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
+            builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
             builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
             builder.RegisterType<PostingCollector>().As<IPostingCollector>();
             builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
