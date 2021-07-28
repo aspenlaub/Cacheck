@@ -32,5 +32,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
                 { nameof(status.Model.Log), vCacheckHandlers.LogTextHandler },
             };
         }
+
+        protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
+            return new();
+        }
+
+        protected override Dictionary<string, ICollectionViewSource> CollectionViewSourceNamesToCollectionViewSourceDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
+            return new();
+        }
     }
 }
