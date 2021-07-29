@@ -30,12 +30,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             foreach (var s in
                         from result in pureDebitCreditAggregation
                         let s = result.Value.ToString("0.##")
-                        select $"Sum {result.Key}: {s}") {
+                        select $"Delta {result.Key}: {s}") {
                 await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary, s);
             }
 
+            var overallSumList = pureDebitCreditAggregation.Select(
+                a => new TypeItemSum { Item = a.Key, Sum = a.Value }
+            ).Cast<ITypeItemSum>().ToList();
+            await container.Resolve<IOverallSumPresenter>().PresentAsync(overallSumList);
+
             errorsAndInfos = new ErrorsAndInfos();
-            var detailedAggregation = vPostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(a => a.Key).ToList();
+            var detailedAggregation = vPostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
@@ -45,13 +50,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             int keyLength;
             if (detailedAggregation.Any()) {
-                keyLength = detailedAggregation.Select(a => a.Key.Length).Max();
+                keyLength = detailedAggregation.Select(result => result.Key.Length).Max();
                 foreach (var s in
                     from result in detailedAggregation
                     let s = result.Value.ToString("0.##")
-                    select $"Sum {result.Key.PadRight(keyLength)}: {s}") {
+                    select $"Delta {result.Key.PadRight(keyLength)}: {s}") {
                     await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary, s);
                 }
+
+                var classificationSumList = detailedAggregation.Select(
+                    result => new TypeItemSum { Item = result.Key, Sum = result.Value }
+                ).Cast<ITypeItemSum>().ToList();
+                await container.Resolve<IClassificationSumPresenter>().PresentAsync(classificationSumList);
             }
 
             await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary);
