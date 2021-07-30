@@ -21,20 +21,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         [TestMethod]
         public async Task CanCalculateMonthlyDelta() {
             await Sut.CalculateAndShowMonthlyDeltaAsync(Container, new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 });
-            Assert.IsTrue(FakeDataPresenter.Output.ContainsKey(DataPresentationOutputType.MonthlyDelta));
-
-            var output = FakeDataPresenter.Output[DataPresentationOutputType.MonthlyDelta];
-            Assert.AreEqual(2, output.Count);
-            Assert.AreEqual("Δ 2021-08: -40", output[0]);
-            Assert.AreEqual("Δ 2021-07: +20", output[1]);
 
             var items = FakeMonthlyDeltaPresenter.Items;
             Assert.AreEqual(2, items.Count);
             Assert.AreEqual("Δ", items[0].Type);
-            Assert.AreEqual("Δ 2021-08", items[0].Month);
+            Assert.AreEqual("2021-08", items[0].Month);
             Assert.AreEqual(-40, items[0].Delta);
             Assert.AreEqual("Δ", items[1].Type);
-            Assert.AreEqual("Δ 2021-07", items[1].Month);
+            Assert.AreEqual("2021-07", items[1].Month);
             Assert.AreEqual(20, items[1].Delta);
         }
     }

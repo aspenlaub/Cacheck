@@ -18,22 +18,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
         public async Task CalculateAndShowAverageAsync(IContainer container, IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
             var errorsAndInfos = new ErrorsAndInfos();
-            var detailedAggregation = vPostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key).ToList();
+            var detailedAggregation = vPostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
-            var keyLength = detailedAggregation.Select(a => a.Key.Length).Max();
+            var keyLength = detailedAggregation.Select(result => result.Key.CombinedClassification.Length).Max();
             foreach (var s in
                 from result in detailedAggregation
                 let s = (result.Value / 12).ToString("0.##")
-                select $"Delta {result.Key.PadRight(keyLength)}: {s}") {
+                select $"Average {result.Key.CombinedClassification.PadRight(keyLength)}: {s}") {
                 await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Average, s);
             }
 
             var classificationAverageList = detailedAggregation.Select(
-                result => new TypeItemSum { Type = "", Item = result.Key, Sum = result.Value / 12 }
+                result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value / 12 }
             ).Cast<ITypeItemSum>().ToList();
             await container.Resolve<IClassificationAveragePresenter>().PresentAsync(classificationAverageList);
         }

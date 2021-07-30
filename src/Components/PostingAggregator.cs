@@ -8,14 +8,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingAggregator : IPostingAggregator {
         private readonly IPostingClassificationFormatter vPostingClassificationFormatter;
         private readonly IPostingClassificationMatcher vPostingClassificationMatcher;
+        private readonly IFormattedClassificationComparer vFormattedClassificationComparer;
 
-        public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher) {
+        public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher, IFormattedClassificationComparer formattedClassificationComparer) {
             vPostingClassificationFormatter = postingClassificationFormatter;
             vPostingClassificationMatcher = postingClassificationMatcher;
+            vFormattedClassificationComparer = formattedClassificationComparer;
         }
 
-        public IDictionary<string, double> AggregatePostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
-            var result = new Dictionary<string, double>();
+        public IDictionary<IFormattedClassification, double> AggregatePostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
+            var result = new Dictionary<IFormattedClassification, double>(vFormattedClassificationComparer);
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c
                     => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c) && (c.IgnoreCredit || c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)

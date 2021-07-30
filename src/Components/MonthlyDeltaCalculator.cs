@@ -31,22 +31,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             }
 
             var errorsAndInfos = new ErrorsAndInfos();
-            var monthlyDeltas = vPostingAggregator.AggregatePostings(allPostings, classifications, errorsAndInfos).OrderByDescending(result => result.Key).ToList();
+            var monthlyDeltas = vPostingAggregator.AggregatePostings(allPostings, classifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
-            var keyLength = monthlyDeltas.Select(a => a.Key.Length).Max();
+            var keyLength = monthlyDeltas.Select(result => result.Key.CombinedClassification.Length).Max();
             foreach (var s in
                 from result in monthlyDeltas
                 let s = (result.Value >= 0 ? "+" : "") + (int)result.Value
-                select $"{result.Key.PadRight(keyLength)}: {s}") {
+                select $"{result.Key.CombinedClassification.PadRight(keyLength)}: {s}") {
                 await vDataPresenter.WriteLineAsync(DataPresentationOutputType.MonthlyDelta, s);
             }
 
             var monthlyDeltasList = monthlyDeltas.Select(
-                result => new TypeMonthDelta { Type = "Δ", Month = result.Key, Delta = result.Value }
+                result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value }
             ).Cast<ITypeMonthDelta>().ToList();
             await container.Resolve<IMonthlyDeltaPresenter>().PresentAsync(monthlyDeltasList);
         }

@@ -23,6 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             builder.RegisterType<ClassificationSumPresenter>().As<IClassificationSumPresenter>().SingleInstance();
             builder.RegisterType<ClassificationAveragePresenter>().As<IClassificationAveragePresenter>().SingleInstance();
             builder.RegisterType<DataCollector>().As<IDataCollector>();
+            builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
             builder.RegisterType<OverallSumPresenter>().As<IOverallSumPresenter>().SingleInstance();
             builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
             builder.RegisterType<MonthlyDeltaPresenter>().As<IMonthlyDeltaPresenter>().SingleInstance();
