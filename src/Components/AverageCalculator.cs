@@ -33,7 +33,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             }
 
             var classificationAverageList = detailedAggregation.Select(
-                result => new TypeItemSum { Item = result.Key, Sum = result.Value / 12 }
+                result => new TypeItemSum { Type = "", Item = result.Key, Sum = result.Value / 12 }
             ).Cast<ITypeItemSum>().ToList();
             await container.Resolve<IClassificationAveragePresenter>().PresentAsync(classificationAverageList);
         }

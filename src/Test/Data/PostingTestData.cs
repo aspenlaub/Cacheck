@@ -7,7 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
         public IPostingClassification PostingClassificationC1, PostingClassificationC2, PostingClassificationD1, PostingClassificationD2;
         public IPostingClassification PostingClassificationJuly, PostingClassificationAugust, PostingClassificationSeptember;
         public IPostingClassification PostingClassificationD, PostingClassificationC;
-        public IPosting PostingC1, PostingD1, PostingC2, PostingD2;
+        public IPosting PostingC1, PostingD1, PostingC2, PostingD2, PostingC3, PostingD3;
         public double Amount1 = 10, Amount2 = -20, Amount3 = 30, Amount4 = -40;
         public DateTime Date1 = new(2021, 7, 9), Date2 = new(2021, 7, 10), Date3 = new(2021, 7, 11), Date4 = new(2021, 8, 11);
 
@@ -26,6 +26,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             PostingD1 = new Posting { Date = Date2, Amount = Amount2, Remark = "1589" };
             PostingC2 = new Posting { Date = Date3, Amount = Amount3, Remark = "47" };
             PostingD2 = new Posting { Date = Date4, Amount = Amount4, Remark = "89" };
+            PostingC3 = new Posting { Date = Date1, Amount = Amount1, Remark = "72489" };
+            PostingD3 = new Posting { Date = Date2, Amount = Amount2, Remark = "8159" };
         }
     }
 }

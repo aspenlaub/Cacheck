@@ -35,7 +35,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             }
 
             var overallSumList = pureDebitCreditAggregation.Select(
-                a => new TypeItemSum { Item = a.Key, Sum = a.Value }
+                a => new TypeItemSum { Type = "", Item = a.Key, Sum = a.Value }
             ).Cast<ITypeItemSum>().ToList();
             await container.Resolve<IOverallSumPresenter>().PresentAsync(overallSumList);
 
@@ -59,7 +59,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 }
 
                 var classificationSumList = detailedAggregation.Select(
-                    result => new TypeItemSum { Item = result.Key, Sum = result.Value }
+                    result => new TypeItemSum { Type = "", Item = result.Key, Sum = result.Value }
                 ).Cast<ITypeItemSum>().ToList();
                 await container.Resolve<IClassificationSumPresenter>().PresentAsync(classificationSumList);
             }

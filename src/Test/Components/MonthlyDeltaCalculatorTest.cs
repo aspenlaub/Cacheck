@@ -1,25 +1,18 @@
 ﻿using System.Collections.Generic;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
-    public class MonthlyDeltaCalculatorTest {
-        private readonly PostingTestData vTestData = new();
-
-        protected IContainer Container;
-        protected FakeDataPresenter FakeDataPresenter;
+    public class MonthlyDeltaCalculatorTest : CalculatorTestBase {
         protected FakeMonthlyDeltaPresenter FakeMonthlyDeltaPresenter;
         protected IMonthlyDeltaCalculator Sut;
 
         [TestInitialize]
         public void Initialize() {
-            Container = new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null).Result.Build();
-            FakeDataPresenter = Container.Resolve<IDataPresenter>() as FakeDataPresenter;
-            Assert.IsNotNull(FakeDataPresenter);
+            InitializeContainerAndDataPresenter();
             FakeMonthlyDeltaPresenter = Container.Resolve<IMonthlyDeltaPresenter>() as FakeMonthlyDeltaPresenter;
             Assert.IsNotNull(FakeMonthlyDeltaPresenter);
             Sut = Container.Resolve<IMonthlyDeltaCalculator>();
@@ -27,7 +20,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
 
         [TestMethod]
         public async Task CanCalculateMonthlyDelta() {
-            await Sut.CalculateAndShowMonthlyDeltaAsync(Container, new List<IPosting> { vTestData.PostingC1, vTestData.PostingD1, vTestData.PostingC2, vTestData.PostingD2 });
+            await Sut.CalculateAndShowMonthlyDeltaAsync(Container, new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 });
             Assert.IsTrue(FakeDataPresenter.Output.ContainsKey(DataPresentationOutputType.MonthlyDelta));
 
             var output = FakeDataPresenter.Output[DataPresentationOutputType.MonthlyDelta];
