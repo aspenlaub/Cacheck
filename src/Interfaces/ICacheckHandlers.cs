@@ -2,9 +2,10 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
     public interface ICacheckHandlers {
-        ISimpleTextHandler SummaryTextHandler { get; }
-        ISimpleTextHandler AverageTextHandler { get; }
-        ISimpleTextHandler MonthlyDeltaTextHandler { get; }
+        ISimpleCollectionViewSourceHandler OverallSumsHandler { get; }
+        ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; }
+        ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; }
+        ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; }
         ISimpleTextHandler LogTextHandler { get; }
     }
 }

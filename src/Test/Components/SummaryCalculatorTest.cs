@@ -7,17 +7,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
     public class SummaryCalculatorTest : CalculatorTestBase {
-        protected FakeOverallSumPresenter FakeOverallSumPresenter;
-        protected FakeClassificationSumPresenter FakeClassificationSumPresenter;
         protected ISummaryCalculator Sut;
 
         [TestInitialize]
         public void Initialize() {
             InitializeContainerAndDataPresenter();
-            FakeOverallSumPresenter = Container.Resolve<IOverallSumPresenter>() as FakeOverallSumPresenter;
-            Assert.IsNotNull(FakeOverallSumPresenter);
-            FakeClassificationSumPresenter = Container.Resolve<IClassificationSumPresenter>() as FakeClassificationSumPresenter;
-            Assert.IsNotNull(FakeClassificationSumPresenter);
             Sut = Container.Resolve<ISummaryCalculator>();
         }
 
@@ -27,7 +21,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
                 new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
                 new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 });
 
-            var items = FakeOverallSumPresenter.Items;
+            var items = FakeDataPresenter.OverallSums;
             Assert.AreEqual(2, items.Count);
             Assert.AreEqual("+", items[0].Type);
             Assert.AreEqual("Credit", items[0].Item);
@@ -36,7 +30,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             Assert.AreEqual("Debit", items[1].Item);
             Assert.AreEqual(60, items[1].Sum);
 
-            items = FakeClassificationSumPresenter.Items;
+            items = FakeDataPresenter.ClassificationSums;
             Assert.AreEqual(4, items.Count);
             Assert.AreEqual("-", items[0].Type);
             Assert.AreEqual("1510", items[0].Item);

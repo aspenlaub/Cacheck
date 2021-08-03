@@ -20,13 +20,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             builder.RegisterType<CacheckApplicationModel>().As<CacheckApplicationModel>().As<ICacheckApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
             builder.RegisterType<CacheckGuiAndApplicationSynchronizer>().WithParameter((p, _) => p.ParameterType == typeof(CacheckWindow), (_, _) => cacheckWindow).As<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>>();
             builder.RegisterType<CacheckGuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
-            builder.RegisterType<ClassificationSumPresenter>().As<IClassificationSumPresenter>().SingleInstance();
-            builder.RegisterType<ClassificationAveragePresenter>().As<IClassificationAveragePresenter>().SingleInstance();
             builder.RegisterType<DataCollector>().As<IDataCollector>();
             builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
-            builder.RegisterType<OverallSumPresenter>().As<IOverallSumPresenter>().SingleInstance();
             builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
-            builder.RegisterType<MonthlyDeltaPresenter>().As<IMonthlyDeltaPresenter>().SingleInstance();
             builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
             builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
             builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();

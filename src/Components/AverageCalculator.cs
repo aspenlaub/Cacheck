@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
@@ -24,18 +26,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            var keyLength = detailedAggregation.Select(result => result.Key.CombinedClassification.Length).Max();
-            foreach (var s in
-                from result in detailedAggregation
-                let s = (result.Value / 12).ToString("0.##")
-                select $"Average {result.Key.CombinedClassification.PadRight(keyLength)}: {s}") {
-                await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Average, s);
-            }
-
             var classificationAverageList = detailedAggregation.Select(
                 result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value / 12 }
-            ).Cast<ITypeItemSum>().ToList();
-            await container.Resolve<IClassificationAveragePresenter>().PresentAsync(classificationAverageList);
+            ).Cast<ICollectionViewSourceEntity>().ToList();
+            await vDataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
         }
     }
 }

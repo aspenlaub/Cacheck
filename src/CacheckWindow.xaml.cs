@@ -38,9 +38,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             await vCacheckApp.OnLoadedAsync();
 
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            guiToAppGate.RegisterAsyncTextBoxCallback(Summary, t => vCacheckApp.Handlers.SummaryTextHandler.TextChangedAsync(t));
-            guiToAppGate.RegisterAsyncTextBoxCallback(Average, t => vCacheckApp.Handlers.AverageTextHandler.TextChangedAsync(t));
-            guiToAppGate.RegisterAsyncTextBoxCallback(MonthlyDelta, t => vCacheckApp.Handlers.MonthlyDeltaTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, items => vCacheckApp.Handlers.OverallSumsHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => vCacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => vCacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => vCacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
             guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => vCacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 
             vTashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), vCacheckApp.TashHandler, guiToAppGate);

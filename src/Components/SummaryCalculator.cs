@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
@@ -27,17 +29,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            foreach (var s in
-                        from result in pureDebitCreditAggregation
-                        let s = result.Value.ToString("0.##")
-                        select $"Sum {result.Key.CombinedClassification}: {s}") {
-                await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary, s);
-            }
-
             var overallSumList = pureDebitCreditAggregation.Select(
                 result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
-            ).Cast<ITypeItemSum>().ToList();
-            await container.Resolve<IOverallSumPresenter>().PresentAsync(overallSumList);
+            ).Cast<ICollectionViewSourceEntity>().ToList();
+            await vDataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
 
             errorsAndInfos = new ErrorsAndInfos();
             var detailedAggregation = vPostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
@@ -46,28 +41,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary);
-
-            int keyLength;
             if (detailedAggregation.Any()) {
-                keyLength = detailedAggregation.Select(result => result.Key.CombinedClassification.Length).Max();
-                foreach (var s in
-                    from result in detailedAggregation
-                    let s = result.Value.ToString("0.##")
-                    select $"Sum {result.Key.CombinedClassification.PadRight(keyLength)}: {s}") {
-                    await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary, s);
-                }
-
                 var classificationSumList = detailedAggregation.Select(
                     result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
-                ).Cast<ITypeItemSum>().ToList();
-                await container.Resolve<IClassificationSumPresenter>().PresentAsync(classificationSumList);
-            }
-
-            await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary);
-
-            foreach (var info in errorsAndInfos.Infos) {
-                await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Summary, info);
+                ).Cast<ICollectionViewSourceEntity>().ToList();
+                await vDataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
             }
         }
     }

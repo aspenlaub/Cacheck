@@ -3,26 +3,72 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:entities="clr-namespace:Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities"
         mc:Ignorable="d"
         Title="Cacheck" Height="450" Width="800"
         Icon="cacheck.ico"
         Loaded="OnLoaded"  Closing="OnClosing">
+    <Window.Resources>
+        <CollectionViewSource x:Key="OverallSums" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
+        <CollectionViewSource x:Key="ClassificationSums" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
+        <CollectionViewSource x:Key="ClassificationAverages" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
+        <CollectionViewSource x:Key="MonthlyDeltas" d:DesignSource="{d:DesignInstance {x:Type entities:TypeMonthDelta}, CreateList=True}"/>
+        <Style x:Key="CellLeftAlign">
+            <Setter Property="Control.HorizontalAlignment" Value="Left" />
+            <Setter Property="Control.VerticalAlignment" Value="Center" />
+            <Setter Property="Control.Margin" Value="5,0,0,0" />
+        </Style>
+        <Style x:Key="CellRightAlign">
+            <Setter Property="Control.HorizontalAlignment" Value="Right" />
+            <Setter Property="Control.VerticalAlignment" Value="Center" />
+            <Setter Property="Control.Margin" Value="0,0,5,0" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <TabControl x:Name="CacheckTabControl" Grid.Column="0" Grid.Row="0">
             <TabItem x:Name="SummaryTab" Header="Summary" Padding="60,5,60,5">
                 <Grid x:Name="SummaryTabSheet">
-                    <TextBox Grid.Column="0" Grid.Row="0" Name="Summary" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="80"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" Grid.Column="0" Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                              Name="OverallSums" ItemsSource="{Binding Source={StaticResource OverallSums}}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Debit/Credit" Width="20*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Sum" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid Grid.Row="1" Grid.Column="0" Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                              Name="ClassificationSums" ItemsSource="{Binding Source={StaticResource ClassificationSums}}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Sum" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem x:Name="AverageTab" Header="Average" Padding="60,5,60,5">
-                <Grid x:Name="AverageTabSheet">
-                    <TextBox Grid.Column="0" Grid.Row="0" Name="Average" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
-                </Grid>
+                <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                    Name="ClassificationAverages" ItemsSource="{Binding Source={StaticResource ClassificationAverages}}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                        <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                        <DataGridTextColumn Header="Average" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem x:Name="MonthlyDeltaTab" Header="Monthly Delta" Padding="60,5,60,5">
-                <Grid x:Name="MonthlyDeltaTabSheet">
-                    <TextBox Grid.Column="0" Grid.Row="0" Name="MonthlyDelta" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
-                </Grid>
+                <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                          Name="MonthlyDeltas" ItemsSource="{Binding Source={StaticResource MonthlyDeltas}}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                        <DataGridTextColumn Header="Month" Width="20*" Binding="{Binding Month}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                        <DataGridTextColumn Header="Delta" Width="20*" Binding="{Binding Delta, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </TabItem>
             <TabItem x:Name="LogTab" Header="Log" Padding="60,5,60,5">
                 <Grid x:Name="LogTabSheet">

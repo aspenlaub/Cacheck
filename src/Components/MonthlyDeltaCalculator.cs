@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
@@ -37,18 +39,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            var keyLength = monthlyDeltas.Select(result => result.Key.CombinedClassification.Length).Max();
-            foreach (var s in
-                from result in monthlyDeltas
-                let s = (result.Value >= 0 ? "+" : "") + (int)result.Value
-                select $"{result.Key.CombinedClassification.PadRight(keyLength)}: {s}") {
-                await vDataPresenter.WriteLineAsync(DataPresentationOutputType.MonthlyDelta, s);
-            }
-
             var monthlyDeltasList = monthlyDeltas.Select(
                 result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value }
-            ).Cast<ITypeMonthDelta>().ToList();
-            await container.Resolve<IMonthlyDeltaPresenter>().PresentAsync(monthlyDeltasList);
+            ).Cast<ICollectionViewSourceEntity>().ToList();
+            await vDataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
         }
     }
 }

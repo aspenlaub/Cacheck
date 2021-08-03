@@ -8,14 +8,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
     public class AverageCalculatorTest : CalculatorTestBase {
-        protected FakeClassificationAveragePresenter FakeClassificationAveragePresenter;
         protected IAverageCalculator Sut;
 
         [TestInitialize]
         public void Initialize() {
             InitializeContainerAndDataPresenter();
-            FakeClassificationAveragePresenter = Container.Resolve<IClassificationAveragePresenter>() as FakeClassificationAveragePresenter;
-            Assert.IsNotNull(FakeClassificationAveragePresenter);
             Sut = Container.Resolve<IAverageCalculator>();
         }
 
@@ -25,7 +22,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
                 new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
                 new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 });
 
-            var items = FakeClassificationAveragePresenter.Items;
+            var items = FakeDataPresenter.ClassificationAverages;
             Assert.AreEqual(4, items.Count);
             Assert.AreEqual("-", items[0].Type);
             Assert.AreEqual("1510", items[0].Item);

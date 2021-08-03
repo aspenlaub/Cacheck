@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Commands;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
@@ -38,9 +36,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
 
         protected override void CreateCommandsAndHandlers() {
             Handlers = new CacheckHandlers {
-                SummaryTextHandler = new CacheckTextHandler(Model, this, m => m.Summary),
-                AverageTextHandler = new CacheckTextHandler(Model, this, m => m.Average),
-                MonthlyDeltaTextHandler = new CacheckTextHandler(Model, this, m => m.MonthlyDelta),
+                OverallSumsHandler = new OverallSumsHandler(Model, this),
+                ClassificationSumsHandler = new ClassificationSumsHandler(Model, this),
+                ClassificationAveragesHandler = new ClassificationAveragesHandler(Model, this),
+                MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
                 LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             };
             Commands = new CacheckCommands();
@@ -57,42 +56,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
             return new TashTaskHandlingStatus<ICacheckApplicationModel>(Model, Process.GetCurrentProcess().Id);
         }
 
-        public async Task WriteErrorsAsync(IErrorsAndInfos errorsAndInfos) {
-            var errors = errorsAndInfos.Errors.ToList();
-            foreach (var error in errors) {
-                await WriteLineAsync(DataPresentationOutputType.Log, error);
-            }
-        }
-
-        public async Task WriteLineAsync(DataPresentationOutputType outputType) {
-            await WriteLineAsync(outputType, "");
-        }
-
-        public async Task WriteLineAsync(DataPresentationOutputType outputType, string s) {
-            ITextBox textBox;
-            ISimpleTextHandler textHandler;
-            switch (outputType) {
-                case DataPresentationOutputType.Log:
-                    textBox = Model.Log;
-                    textHandler = Handlers.LogTextHandler;
-                    break;
-                case DataPresentationOutputType.Summary:
-                    textBox = Model.Summary;
-                    textHandler = Handlers.SummaryTextHandler;
-                    break;
-                case DataPresentationOutputType.Average:
-                    textBox = Model.Average;
-                    textHandler = Handlers.AverageTextHandler;
-                    break;
-                case DataPresentationOutputType.MonthlyDelta:
-                    textBox = Model.MonthlyDelta;
-                    textHandler = Handlers.MonthlyDeltaTextHandler;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(outputType));
-            }
-            s = textBox.Text + (string.IsNullOrEmpty(textBox.Text) ? "" : "\r\n") + s;
-            await textHandler.TextChangedAsync(s);
+        public string GetLogText() {
+            return Model.Log.Text;
         }
     }
 }

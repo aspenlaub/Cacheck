@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -48,14 +49,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
             var reader = container.Resolve<ISourceFileReader>();
             foreach (var file in files) {
-                await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Log, $"File: {file}");
+                await vDataPresenter.WriteLineAsync($"File: {file}");
                 var postings = reader.ReadPostings(file, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
                     await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
                     return allPostings;
                 }
 
-                await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Log, $"{postings.Count} posting/-s found");
+                await vDataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
                 allPostings.AddRange(postings);
             }
 
@@ -63,7 +64,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             var maxDate = allPostings.Max(p => p.Date);
             var minDate = maxDate.AddYears(-1).AddDays(1);
-            await vDataPresenter.WriteLineAsync(DataPresentationOutputType.Log, $"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
+            await vDataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
             allPostings.RemoveAll(p => p.Date < minDate);
 
             return allPostings;
