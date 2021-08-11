@@ -15,6 +15,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         [XmlAttribute("classification")]
         public string Classification { get; set; }
 
+        [XmlAttribute("excludefromfaircalculation")]
+        public bool ExcludeFromFairCalculation { get; set; }
+
         [XmlIgnore]
         public int Month { get; set; }
 

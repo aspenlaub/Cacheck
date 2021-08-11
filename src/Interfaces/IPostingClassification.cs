@@ -4,6 +4,7 @@
         bool Credit { get; }
         string Clue { get; }
         string Classification { get; }
+        bool ExcludeFromFairCalculation { get; }
         int Month { get; }
         int Year { get; }
     }

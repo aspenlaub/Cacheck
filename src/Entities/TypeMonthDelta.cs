@@ -6,5 +6,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         public string Type { get; set; }
         public string Month { get; set; }
         public double Delta { get; set; }
+        public double FairDelta { get; set; }
     }
 }

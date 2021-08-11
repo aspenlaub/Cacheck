@@ -67,6 +67,7 @@
                         <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Month" Width="20*" Binding="{Binding Month}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Delta" Width="20*" Binding="{Binding Delta, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        <DataGridTextColumn Header="Fair Delta" Width="20*" Binding="{Binding FairDelta, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
