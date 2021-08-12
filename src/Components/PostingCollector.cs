@@ -63,7 +63,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             if (!allPostings.Any()) { return allPostings; }
 
             var maxDate = allPostings.Max(p => p.Date);
-            var minDate = maxDate.AddYears(-1).AddDays(1);
+            var minDate = new DateTime(maxDate.Year - 1, 1, 1);
             await vDataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
             allPostings.RemoveAll(p => p.Date < minDate);
 

@@ -57,6 +57,8 @@
                         <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Average" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        <DataGridTextColumn Header="Average This Year" Width="20*" Binding="{Binding SumThisYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        <DataGridTextColumn Header="Average End Of Last Year" Width="20*" Binding="{Binding SumLastYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
