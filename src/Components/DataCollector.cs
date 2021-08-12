@@ -38,7 +38,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             await vSummaryCalculator.CalculateAndShowSummaryAsync(container, allPostings, postingClassifications);
             await vAverageCalculator.CalculateAndShowAverageAsync(container, allPostings, postingClassifications);
-            await vMonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(container, allPostings);
+            await vMonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(container, allPostings, postingClassifications);
         }
     }
 }

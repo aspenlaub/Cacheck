@@ -19,7 +19,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             PostingClassificationD = new PostingClassification { Credit = false, Clue = "", Classification = "Debit" };
             PostingClassificationC = new PostingClassification { Credit = true, Clue = "", Classification = "Credit" };
             PostingClassificationJuly = new PostingClassification { IgnoreCredit = true, Month = 7, Year = 2021 };
-            PostingClassificationAugust = new PostingClassification { IgnoreCredit = true, Month = 8, Year = 2021 };
+            PostingClassificationAugust = new PostingClassification { IgnoreCredit = true, Month = 8, Year = 2021, ExcludeFromFairCalculation = true };
             PostingClassificationSeptember = new PostingClassification { IgnoreCredit = true, Month = 9, Year = 2021 };
 
             PostingC1 = new Posting { Date = Date1, Amount = Amount1, Remark = "24789" };

@@ -19,16 +19,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         public IDictionary<IFormattedClassification, double> AggregatePostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
             var result = new Dictionary<IFormattedClassification, double>(vFormattedClassificationComparer);
             foreach (var posting in postings) {
-                var classifications = postingClassifications.Where(c
-                    => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c) && (c.IgnoreCredit || c.Credit && posting.Amount > 0 || !c.Credit && posting.Amount < 0)
-                    ).ToList();
+                var classifications = postingClassifications.Where(c => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
                 switch (classifications.Count) {
                     case 0 when Math.Abs(posting.Amount) <= 250:
                         continue;
                     case 0:
                         errorsAndInfos.Infos.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
                         continue;
-                    case > 1:
+                    case > 1 when posting.Amount != 0:
                         errorsAndInfos.Errors.Add($"Classification of '{posting.Remark}' is ambiguous between '{classifications[0].Clue}' and '{classifications[1].Clue}'");
                         break;
                 }
