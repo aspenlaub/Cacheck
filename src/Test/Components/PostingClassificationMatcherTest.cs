@@ -6,9 +6,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
     public class PostingClassificationMatcherTest {
-        private readonly PostingTestData vTestData = new();
+        private readonly PostingTestData TestData = new();
 
-        protected static IPostingClassificationMatcher Sut;
+        private  static IPostingClassificationMatcher Sut;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
@@ -17,45 +17,45 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
 
         [TestMethod]
         public void CanMatchPostingsAndClassifications() {
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationC1));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationC2));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationD1));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationD2));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationD));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationC));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationJuly));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationAugust));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC1, vTestData.PostingClassificationSeptember));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationC1));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationC2));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationD1));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationD2));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationD));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationC));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationJuly));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationAugust));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC1, TestData.PostingClassificationSeptember));
 
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationC1));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationC2));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationD1));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationD2));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationD));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationC));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationJuly));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationAugust));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD1, vTestData.PostingClassificationSeptember));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationC1));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationC2));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationD1));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationD2));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationD));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationC));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationJuly));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationAugust));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD1, TestData.PostingClassificationSeptember));
 
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationC1));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationC2));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationD1));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationD2));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationD));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationC));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationJuly));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationAugust));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingC2, vTestData.PostingClassificationSeptember));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationC1));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationC2));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationD1));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationD2));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationD));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationC));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationJuly));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationAugust));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingC2, TestData.PostingClassificationSeptember));
 
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationC1));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationC2));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationD1));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationD2));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationD));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationC));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationJuly));
-            Assert.IsTrue(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationAugust));
-            Assert.IsFalse(Sut.DoesPostingMatchClassification(vTestData.PostingD2, vTestData.PostingClassificationSeptember));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationC1));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationC2));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationD1));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationD2));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationD));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationC));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationJuly));
+            Assert.IsTrue(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationAugust));
+            Assert.IsFalse(Sut.DoesPostingMatchClassification(TestData.PostingD2, TestData.PostingClassificationSeptember));
         }
     }
 }

@@ -6,20 +6,20 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingAggregator : IPostingAggregator {
-        private readonly IPostingClassificationFormatter vPostingClassificationFormatter;
-        private readonly IPostingClassificationMatcher vPostingClassificationMatcher;
-        private readonly IFormattedClassificationComparer vFormattedClassificationComparer;
+        private readonly IPostingClassificationFormatter PostingClassificationFormatter;
+        private readonly IPostingClassificationMatcher PostingClassificationMatcher;
+        private readonly IFormattedClassificationComparer FormattedClassificationComparer;
 
         public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher, IFormattedClassificationComparer formattedClassificationComparer) {
-            vPostingClassificationFormatter = postingClassificationFormatter;
-            vPostingClassificationMatcher = postingClassificationMatcher;
-            vFormattedClassificationComparer = formattedClassificationComparer;
+            PostingClassificationFormatter = postingClassificationFormatter;
+            PostingClassificationMatcher = postingClassificationMatcher;
+            FormattedClassificationComparer = formattedClassificationComparer;
         }
 
-        public IDictionary<IFormattedClassification, double> AggregatePostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
-            var result = new Dictionary<IFormattedClassification, double>(vFormattedClassificationComparer);
+        public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
+            var result = new Dictionary<IFormattedClassification, double>(FormattedClassificationComparer);
             foreach (var posting in postings) {
-                var classifications = postingClassifications.Where(c => vPostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+                var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
                 switch (classifications.Count) {
                     case 0 when Math.Abs(posting.Amount) <= 250:
                         continue;
@@ -32,12 +32,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 }
 
                 var classification = classifications[0];
-                var formattedClassification = vPostingClassificationFormatter.Format(classification);
+                var formattedClassification = PostingClassificationFormatter.Format(classification);
                 if (!result.ContainsKey(formattedClassification)) {
                     result[formattedClassification] = 0;
                 }
 
-                result[formattedClassification] = result[formattedClassification] + (classification.IgnoreCredit ? posting.Amount : Math.Abs(posting.Amount));
+                result[formattedClassification] += classification.IgnoreCredit ? posting.Amount : Math.Abs(posting.Amount);
             }
             return result;
         }

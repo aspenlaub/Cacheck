@@ -9,36 +9,36 @@ using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class DataCollector : IDataCollector {
-        private readonly IDataPresenter vDataPresenter;
-        private readonly IPostingCollector vPostingCollector;
-        private readonly ISummaryCalculator vSummaryCalculator;
-        private readonly IAverageCalculator vAverageCalculator;
-        private readonly IMonthlyDeltaCalculator vMonthlyDeltaCalculator;
+        private readonly IDataPresenter DataPresenter;
+        private readonly IPostingCollector PostingCollector;
+        private readonly ISummaryCalculator SummaryCalculator;
+        private readonly IAverageCalculator AverageCalculator;
+        private readonly IMonthlyDeltaCalculator MonthlyDeltaCalculator;
 
         public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator) {
-            vDataPresenter = dataPresenter;
-            vPostingCollector = postingCollector;
-            vSummaryCalculator = summaryCalculator;
-            vAverageCalculator = averageCalculator;
-            vMonthlyDeltaCalculator = monthlyDeltaCalculator;
+            DataPresenter = dataPresenter;
+            PostingCollector = postingCollector;
+            SummaryCalculator = summaryCalculator;
+            AverageCalculator = averageCalculator;
+            MonthlyDeltaCalculator = monthlyDeltaCalculator;
         }
 
         public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
-            var allPostings = await vPostingCollector.CollectPostingsAsync(container, isIntegrationTest);
+            var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest);
 
             var errorsAndInfos = new ErrorsAndInfos();
             var secretRepository = container.Resolve<ISecretRepository>();
             var secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
-                await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
+                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
             var postingClassifications = secret.Cast<IPostingClassification>().ToList();
 
-            await vSummaryCalculator.CalculateAndShowSummaryAsync(container, allPostings, postingClassifications);
-            await vAverageCalculator.CalculateAndShowAverageAsync(container, allPostings, postingClassifications);
-            await vMonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(container, allPostings, postingClassifications);
+            await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
+            await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
+            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     public class CalculatorTestBase {
-        protected PostingTestData TestData = new();
+        protected static readonly PostingTestData TestData = new();
 
         protected IContainer Container;
         protected FakeDataPresenter FakeDataPresenter;

@@ -10,11 +10,11 @@ using Microsoft.Extensions.Logging;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
     public class TashSelectorHandler : TashSelectorHandlerBase<ICacheckApplicationModel> {
         // ReSharper disable once NotAccessedField.Local
-        private readonly ICacheckHandlers vCacheckHandlers;
+        private readonly ICacheckHandlers CacheckHandlers;
 
         public TashSelectorHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger, ITashCommunicator<ICacheckApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors)
                 : base(simpleLogger, tashCommunicator, selectors) {
-            vCacheckHandlers = cudotosiHandlers;
+            CacheckHandlers = cudotosiHandlers;
         }
 
         public override async Task ProcessSelectComboOrResetTaskAsync(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {

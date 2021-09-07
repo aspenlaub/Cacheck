@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Commands;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
@@ -17,17 +16,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
         public ICacheckCommands Commands { get; private set; }
         public ITashHandler<ICacheckApplicationModel> TashHandler { get; private set; }
 
-        private readonly ITashAccessor vTashAccessor;
-        private readonly ISimpleLogger vSimpleLogger;
-        private readonly ILogConfiguration vLogConfiguration;
+        private readonly ITashAccessor TashAccessor;
+        private readonly ISimpleLogger SimpleLogger;
+        private readonly ILogConfiguration LogConfiguration;
 
         public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
             IGuiAndApplicationSynchronizer<ICacheckApplicationModel> guiAndApplicationSynchronizer, ICacheckApplicationModel model,
             ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration
             ) : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
-            vTashAccessor = tashAccessor;
-            vSimpleLogger = simpleLogger;
-            vLogConfiguration = logConfiguration;
+            TashAccessor = tashAccessor;
+            SimpleLogger = simpleLogger;
+            LogConfiguration = logConfiguration;
         }
 
         protected override async Task EnableOrDisableButtonsAsync() {
@@ -40,20 +39,20 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
                 ClassificationSumsHandler = new ClassificationSumsHandler(Model, this),
                 ClassificationAveragesHandler = new ClassificationAveragesHandler(Model, this),
                 MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
-                LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
+                LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log)
             };
             Commands = new CacheckCommands();
 
             var selectors = new Dictionary<string, ISelector>();
 
-            var communicator = new TashCommunicatorBase<ICacheckApplicationModel>(vTashAccessor, vSimpleLogger, vLogConfiguration);
-            var selectorHandler = new TashSelectorHandler(Handlers, vSimpleLogger, communicator, selectors);
-            var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, vSimpleLogger, selectorHandler, communicator, selectors);
-            TashHandler = new TashHandler(vTashAccessor, vSimpleLogger, vLogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+            var communicator = new TashCommunicatorBase<ICacheckApplicationModel>(TashAccessor, SimpleLogger, LogConfiguration);
+            var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
+            var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors);
+            TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
         }
 
         public ITashTaskHandlingStatus<ICacheckApplicationModel> CreateTashTaskHandlingStatus() {
-            return new TashTaskHandlingStatus<ICacheckApplicationModel>(Model, Process.GetCurrentProcess().Id);
+            return new TashTaskHandlingStatus<ICacheckApplicationModel>(Model, System.Environment.ProcessId);
         }
 
         public string GetLogText() {

@@ -8,8 +8,8 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
-    public class TestDataGenerator {
-        public static IList<IPosting> TestPostings = new List<IPosting>() {
+    public static class TestDataGenerator {
+        public static readonly IList<IPosting> TestPostings = new List<IPosting> {
             new Posting { Date = new DateTime(2020, 1, 1), Amount = 1000, Remark = "Credit Pool 1"},
             new Posting { Date = new DateTime(2020, 1, 4), Amount = -300, Remark = "Debit Pool 1"},
             new Posting { Date = new DateTime(2020, 1, 13), Amount = -200, Remark = "Debit Pool 2"},
@@ -28,7 +28,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             new Posting { Date = new DateTime(2020, 4, 30), Amount = -20, Remark = "Debit Pool 3"},
             new Posting { Date = new DateTime(2020, 5, 1), Amount = 1180, Remark = "Credit Pool 1"},
             new Posting { Date = new DateTime(2020, 5, 4), Amount = -400, Remark = "Debit Pool 1"},
-            new Posting { Date = new DateTime(2020, 5, 8), Amount = -200, Remark = "Debit Pool 2"},
+            new Posting { Date = new DateTime(2020, 5, 8), Amount = -200, Remark = "Debit Pool 2"}
         };
 
         public static void CreateTestFiles() {
@@ -46,11 +46,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             if (!postings.Any()) { return; }
 
             var fileName = Folders.IntegrationTestFolder.FullName + @"\Postings_" + year + "_" + month + ".txt";
-            var contents = new List<string>();
-            foreach (var posting in postings) {
-                var s = posting.Date.ToShortDateString() + posting.Remark + posting.Date.ToShortDateString() + posting.Amount;
-                contents.Add(s);
-            }
+            var contents = postings.Select(posting => posting.Date.ToShortDateString() + posting.Remark + posting.Date.ToShortDateString() + posting.Amount).ToList();
             File.WriteAllLines(fileName, contents);
         }
 

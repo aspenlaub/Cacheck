@@ -4,11 +4,11 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
     public class PostingTestData {
-        public IPostingClassification PostingClassificationC1, PostingClassificationC2, PostingClassificationD1, PostingClassificationD2;
-        public IPostingClassification PostingClassificationJuly, PostingClassificationAugust, PostingClassificationSeptember;
-        public IPostingClassification PostingClassificationD, PostingClassificationC;
-        public IPosting PostingC1, PostingD1, PostingC2, PostingD2, PostingC3, PostingD3;
-        public double Amount1 = 10, Amount2 = -20, Amount3 = 30, Amount4 = -40;
+        public readonly IPostingClassification PostingClassificationC1, PostingClassificationC2, PostingClassificationD1, PostingClassificationD2;
+        public readonly IPostingClassification PostingClassificationJuly, PostingClassificationAugust, PostingClassificationSeptember;
+        public readonly IPostingClassification PostingClassificationD, PostingClassificationC;
+        public readonly IPosting PostingC1, PostingD1, PostingC2, PostingD2, PostingC3, PostingD3;
+        public const double Amount1 = 10, Amount2 = -20, Amount3 = 30, Amount4 = -40;
         public DateTime Date1 = new(2021, 7, 9), Date2 = new(2021, 7, 10), Date3 = new(2021, 7, 11), Date4 = new(2021, 8, 11);
 
         public PostingTestData() {

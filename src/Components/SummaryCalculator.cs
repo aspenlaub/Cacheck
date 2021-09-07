@@ -6,38 +6,37 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class SummaryCalculator : ISummaryCalculator {
-        private readonly IDataPresenter vDataPresenter;
-        private readonly IPostingAggregator vPostingAggregator;
+        private readonly IDataPresenter DataPresenter;
+        private readonly IPostingAggregator PostingAggregator;
 
         public SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator) {
-            vDataPresenter = dataPresenter;
-            vPostingAggregator = postingAggregator;
+            DataPresenter = dataPresenter;
+            PostingAggregator = postingAggregator;
         }
 
-        public async Task CalculateAndShowSummaryAsync(IContainer container, IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+        public async Task CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
             var errorsAndInfos = new ErrorsAndInfos();
-            var pureDebitCreditAggregation = vPostingAggregator.AggregatePostings(allPostings, new List<IPostingClassification> {
+            var pureDebitCreditAggregation = PostingAggregator.AggregatePostings(allPostings, new List<IPostingClassification> {
                 new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
                 new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }
             }, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
-                await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
+                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
             var overallSumList = pureDebitCreditAggregation.Select(
                 result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
             ).Cast<ICollectionViewSourceEntity>().ToList();
-            await vDataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
+            await DataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
 
             errorsAndInfos = new ErrorsAndInfos();
-            var detailedAggregation = vPostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
+            var detailedAggregation = PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
-                await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
+                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
@@ -45,7 +44,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 var classificationSumList = detailedAggregation.Select(
                     result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
                 ).Cast<ICollectionViewSourceEntity>().ToList();
-                await vDataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
+                await DataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
             }
         }
     }

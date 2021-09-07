@@ -30,8 +30,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             var expectedPostings = TestDataGenerator.TestPostings;
             var actualPostings = new List<IPosting>();
             var errorsAndInfos = new ErrorsAndInfos();
-            foreach (var file in files) {
-                var postings = reader.ReadPostings(file, errorsAndInfos);
+            foreach (var postings in files.Select(file => reader.ReadPostings(file, errorsAndInfos))) {
                 Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
                 actualPostings.AddRange(postings);
             }

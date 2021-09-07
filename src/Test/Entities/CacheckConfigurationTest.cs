@@ -35,5 +35,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities {
             Assert.IsTrue(secret.Any(s => s.Credit));
             Assert.IsTrue(secret.Any(s => !s.Credit));
         }
+
+        [TestMethod]
+        public async Task CanGetSpecialClues() {
+            var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+            var secretRepository = container.Resolve<ISecretRepository>();
+            var errorsAndInfos = new ErrorsAndInfos();
+            var secret = await secretRepository.GetAsync(new SpecialCluesSecret(), errorsAndInfos);
+            Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+            Assert.IsTrue(secret.Any(), "At least one secret clue was expected");
+        }
     }
 }

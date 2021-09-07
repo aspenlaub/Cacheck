@@ -2,8 +2,8 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
     public interface IPosting {
-        double Amount { get; set; }
-        DateTime Date { get; set; }
-        string Remark { get; set; }
+        double Amount { get; }
+        DateTime Date { get; }
+        string Remark { get; }
     }
 }

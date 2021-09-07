@@ -23,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             return postings;
         }
 
-        private bool TryReadPostings(string line, out IPosting posting) {
+        private static bool TryReadPostings(string line, out IPosting posting) {
             posting = null;
             line = line.Trim();
             if (line.Length < 20) {
@@ -50,7 +50,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return false;
             }
 
-            if (!double.TryParse(line.Substring(datePositions[dates.Count - 1] + 10), out var amount)) {
+            if (!double.TryParse(line[(datePositions[dates.Count - 1] + 10)..], out var amount)) {
                 return false;
             }
 

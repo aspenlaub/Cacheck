@@ -2,9 +2,9 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class FormattedClassification : IFormattedClassification {
-        public string Sign { get; set; }
-        public string Classification { get; set; }
+        public string Sign { get; init; }
+        public string Classification { get; init; }
 
-        public string CombinedClassification { get; set; }
+        public string CombinedClassification { get; init; }
     }
 }

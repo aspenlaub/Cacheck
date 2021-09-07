@@ -4,24 +4,24 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class PostingClassification : IPostingClassification {
         [XmlIgnore]
-        public bool IgnoreCredit { get; set; }
+        public bool IgnoreCredit { get; init; }
 
         [XmlAttribute("credit")]
-        public bool Credit { get; set; }
+        public bool Credit { get; init; }
 
         [XmlAttribute("clue")]
-        public string Clue { get; set;  }
+        public string Clue { get; init;  }
 
         [XmlAttribute("classification")]
-        public string Classification { get; set; }
+        public string Classification { get; init; }
 
         [XmlAttribute("excludefromfaircalculation")]
-        public bool ExcludeFromFairCalculation { get; set; }
+        public bool ExcludeFromFairCalculation { get; init; }
 
         [XmlIgnore]
-        public int Month { get; set; }
+        public int Month { get; init; }
 
         [XmlIgnore]
-        public int Year { get; set; }
+        public int Year { get; init; }
     }
 }

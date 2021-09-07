@@ -17,8 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
 
         [TestMethod]
         public async Task CanCalculateAverage() {
-            await Sut.CalculateAndShowAverageAsync(Container,
-                new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
+            await Sut.CalculateAndShowAverageAsync(new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
                 new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 });
 
             var items = FakeDataPresenter.ClassificationAverages;

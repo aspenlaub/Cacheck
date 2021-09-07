@@ -6,23 +6,23 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
     public class CacheckTextHandler : ISimpleTextHandler {
-        private readonly ICacheckApplicationModel vModel;
-        private readonly IGuiAndAppHandler vGuiAndAppHandler;
-        private readonly Func<ICacheckApplicationModel, ITextBox> vTextBoxGetter;
+        private readonly ICacheckApplicationModel Model;
+        private readonly IGuiAndAppHandler GuiAndAppHandler;
+        private readonly Func<ICacheckApplicationModel, ITextBox> TextBoxGetter;
 
         public CacheckTextHandler(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler, Func<ICacheckApplicationModel, ITextBox> textBoxGetter) {
-            vModel = model;
-            vGuiAndAppHandler = guiAndAppHandler;
-            vTextBoxGetter = textBoxGetter;
+            Model = model;
+            GuiAndAppHandler = guiAndAppHandler;
+            TextBoxGetter = textBoxGetter;
         }
 
         public async Task TextChangedAsync(string text) {
-            var textBox = vTextBoxGetter(vModel);
+            var textBox = TextBoxGetter(Model);
             if (textBox.Text == text) { return; }
 
             textBox.Text = text;
             textBox.Type = StatusType.None;
-            await vGuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+            await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
         }
     }
 }

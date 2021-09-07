@@ -18,8 +18,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
     public partial class CacheckWindow : IDisposable {
         private static IContainer Container { get; set; }
 
-        private CacheckApplication vCacheckApp;
-        private ITashTimer<ICacheckApplicationModel> vTashTimer;
+        private CacheckApplication CacheckApp;
+        private ITashTimer<ICacheckApplicationModel> TashTimer;
 
         public CacheckWindow() {
             InitializeComponent();
@@ -34,33 +34,33 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e) {
-            vCacheckApp = Container.Resolve<CacheckApplication>();
-            await vCacheckApp.OnLoadedAsync();
+            CacheckApp = Container.Resolve<CacheckApplication>();
+            await CacheckApp.OnLoadedAsync();
 
             var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-            guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, items => vCacheckApp.Handlers.OverallSumsHandler.CollectionChangedAsync(items));
-            guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => vCacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
-            guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => vCacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
-            guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => vCacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
-            guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => vCacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
+            guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, items => CacheckApp.Handlers.OverallSumsHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => CacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => CacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => CacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
+            guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => CacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 
-            vTashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), vCacheckApp.TashHandler, guiToAppGate);
-            if (!await vTashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
+            TashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), CacheckApp.TashHandler, guiToAppGate);
+            if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
                 Close();
             }
 
-            vTashTimer.CreateAndStartTimer(vCacheckApp.CreateTashTaskHandlingStatus());
+            TashTimer.CreateAndStartTimer(CacheckApp.CreateTashTaskHandlingStatus());
 
             var dataCollector = Container.Resolve<IDataCollector>();
-            await dataCollector.CollectAndShowAsync(Container, CacheckApp.IsIntegrationTest);
+            await dataCollector.CollectAndShowAsync(Container, Cacheck.CacheckApp.IsIntegrationTest);
         }
 
         public void Dispose() {
-            vTashTimer?.StopTimerAndConfirmDead(false);
+            TashTimer?.StopTimerAndConfirmDead(false);
         }
 
         private void OnClosing(object sender, CancelEventArgs e) {
-            vTashTimer?.StopTimerAndConfirmDead(false);
+            TashTimer?.StopTimerAndConfirmDead(false);
         }
     }
 }

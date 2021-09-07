@@ -15,7 +15,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         protected const double AmountOne = 2470.19, AmountTwo = -1970.24;
         protected const string RemarkOne = "This Is Not A Remark", RemarkTwo = "This Is Not Remarkable";
 
-        protected static string SampleSourceFileName;
+        private static string SampleSourceFileName;
 
         [ClassInitialize]
         public static void Initialize(TestContext context) {

@@ -12,10 +12,10 @@ using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingCollector : IPostingCollector {
-        private readonly IDataPresenter vDataPresenter;
+        private readonly IDataPresenter DataPresenter;
 
         public PostingCollector(IDataPresenter dataPresenter) {
-            vDataPresenter = dataPresenter;
+            DataPresenter = dataPresenter;
         }
 
         public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest) {
@@ -34,14 +34,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             } else {
                 var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
-                    await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                     return allPostings;
                 }
 
                 var resolver = container.Resolve<IFolderResolver>();
                 sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
-                    await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                     return allPostings;
                 }
             }
@@ -49,14 +49,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
             var reader = container.Resolve<ISourceFileReader>();
             foreach (var file in files) {
-                await vDataPresenter.WriteLineAsync($"File: {file}");
+                await DataPresenter.WriteLineAsync($"File: {file}");
                 var postings = reader.ReadPostings(file, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
-                    await vDataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                     return allPostings;
                 }
 
-                await vDataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
+                await DataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
                 allPostings.AddRange(postings);
             }
 
@@ -64,7 +64,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             var maxDate = allPostings.Max(p => p.Date);
             var minDate = new DateTime(maxDate.Year - 1, 1, 1);
-            await vDataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
+            await DataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
             allPostings.RemoveAll(p => p.Date < minDate);
 
             return allPostings;

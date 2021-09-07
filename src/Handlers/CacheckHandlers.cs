@@ -3,10 +3,10 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
     public class CacheckHandlers : ICacheckHandlers {
-        public ISimpleCollectionViewSourceHandler OverallSumsHandler { get; set; }
-        public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; set; }
-        public ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; set; }
-        public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; set; }
-        public ISimpleTextHandler LogTextHandler { get; set; }
+        public ISimpleCollectionViewSourceHandler OverallSumsHandler { get; init; }
+        public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; init; }
+        public ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; init; }
+        public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; init; }
+        public ISimpleTextHandler LogTextHandler { get; init; }
     }
 }

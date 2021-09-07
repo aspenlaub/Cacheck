@@ -246,3 +246,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /Backbend.nuspec
+
+# Rider
+src/.idea/**

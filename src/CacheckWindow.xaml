@@ -25,9 +25,9 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <TabControl x:Name="CacheckTabControl" Grid.Column="0" Grid.Row="0">
-            <TabItem x:Name="SummaryTab" Header="Summary" Padding="60,5,60,5">
-                <Grid x:Name="SummaryTabSheet">
+        <TabControl Grid.Column="0" Grid.Row="0">
+            <TabItem Header="Summary" Padding="60,5,60,5">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="80"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
@@ -50,7 +50,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="AverageTab" Header="Average" Padding="60,5,60,5">
+            <TabItem Header="Average" Padding="60,5,60,5">
                 <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
                     Name="ClassificationAverages" ItemsSource="{Binding Source={StaticResource ClassificationAverages}}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
@@ -62,7 +62,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
-            <TabItem x:Name="MonthlyDeltaTab" Header="Monthly Delta" Padding="60,5,60,5">
+            <TabItem Header="Monthly Delta" Padding="60,5,60,5">
                 <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
                           Name="MonthlyDeltas" ItemsSource="{Binding Source={StaticResource MonthlyDeltas}}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
@@ -73,8 +73,8 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
-            <TabItem x:Name="LogTab" Header="Log" Padding="60,5,60,5">
-                <Grid x:Name="LogTabSheet">
+            <TabItem Header="Log" Padding="60,5,60,5">
+                <Grid>
                     <TextBox Grid.Column="0" Grid.Row="0" Name="Log" FontFamily="Courier New" Background="LightGoldenrodYellow" Padding="5"/>
                 </Grid>
             </TabItem>

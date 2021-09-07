@@ -4,17 +4,17 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     public class FakeDataPresenter : IDataPresenter {
-        private readonly FakeCacheckHandlers vFakeCacheckHandlers;
+        private readonly FakeCacheckHandlers FakeCacheckHandlers;
 
-        public ICacheckHandlers Handlers => vFakeCacheckHandlers;
+        public ICacheckHandlers Handlers => FakeCacheckHandlers;
 
-        public List<ITypeItemSum> OverallSums => vFakeCacheckHandlers.OverallSums;
-        public List<ITypeItemSum> ClassificationSums => vFakeCacheckHandlers.ClassificationSums;
-        public List<ITypeItemSum> ClassificationAverages => vFakeCacheckHandlers.ClassificationAverages;
-        public List<ITypeMonthDelta> MonthlyDeltas => vFakeCacheckHandlers.MonthlyDeltas;
+        public List<ITypeItemSum> OverallSums => FakeCacheckHandlers.OverallSums;
+        public List<ITypeItemSum> ClassificationSums => FakeCacheckHandlers.ClassificationSums;
+        public List<ITypeItemSum> ClassificationAverages => FakeCacheckHandlers.ClassificationAverages;
+        public List<ITypeMonthDelta> MonthlyDeltas => FakeCacheckHandlers.MonthlyDeltas;
 
         public FakeDataPresenter(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
-            vFakeCacheckHandlers = new FakeCacheckHandlers(model, guiAndAppHandler);
+            FakeCacheckHandlers = new FakeCacheckHandlers(model, guiAndAppHandler);
         }
 
         public string GetLogText() {

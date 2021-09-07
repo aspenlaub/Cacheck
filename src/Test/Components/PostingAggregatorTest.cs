@@ -10,9 +10,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
     [TestClass]
     public class PostingAggregatorTest {
-        private readonly PostingTestData vTestData = new();
+        private readonly PostingTestData TestData = new();
 
-        protected static IPostingAggregator Sut;
+        private static IPostingAggregator Sut;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
@@ -22,44 +22,44 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         [TestMethod]
         public void ErrorIfSeveralCluesMatch() {
             var errorsAndInfos = new ErrorsAndInfos();
-            Sut.AggregatePostings(new List<IPosting> { vTestData.PostingC1 }, new List<IPostingClassification> { vTestData.PostingClassificationC1, vTestData.PostingClassificationC2 }, errorsAndInfos);
+            Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2 }, errorsAndInfos);
             Assert.IsTrue(errorsAndInfos.Errors.Any(e => e.Contains("'24'") && e.Contains("'47'")));
         }
 
         [TestMethod]
         public void CanAggregateSinglePosting() {
             var errorsAndInfos = new ErrorsAndInfos();
-            var result = Sut.AggregatePostings(new List<IPosting> { vTestData.PostingC1 }, new List<IPostingClassification> { vTestData.PostingClassificationC1 }, errorsAndInfos);
+            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1 }, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(1, result.Count);
-            var key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == vTestData.PostingClassificationC1.Classification);
+            var key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == TestData.PostingClassificationC1.Classification);
             Assert.IsNotNull(key);
-            Assert.AreEqual(vTestData.PostingC1.Amount, result[key]);
+            Assert.AreEqual(TestData.PostingC1.Amount, result[key]);
         }
 
         [TestMethod]
         public void DebitCreditIsRespectedWhenAggregatingSinglePosting() {
             var errorsAndInfos = new ErrorsAndInfos();
-            var result = Sut.AggregatePostings(new List<IPosting> { vTestData.PostingC1 }, new List<IPostingClassification> { vTestData.PostingClassificationC1, vTestData.PostingClassificationD2 }, errorsAndInfos);
+            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationD2 }, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(1, result.Count);
-            var key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == vTestData.PostingClassificationC1.Classification);
+            var key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == TestData.PostingClassificationC1.Classification);
             Assert.IsNotNull(key);
-            Assert.AreEqual(vTestData.PostingC1.Amount, result[key]);
+            Assert.AreEqual(TestData.PostingC1.Amount, result[key]);
         }
 
         [TestMethod]
         public void CanDoPureDebitCreditAggregation() {
             var errorsAndInfos = new ErrorsAndInfos();
-            var result = Sut.AggregatePostings(new List<IPosting> { vTestData.PostingC1, vTestData.PostingD1, vTestData.PostingC2, vTestData.PostingD2 }, new List<IPostingClassification> { vTestData.PostingClassificationD, vTestData.PostingClassificationC }, errorsAndInfos);
+            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 }, new List<IPostingClassification> { TestData.PostingClassificationD, TestData.PostingClassificationC }, errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(2, result.Count);
-            var key = result.Keys.FirstOrDefault(x => x.Sign == "-" && x.Classification == vTestData.PostingClassificationD.Classification);
+            var key = result.Keys.FirstOrDefault(x => x.Sign == "-" && x.Classification == TestData.PostingClassificationD.Classification);
             Assert.IsNotNull(key);
-            Assert.AreEqual(-(vTestData.PostingD1.Amount + vTestData.PostingD2.Amount), result[key]);
-            key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == vTestData.PostingClassificationC.Classification);
+            Assert.AreEqual(-(TestData.PostingD1.Amount + TestData.PostingD2.Amount), result[key]);
+            key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == TestData.PostingClassificationC.Classification);
             Assert.IsNotNull(key);
-            Assert.AreEqual(vTestData.PostingC1.Amount + vTestData.PostingC2.Amount, result[key]);
+            Assert.AreEqual(TestData.PostingC1.Amount + TestData.PostingC2.Amount, result[key]);
         }
     }
 }
