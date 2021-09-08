@@ -18,11 +18,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         }
 
         public async Task CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+            var specialClues = new List<ISpecialClue>();
             var errorsAndInfos = new ErrorsAndInfos();
             var pureDebitCreditAggregation = PostingAggregator.AggregatePostings(allPostings, new List<IPostingClassification> {
                 new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
                 new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }
-            }, errorsAndInfos);
+            }, specialClues, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
@@ -34,7 +35,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await DataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
 
             errorsAndInfos = new ErrorsAndInfos();
-            var detailedAggregation = PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
+            var detailedAggregation = PostingAggregator.AggregatePostings(allPostings, postingClassifications, specialClues, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;

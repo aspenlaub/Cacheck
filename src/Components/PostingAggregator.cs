@@ -9,17 +9,23 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         private readonly IPostingClassificationFormatter PostingClassificationFormatter;
         private readonly IPostingClassificationMatcher PostingClassificationMatcher;
         private readonly IFormattedClassificationComparer FormattedClassificationComparer;
+        // private readonly ISpecialClueMatcher SpecialClueMatcher;
 
-        public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher, IFormattedClassificationComparer formattedClassificationComparer) {
+        public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher,
+            // ReSharper disable once UnusedParameter.Local
+            IFormattedClassificationComparer formattedClassificationComparer, ISpecialClueMatcher specialClueMatcher) {
             PostingClassificationFormatter = postingClassificationFormatter;
             PostingClassificationMatcher = postingClassificationMatcher;
             FormattedClassificationComparer = formattedClassificationComparer;
+            // SpecialClueMatcher = specialClueMatcher;
         }
 
-        public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings, IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
+        public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings,
+                IList<IPostingClassification> postingClassifications, IList<ISpecialClue> specialClues, IErrorsAndInfos errorsAndInfos) {
             var result = new Dictionary<IFormattedClassification, double>(FormattedClassificationComparer);
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+                // var postingSpecialClues = specialClues.Where(c => SpecialClueMatcher.DoesPostingMatchSpecialClue(posting, c)).ToList();
                 switch (classifications.Count) {
                     case 0 when Math.Abs(posting.Amount) <= 250:
                         continue;
@@ -27,7 +33,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                         errorsAndInfos.Infos.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
                         continue;
                     case > 1 when posting.Amount != 0:
-                        errorsAndInfos.Errors.Add($"Classification of '{posting.Remark}' is ambiguous between '{classifications[0].Clue}' and '{classifications[1].Clue}'");
+                        var combinedClassification0 = PostingClassificationFormatter.Format(classifications[0]).CombinedClassification;
+                        var combinedClassification1 = PostingClassificationFormatter.Format(classifications[1]).CombinedClassification;
+                        errorsAndInfos.Errors.Add($"Classification of '{posting.Remark}' is ambiguous between '{combinedClassification0}' and '{combinedClassification1}'");
                         break;
                 }
 

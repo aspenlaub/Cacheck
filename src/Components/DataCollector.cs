@@ -28,17 +28,26 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             var errorsAndInfos = new ErrorsAndInfos();
             var secretRepository = container.Resolve<ISecretRepository>();
-            var secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+
+            var postingClassificationsSecret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
-            var postingClassifications = secret.Cast<IPostingClassification>().ToList();
+            var postingClassifications = postingClassificationsSecret.Cast<IPostingClassification>().ToList();
+
+            var specialCluesSecret = await secretRepository.GetAsync(new SpecialCluesSecret(), errorsAndInfos);
+            if (errorsAndInfos.AnyErrors()) {
+                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                return;
+            }
+
+            var specialClues = specialCluesSecret.Cast<ISpecialClue>().ToList();
 
             await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
             await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
-            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
+            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications, specialClues);
         }
     }
 }

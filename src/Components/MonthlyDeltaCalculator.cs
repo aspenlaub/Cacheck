@@ -20,7 +20,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             PostingClassificationMatcher = postingClassificationMatcher;
         }
 
-        public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+        public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications, IList<ISpecialClue> specialClues) {
             var minYear = allPostings.Min(p => p.Date.Year);
             var years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
             var monthsClassifications = new List<IPostingClassification>();
@@ -34,14 +34,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             }
 
             var errorsAndInfos = new ErrorsAndInfos();
-            var monthlyDeltas = PostingAggregator.AggregatePostings(allPostings, monthsClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
+            var monthlyDeltas = PostingAggregator.AggregatePostings(allPostings, monthsClassifications, specialClues, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
+            // TODO: calculate in a new way
             var fairPostings = allPostings.Where(p => postingClassifications.All(c => !c.ExcludeFromFairCalculation || !PostingClassificationMatcher.DoesPostingMatchClassification(p, c))).ToList();
-            var fairMonthlyDeltas = PostingAggregator.AggregatePostings(fairPostings, monthsClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
+            var fairMonthlyDeltas = PostingAggregator.AggregatePostings(fairPostings, monthsClassifications, specialClues, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;

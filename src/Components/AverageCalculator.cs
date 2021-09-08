@@ -18,8 +18,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         }
 
         public async Task CalculateAndShowAverageAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+            var specialClues = new List<ISpecialClue>();
             var errorsAndInfos = new ErrorsAndInfos();
-            var detailedAggregation = PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
+            var detailedAggregation = PostingAggregator.AggregatePostings(allPostings, postingClassifications, specialClues, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
@@ -27,14 +28,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             var thisYear = allPostings.Max(p => p.Date.Year);
             var lastYearsPostings = allPostings.Where(p => p.Date.Year < thisYear).ToList();
-            var lastYearsDetailedAggregation = PostingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos).ToList();
+            var lastYearsDetailedAggregation = PostingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, specialClues, errorsAndInfos).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;
             }
 
             var thisYearsPostings = allPostings.Where(p => p.Date.Year == thisYear).ToList();
-            var thisYearsDetailedAggregation = PostingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos).ToList();
+            var thisYearsDetailedAggregation = PostingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, specialClues, errorsAndInfos).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;

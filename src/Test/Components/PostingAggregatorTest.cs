@@ -16,20 +16,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
-            Sut = new PostingAggregator(new PostingClassificationFormatter(), new PostingClassificationMatcher(), new FormattedClassificationComparer());
+            Sut = new PostingAggregator(new PostingClassificationFormatter(), new PostingClassificationMatcher(), new FormattedClassificationComparer(), new SpecialClueMatcher());
         }
 
         [TestMethod]
         public void ErrorIfSeveralCluesMatch() {
             var errorsAndInfos = new ErrorsAndInfos();
-            Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2 }, errorsAndInfos);
-            Assert.IsTrue(errorsAndInfos.Errors.Any(e => e.Contains("'24'") && e.Contains("'47'")));
+            Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2 },
+                new List<ISpecialClue>(), errorsAndInfos);
+            Assert.IsTrue(errorsAndInfos.Errors.Any(e => e.Contains("'(+) 2407'") && e.Contains("'(+) 4711'")));
         }
 
         [TestMethod]
         public void CanAggregateSinglePosting() {
             var errorsAndInfos = new ErrorsAndInfos();
-            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1 }, errorsAndInfos);
+            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1 },
+                new List<ISpecialClue>(), errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(1, result.Count);
             var key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == TestData.PostingClassificationC1.Classification);
@@ -40,7 +42,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         [TestMethod]
         public void DebitCreditIsRespectedWhenAggregatingSinglePosting() {
             var errorsAndInfos = new ErrorsAndInfos();
-            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationD2 }, errorsAndInfos);
+            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1 }, new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationD2 },
+                new List<ISpecialClue>(), errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(1, result.Count);
             var key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == TestData.PostingClassificationC1.Classification);
@@ -51,7 +54,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         [TestMethod]
         public void CanDoPureDebitCreditAggregation() {
             var errorsAndInfos = new ErrorsAndInfos();
-            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 }, new List<IPostingClassification> { TestData.PostingClassificationD, TestData.PostingClassificationC }, errorsAndInfos);
+            var result = Sut.AggregatePostings(new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 },
+                new List<IPostingClassification> { TestData.PostingClassificationD, TestData.PostingClassificationC },
+                new List<ISpecialClue>(), errorsAndInfos);
             Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
             Assert.AreEqual(2, result.Count);
             var key = result.Keys.FirstOrDefault(x => x.Sign == "-" && x.Classification == TestData.PostingClassificationD.Classification);
