@@ -1,11 +1,19 @@
 ﻿using System;
+using System.Xml.Serialization;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class PostingAdjustment : IPostingAdjustment, IEquatable<PostingAdjustment> {
+        [XmlAttribute("date")]
         public DateTime Date { get; init; }
+
+        [XmlAttribute("clue")]
         public string Clue { get; init; }
+
+        [XmlAttribute("amount")]
         public double Amount { get; init; }
+
+        [XmlElement("adjustedamount")]
         public double AdjustedAmount { get; init; }
 
         public PostingAdjustment() {}
