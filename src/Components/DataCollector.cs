@@ -24,18 +24,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         }
 
         public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
-            var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest);
-
             var errorsAndInfos = new ErrorsAndInfos();
             var secretRepository = container.Resolve<ISecretRepository>();
-
-            var postingClassificationsSecret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
-                return;
-            }
-
-            var postingClassifications = postingClassificationsSecret.Cast<IPostingClassification>().ToList();
 
             var specialCluesSecret = await secretRepository.GetAsync(new SpecialCluesSecret(), errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
@@ -44,6 +34,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             }
 
             var specialClues = specialCluesSecret.Cast<ISpecialClue>().ToList();
+
+            var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest, specialClues);
+
+            var postingClassificationsSecret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+            if (errorsAndInfos.AnyErrors()) {
+                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                return;
+            }
+
+            var postingClassifications = postingClassificationsSecret.Cast<IPostingClassification>().ToList();
 
             await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
             await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);

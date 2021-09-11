@@ -28,6 +28,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
             builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
             builder.RegisterType<PostingCollector>().As<IPostingCollector>();
+            builder.RegisterType<PostingsRequiringAdjustmentCollector>().As<IPostingsRequiringAdjustmentCollector>();
             builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
             builder.RegisterType<SpecialClueMatcher>().As<ISpecialClueMatcher>();
             builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();

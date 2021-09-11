@@ -14,13 +14,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingCollector : IPostingCollector {
         private readonly IDataPresenter DataPresenter;
         private readonly IPostingAdjustmentsRepository PostingAdjustmentsRepository;
+        private readonly IPostingsRequiringAdjustmentCollector PostingsRequiringAdjustmentCollector;
 
-        public PostingCollector(IDataPresenter dataPresenter, IPostingAdjustmentsRepository postingAdjustmentsRepository) {
+        public PostingCollector(IDataPresenter dataPresenter, IPostingAdjustmentsRepository postingAdjustmentsRepository,
+                IPostingsRequiringAdjustmentCollector postingsRequiringAdjustmentCollector) {
             DataPresenter = dataPresenter;
             PostingAdjustmentsRepository = postingAdjustmentsRepository;
+            PostingsRequiringAdjustmentCollector = postingsRequiringAdjustmentCollector;
         }
 
-        public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest) {
+        public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest, IEnumerable<ISpecialClue> specialClues) {
             if (container == null) {
                 throw new ArgumentNullException(nameof(container));
             }
@@ -69,7 +72,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await DataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
             allPostings.RemoveAll(p => p.Date < minDate);
 
-            var postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder);
+            var postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
+            postingAdjustments.AddRange(PostingsRequiringAdjustmentCollector.FindNewPostingsRequiringAdjustment(allPostings, postingAdjustments, specialClues));
             PostingAdjustmentsRepository.SaveAdjustments(sourceFolder, postingAdjustments);
             return allPostings;
         }
