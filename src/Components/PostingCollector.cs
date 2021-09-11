@@ -13,9 +13,11 @@ using Autofac;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingCollector : IPostingCollector {
         private readonly IDataPresenter DataPresenter;
+        private readonly IPostingAdjustmentsRepository PostingAdjustmentsRepository;
 
-        public PostingCollector(IDataPresenter dataPresenter) {
+        public PostingCollector(IDataPresenter dataPresenter, IPostingAdjustmentsRepository postingAdjustmentsRepository) {
             DataPresenter = dataPresenter;
+            PostingAdjustmentsRepository = postingAdjustmentsRepository;
         }
 
         public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest) {
@@ -67,6 +69,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await DataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
             allPostings.RemoveAll(p => p.Date < minDate);
 
+            var postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder);
+            PostingAdjustmentsRepository.SaveAdjustments(sourceFolder, postingAdjustments);
             return allPostings;
         }
     }

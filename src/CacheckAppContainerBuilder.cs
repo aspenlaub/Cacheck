@@ -24,6 +24,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
             builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
             builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
+            builder.RegisterType<PostingAdjustmentsRepository>().As<IPostingAdjustmentsRepository>();
             builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
             builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
             builder.RegisterType<PostingCollector>().As<IPostingCollector>();
