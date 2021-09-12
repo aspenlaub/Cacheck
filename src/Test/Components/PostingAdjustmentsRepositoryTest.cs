@@ -62,7 +62,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             };
             Sut.SaveAdjustments(SourceFolder, adjustments);
             var loadedAdjustments = Sut.LoadAdjustments(SourceFolder);
-            adjustments = adjustments.OrderBy(a => a.Date).ThenBy(a => a.Clue).ToList();
+            adjustments = adjustments.OrderByDescending(a => a.Date).ToList();
             Assert.IsTrue(Enumerable.SequenceEqual(adjustments, loadedAdjustments));
         }
 

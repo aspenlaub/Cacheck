@@ -70,6 +70,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
             postingAdjustments.AddRange(PostingsRequiringAdjustmentCollector.FindNewPostingsRequiringAdjustment(allPostings, postingAdjustments, specialClues));
             PostingAdjustmentsRepository.SaveAdjustments(sourceFolder, postingAdjustments);
+            postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
             return postingAdjustments;
         }
 

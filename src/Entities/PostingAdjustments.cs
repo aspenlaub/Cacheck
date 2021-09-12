@@ -9,7 +9,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         public PostingAdjustments() {
         }
 
-        public PostingAdjustments(IList<IPostingAdjustment> adjustments) : base(adjustments.Select(p => new PostingAdjustment(p)).OrderBy(a => a.Date).ThenBy(a => a.Clue).ToList()) {
+        public PostingAdjustments(IList<IPostingAdjustment> adjustments) : base(adjustments.Select(p => new PostingAdjustment(p)).OrderByDescending(a => a.Date).ToList()) {
         }
     }
 }
