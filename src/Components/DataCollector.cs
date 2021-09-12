@@ -5,7 +5,9 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
+using IContainer = Autofac.IContainer;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class DataCollector : IDataCollector {
@@ -48,6 +50,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
             await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
             await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications, specialClues);
+
+            var postingAdjustments = await PostingCollector.GetPostingAdjustmentsAsync(container, isIntegrationTest, allPostings, specialClues);
+            await DataPresenter.Handlers.PostingAdjustmentsHandler.CollectionChangedAsync(postingAdjustments.OfType<ICollectionViewSourceEntity>().ToList());
         }
     }
 }

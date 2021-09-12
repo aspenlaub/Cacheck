@@ -7,6 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
         public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; init; }
         public ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; init; }
         public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; init; }
+        public ISimpleCollectionViewSourceHandler PostingAdjustmentsHandler { get; init; }
         public ISimpleTextHandler LogTextHandler { get; init; }
     }
 }

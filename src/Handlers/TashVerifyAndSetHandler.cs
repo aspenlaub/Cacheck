@@ -33,7 +33,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
                 { nameof(status.Model.OverallSums), CacheckHandlers.OverallSumsHandler},
                 { nameof(status.Model.ClassificationSums), CacheckHandlers.ClassificationSumsHandler},
                 { nameof(status.Model.ClassificationAverages), CacheckHandlers.ClassificationAveragesHandler},
-                { nameof(status.Model.MonthlyDeltas), CacheckHandlers.MonthlyDeltasHandler}
+                { nameof(status.Model.MonthlyDeltas), CacheckHandlers.MonthlyDeltasHandler},
+                { nameof(status.Model.PostingAdjustments), CacheckHandlers.PostingAdjustmentsHandler},
             };
         }
 
@@ -42,7 +43,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
                 { nameof(status.Model.OverallSums), status.Model.OverallSums },
                 { nameof(status.Model.ClassificationSums), status.Model.ClassificationSums },
                 { nameof(status.Model.ClassificationAverages), status.Model.ClassificationAverages },
-                { nameof(status.Model.MonthlyDeltas), status.Model.MonthlyDeltas }
+                { nameof(status.Model.MonthlyDeltas), status.Model.MonthlyDeltas },
+                { nameof(status.Model.PostingAdjustments), status.Model.PostingAdjustments },
             };
         }
     }

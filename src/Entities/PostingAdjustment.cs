@@ -4,6 +4,9 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class PostingAdjustment : IPostingAdjustment, IEquatable<PostingAdjustment> {
+        [XmlIgnore]
+        public string Guid { get; set; } = System.Guid.NewGuid().ToString();
+
         [XmlAttribute("date")]
         public DateTime Date { get; init; }
 
@@ -15,6 +18,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
 
         [XmlElement("adjustedamount")]
         public double AdjustedAmount { get; init; }
+
+        [XmlIgnore]
+        public string FormattedDate => $"{Date.Day:D2}.{Date.Month:D2}.{Date.Year}";
 
         public PostingAdjustment() {}
 

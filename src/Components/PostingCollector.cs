@@ -30,31 +30,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             var allPostings = new List<IPosting>();
 
-            IFolder sourceFolder;
-            var errorsAndInfos = new ErrorsAndInfos();
-            var secretRepository = container.Resolve<ISecretRepository>();
-
-            if (isIntegrationTest) {
-                sourceFolder = Folders.IntegrationTestFolder;
-            } else {
-                var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
-                if (errorsAndInfos.AnyErrors()) {
-                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
-                    return allPostings;
-                }
-
-                var resolver = container.Resolve<IFolderResolver>();
-                sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
-                if (errorsAndInfos.AnyErrors()) {
-                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
-                    return allPostings;
-                }
-            }
+            var sourceFolder = await GetSourceFolderAsync(container, isIntegrationTest);
+            if (sourceFolder == null) { return allPostings; }
 
             var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
             var reader = container.Resolve<ISourceFileReader>();
             foreach (var file in files) {
                 await DataPresenter.WriteLineAsync($"File: {file}");
+                var errorsAndInfos = new ErrorsAndInfos();
                 var postings = reader.ReadPostings(file, errorsAndInfos);
                 if (errorsAndInfos.AnyErrors()) {
                     await DataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -72,10 +55,49 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await DataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
             allPostings.RemoveAll(p => p.Date < minDate);
 
-            var postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
+            return allPostings;
+        }
+
+        public async Task<IList<IPostingAdjustment>> GetPostingAdjustmentsAsync(IContainer container, bool isIntegrationTest, IList<IPosting> allPostings, IEnumerable<ISpecialClue> specialClues) {
+            if (container == null) {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            var postingAdjustments = new List<IPostingAdjustment>();
+            var sourceFolder = await GetSourceFolderAsync(container, isIntegrationTest);
+            if (sourceFolder == null) { return postingAdjustments; }
+
+            postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
             postingAdjustments.AddRange(PostingsRequiringAdjustmentCollector.FindNewPostingsRequiringAdjustment(allPostings, postingAdjustments, specialClues));
             PostingAdjustmentsRepository.SaveAdjustments(sourceFolder, postingAdjustments);
-            return allPostings;
+            return postingAdjustments;
+        }
+
+        private async Task<IFolder> GetSourceFolderAsync(IComponentContext container, bool isIntegrationTest) {
+            IFolder sourceFolder;
+            var errorsAndInfos = new ErrorsAndInfos();
+            var secretRepository = container.Resolve<ISecretRepository>();
+
+            if (isIntegrationTest) {
+                sourceFolder = Folders.IntegrationTestFolder;
+            } else {
+                var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
+                if (errorsAndInfos.AnyErrors()) {
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    return null;
+                }
+
+                var resolver = container.Resolve<IFolderResolver>();
+                sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
+                if (!errorsAndInfos.AnyErrors()) {
+                    return sourceFolder;
+                }
+
+                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                return null;
+            }
+
+            return sourceFolder;
         }
     }
 }
