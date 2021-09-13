@@ -30,6 +30,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             Assert.AreEqual(clues[1].Clue, newAdjustments[0].Clue);
             adjustments.AddRange(newAdjustments);
             Assert.IsFalse(sut.FindNewPostingsRequiringAdjustment(postings, adjustments, clues).Any());
+            sut.AssignReferenceToAdjustments(postings, adjustments, clues);
+            Assert.AreEqual(postings[0].Guid, adjustments[0].Reference);
         }
 
         private IPosting CreatePosting(string remark, DateTime date, double amount) {

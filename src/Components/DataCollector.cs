@@ -49,9 +49,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
             await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
-            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications, specialClues);
 
             var postingAdjustments = await PostingCollector.GetPostingAdjustmentsAsync(container, isIntegrationTest, allPostings, specialClues);
+
+            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications, specialClues, postingAdjustments);
             await DataPresenter.Handlers.PostingAdjustmentsHandler.CollectionChangedAsync(postingAdjustments.OfType<ICollectionViewSourceEntity>().ToList());
         }
     }

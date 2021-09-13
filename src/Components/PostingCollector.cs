@@ -58,7 +58,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             return allPostings;
         }
 
-        public async Task<IList<IPostingAdjustment>> GetPostingAdjustmentsAsync(IContainer container, bool isIntegrationTest, IList<IPosting> allPostings, IEnumerable<ISpecialClue> specialClues) {
+        public async Task<IList<IPostingAdjustment>> GetPostingAdjustmentsAsync(IContainer container, bool isIntegrationTest, IList<IPosting> allPostings, IList<ISpecialClue> specialClues) {
             if (container == null) {
                 throw new ArgumentNullException(nameof(container));
             }
@@ -71,6 +71,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             postingAdjustments.AddRange(PostingsRequiringAdjustmentCollector.FindNewPostingsRequiringAdjustment(allPostings, postingAdjustments, specialClues));
             PostingAdjustmentsRepository.SaveAdjustments(sourceFolder, postingAdjustments);
             postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
+            PostingsRequiringAdjustmentCollector.AssignReferenceToAdjustments(allPostings, postingAdjustments, specialClues);
             return postingAdjustments;
         }
 

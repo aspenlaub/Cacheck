@@ -12,15 +12,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
         private readonly IDataPresenter DataPresenter;
         private readonly IPostingAggregator PostingAggregator;
-        private readonly IPostingClassificationMatcher PostingClassificationMatcher;
 
-        public MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator, IPostingClassificationMatcher postingClassificationMatcher) {
+        public MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator) {
             DataPresenter = dataPresenter;
             PostingAggregator = postingAggregator;
-            PostingClassificationMatcher = postingClassificationMatcher;
         }
 
-        public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications, IList<ISpecialClue> specialClues) {
+        public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
+                IList<ISpecialClue> specialClues, IList<IPostingAdjustment> postingAdjustments) {
             var minYear = allPostings.Min(p => p.Date.Year);
             var years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
             var monthsClassifications = new List<IPostingClassification>();
@@ -40,9 +39,34 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return;
             }
 
-            // TODO: calculate in a new way
-            var fairPostings = allPostings.Where(p => postingClassifications.All(c => !c.ExcludeFromFairCalculation || !PostingClassificationMatcher.DoesPostingMatchClassification(p, c))).ToList();
-            var fairMonthlyDeltas = PostingAggregator.AggregatePostings(fairPostings, monthsClassifications, specialClues, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
+            foreach (var postingAdjustment in postingAdjustments.Where(p => Math.Abs(p.Amount - p.AdjustedAmount) > 0.005)) {
+                if (string.IsNullOrEmpty(postingAdjustment.Reference)) {
+                    errorsAndInfos.Errors.Add($"Adjustment on {postingAdjustment.Date} with amount {postingAdjustment.Amount} does not have a reference");
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    return;
+                }
+
+                var postingAndIndex = allPostings
+                    .Select((p, i) => (p, i))
+                    .FirstOrDefault(x => x.p.Guid == postingAdjustment.Reference);
+                var posting = postingAndIndex.p;
+                if (postingAndIndex.p == null) {
+                    errorsAndInfos.Errors.Add($"Adjustment reference {postingAdjustment.Reference} not found");
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    return;
+                }
+
+                if (Math.Abs(posting.Amount - postingAdjustment.Amount) > 0.005) {
+                    errorsAndInfos.Errors.Add($"Adjustment reference {postingAdjustment.Reference} suggests amount {posting.Amount}, registered is {postingAdjustment.Amount}");
+                    await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                    return;
+                }
+
+                allPostings[postingAndIndex.i] = new Posting {
+                    Date = posting.Date, Remark = posting.Remark, Amount = postingAdjustment.AdjustedAmount
+                };
+            }
+            var fairMonthlyDeltas = PostingAggregator.AggregatePostings(allPostings, monthsClassifications, specialClues, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
             if (errorsAndInfos.AnyErrors()) {
                 await DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return;

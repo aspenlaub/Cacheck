@@ -6,6 +6,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
         DateTime Date { get; }
         string Clue { get; }
         double Amount { get; }
+        string Reference { get; set; }
         double AdjustedAmount { get; }
     }
 }

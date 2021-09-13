@@ -25,7 +25,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var result = new Dictionary<IFormattedClassification, double>(FormattedClassificationComparer);
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
-                // var postingSpecialClues = specialClues.Where(c => SpecialClueMatcher.DoesPostingMatchSpecialClue(posting, c)).ToList();
                 switch (classifications.Count) {
                     case 0 when Math.Abs(posting.Amount) <= 250:
                         continue;

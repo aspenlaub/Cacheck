@@ -16,6 +16,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         [XmlAttribute("amount")]
         public double Amount { get; init; }
 
+        [XmlIgnore]
+        public string Reference { get; set; }
+
         [XmlElement("adjustedamount")]
         public double AdjustedAmount { get; init; }
 
@@ -29,6 +32,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
             Clue = postingAdjustment.Clue;
             Amount = postingAdjustment.Amount;
             AdjustedAmount = postingAdjustment.AdjustedAmount;
+            Reference = postingAdjustment.Reference;
         }
 
         public bool Equals(PostingAdjustment other) {

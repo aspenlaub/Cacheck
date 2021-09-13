@@ -11,6 +11,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
         public const double Amount1 = 10, Amount2 = -20, Amount3 = 30, Amount4 = -40;
         public DateTime Date1 = new(2021, 7, 9), Date2 = new(2021, 7, 10), Date3 = new(2021, 7, 11), Date4 = new(2021, 8, 11);
         public readonly ISpecialClue SpecialClue;
+        public readonly IPostingAdjustment PostingAdjustment;
 
         public PostingTestData() {
             PostingClassificationC1 = new PostingClassification { Credit = true, Clue = "47", Classification = "4711" };
@@ -20,7 +21,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             PostingClassificationD = new PostingClassification { Credit = false, Clue = "", Classification = "Debit" };
             PostingClassificationC = new PostingClassification { Credit = true, Clue = "", Classification = "Credit" };
             PostingClassificationJuly = new PostingClassification { IgnoreCredit = true, Month = 7, Year = 2021 };
-            PostingClassificationAugust = new PostingClassification { IgnoreCredit = true, Month = 8, Year = 2021, ExcludeFromFairCalculation = true };
+            PostingClassificationAugust = new PostingClassification { IgnoreCredit = true, Month = 8, Year = 2021 };
             PostingClassificationSeptember = new PostingClassification { IgnoreCredit = true, Month = 9, Year = 2021 };
 
             PostingC1 = new Posting { Date = Date1, Amount = Amount1, Remark = "24789" };
@@ -34,6 +35,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data {
             SpecialPostingD = new Posting { Date = Date2, Amount = Amount2, Remark = "7 Special" };
 
             SpecialClue = new SpecialClue { Clue = "Special" };
+
+            PostingAdjustment = new PostingAdjustment {
+                Date = Date4, Clue = "Special 24", Amount = Amount4, AdjustedAmount = 0, Reference = PostingD2.Guid
+            };
         }
     }
 }
