@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
-    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.854.601" />
+    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.901.1136" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Test\Cacheck.Test.csproj" />
