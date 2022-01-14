@@ -16,13 +16,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         private readonly ISummaryCalculator SummaryCalculator;
         private readonly IAverageCalculator AverageCalculator;
         private readonly IMonthlyDeltaCalculator MonthlyDeltaCalculator;
+        private readonly IClassifiedPostingsCalculator ClassifiedPostingsCalculator;
 
-        public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator) {
+        public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator,
+                IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator) {
             DataPresenter = dataPresenter;
             PostingCollector = postingCollector;
             SummaryCalculator = summaryCalculator;
             AverageCalculator = averageCalculator;
             MonthlyDeltaCalculator = monthlyDeltaCalculator;
+            ClassifiedPostingsCalculator = classifiedPostingsCalculator;
         }
 
         public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
@@ -54,6 +57,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications, specialClues, postingAdjustments);
             await DataPresenter.Handlers.PostingAdjustmentsHandler.CollectionChangedAsync(postingAdjustments.OfType<ICollectionViewSourceEntity>().ToList());
+
+            await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications);
         }
     }
 }

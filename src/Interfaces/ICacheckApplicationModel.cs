@@ -7,6 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
         ICollectionViewSource ClassificationAverages { get; }
         ICollectionViewSource MonthlyDeltas { get; }
         ICollectionViewSource PostingAdjustments { get; }
+        ICollectionViewSource ClassifiedPostings { get; }
         ITextBox Log { get; }
     }
 }

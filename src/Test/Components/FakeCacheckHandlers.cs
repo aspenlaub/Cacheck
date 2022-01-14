@@ -10,12 +10,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         public List<ITypeItemSum> ClassificationAverages { get; } = new();
         public List<ITypeMonthDelta> MonthlyDeltas { get; } = new();
         public List<IPostingAdjustment> PostingAdjustments { get; } = new();
+        public List<IClassifiedPosting> ClassifiedPostings { get; } = new();
 
         public ISimpleCollectionViewSourceHandler OverallSumsHandler { get; }
         public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; }
         public ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; }
         public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; }
         public ISimpleCollectionViewSourceHandler PostingAdjustmentsHandler { get; }
+        public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
         public ISimpleTextHandler LogTextHandler { get; }
 
         public FakeCacheckHandlers(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
@@ -24,6 +26,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             ClassificationAveragesHandler = new FakeCacheckHandler<ITypeItemSum>(ClassificationAverages);
             MonthlyDeltasHandler = new FakeCacheckHandler<ITypeMonthDelta>(MonthlyDeltas);
             PostingAdjustmentsHandler = new FakeCacheckHandler<IPostingAdjustment>(PostingAdjustments);
+            ClassifiedPostingsHandler = new FakeCacheckHandler<IClassifiedPosting>(ClassifiedPostings);
             LogTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.Log);
         }
     }

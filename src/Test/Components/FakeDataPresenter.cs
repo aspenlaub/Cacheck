@@ -12,6 +12,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         public List<ITypeItemSum> ClassificationSums => FakeCacheckHandlers.ClassificationSums;
         public List<ITypeItemSum> ClassificationAverages => FakeCacheckHandlers.ClassificationAverages;
         public List<ITypeMonthDelta> MonthlyDeltas => FakeCacheckHandlers.MonthlyDeltas;
+        public List<IClassifiedPosting> ClassifiedPostings => FakeCacheckHandlers.ClassifiedPostings;
 
         public FakeDataPresenter(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
             FakeCacheckHandlers = new FakeCacheckHandlers(model, guiAndAppHandler);
