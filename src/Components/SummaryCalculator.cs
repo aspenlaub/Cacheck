@@ -11,15 +11,18 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class SummaryCalculator : ISummaryCalculator {
         private readonly IDataPresenter DataPresenter;
         private readonly IPostingAggregator PostingAggregator;
+        private readonly IPostingClassificationMatcher PostingClassificationMatcher;
 
-        public SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator) {
+        public SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator, IPostingClassificationMatcher postingClassificationMatcher) {
             DataPresenter = dataPresenter;
             PostingAggregator = postingAggregator;
+            PostingClassificationMatcher = postingClassificationMatcher;
         }
 
         public async Task CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
             var errorsAndInfos = new ErrorsAndInfos();
-            var pureDebitCreditAggregation = PostingAggregator.AggregatePostings(allPostings, new List<IPostingClassification> {
+            var fairPostings = allPostings.Where(p => postingClassifications.FirstOrDefault(c => PostingClassificationMatcher.DoesPostingMatchClassification(p, c))?.Unfair != true).ToList();
+            var pureDebitCreditAggregation = PostingAggregator.AggregatePostings(fairPostings, new List<IPostingClassification> {
                 new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
                 new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }
             }, errorsAndInfos);
