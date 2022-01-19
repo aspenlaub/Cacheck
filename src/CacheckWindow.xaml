@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:entities="clr-namespace:Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities"
         mc:Ignorable="d"
-        Title="Cacheck" Height="450" Width="1000"
+        Title="Cacheck" Height="450" Width="1600"
         Icon="cacheck.ico"
         Loaded="OnLoaded"  Closing="OnClosing">
     <Window.Resources>
@@ -13,7 +13,6 @@
         <CollectionViewSource x:Key="ClassificationSums" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
         <CollectionViewSource x:Key="ClassificationAverages" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
         <CollectionViewSource x:Key="MonthlyDeltas" d:DesignSource="{d:DesignInstance {x:Type entities:TypeMonthDelta}, CreateList=True}"/>
-        <CollectionViewSource x:Key="PostingAdjustments" d:DesignSource="{d:DesignInstance {x:Type entities:PostingAdjustment}, CreateList=True}"/>
         <CollectionViewSource x:Key="ClassifiedPostings" d:DesignSource="{d:DesignInstance {x:Type entities:ClassifiedPosting}, CreateList=True}"/>
         <Style x:Key="CellLeftAlign">
             <Setter Property="Control.HorizontalAlignment" Value="Left" />
@@ -71,18 +70,6 @@
                         <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Month" Width="20*" Binding="{Binding Month}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Delta" Width="20*" Binding="{Binding Delta, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                        <DataGridTextColumn Header="Fair Delta" Width="20*" Binding="{Binding FairDelta, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
-            <TabItem Header="Adjustments" Padding="60,5,60,5">
-                <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
-                          Name="PostingAdjustments" ItemsSource="{Binding Source={StaticResource PostingAdjustments}}" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Width="20*" Binding="{Binding FormattedDate, StringFormat=d}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                        <DataGridTextColumn Header="Clue" Width="20*" Binding="{Binding Clue}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                        <DataGridTextColumn Header="Amount" Width="20*" Binding="{Binding Amount, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                        <DataGridTextColumn Header="Adjusted Amount" Width="20*" Binding="{Binding AdjustedAmount, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

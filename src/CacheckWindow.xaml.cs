@@ -42,7 +42,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => CacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
             guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => CacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
             guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => CacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
-            guiToAppGate.RegisterAsyncDataGridCallback(PostingAdjustments, items => CacheckApp.Handlers.PostingAdjustmentsHandler.CollectionChangedAsync(items));
             guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, items => CacheckApp.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(items));
             guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => CacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 

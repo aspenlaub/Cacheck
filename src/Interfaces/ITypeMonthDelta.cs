@@ -7,6 +7,5 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
         string Type { get; set; }
         string Month { get; set; }
         double Delta { get; set; }
-        double FairDelta { get; set; }
     }
 }

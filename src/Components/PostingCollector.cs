@@ -13,17 +13,12 @@ using Autofac;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
     public class PostingCollector : IPostingCollector {
         private readonly IDataPresenter DataPresenter;
-        private readonly IPostingAdjustmentsRepository PostingAdjustmentsRepository;
-        private readonly IPostingsRequiringAdjustmentCollector PostingsRequiringAdjustmentCollector;
 
-        public PostingCollector(IDataPresenter dataPresenter, IPostingAdjustmentsRepository postingAdjustmentsRepository,
-                IPostingsRequiringAdjustmentCollector postingsRequiringAdjustmentCollector) {
+        public PostingCollector(IDataPresenter dataPresenter) {
             DataPresenter = dataPresenter;
-            PostingAdjustmentsRepository = postingAdjustmentsRepository;
-            PostingsRequiringAdjustmentCollector = postingsRequiringAdjustmentCollector;
         }
 
-        public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest, IEnumerable<ISpecialClue> specialClues) {
+        public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest) {
             if (container == null) {
                 throw new ArgumentNullException(nameof(container));
             }
@@ -56,23 +51,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             allPostings.RemoveAll(p => p.Date < minDate);
 
             return allPostings;
-        }
-
-        public async Task<IList<IPostingAdjustment>> GetPostingAdjustmentsAsync(IContainer container, bool isIntegrationTest, IList<IPosting> allPostings, IList<ISpecialClue> specialClues) {
-            if (container == null) {
-                throw new ArgumentNullException(nameof(container));
-            }
-
-            var postingAdjustments = new List<IPostingAdjustment>();
-            var sourceFolder = await GetSourceFolderAsync(container, isIntegrationTest);
-            if (sourceFolder == null) { return postingAdjustments; }
-
-            postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
-            postingAdjustments.AddRange(PostingsRequiringAdjustmentCollector.FindNewPostingsRequiringAdjustment(allPostings, postingAdjustments, specialClues));
-            PostingAdjustmentsRepository.SaveAdjustments(sourceFolder, postingAdjustments);
-            postingAdjustments = PostingAdjustmentsRepository.LoadAdjustments(sourceFolder).ToList();
-            PostingsRequiringAdjustmentCollector.AssignReferenceToAdjustments(allPostings, postingAdjustments, specialClues);
-            return postingAdjustments;
         }
 
         private async Task<IFolder> GetSourceFolderAsync(IComponentContext container, bool isIntegrationTest) {

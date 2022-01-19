@@ -9,7 +9,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         public ICollectionViewSource ClassificationSums { get; } = new CollectionViewSource { EntityType = typeof(TypeItemSum) };
         public ICollectionViewSource ClassificationAverages { get; } = new CollectionViewSource { EntityType = typeof(TypeItemSum) };
         public ICollectionViewSource MonthlyDeltas { get; } = new CollectionViewSource { EntityType = typeof(TypeMonthDelta) };
-        public ICollectionViewSource PostingAdjustments { get; } = new CollectionViewSource { EntityType = typeof(PostingAdjustment) };
         public ICollectionViewSource ClassifiedPostings { get; } = new CollectionViewSource { EntityType = typeof(ClassifiedPosting) };
         public ITextBox Log { get; } = new TextBox();
     }

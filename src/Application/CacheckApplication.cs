@@ -39,7 +39,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
                 ClassificationSumsHandler = new ClassificationSumsHandler(Model, this),
                 ClassificationAveragesHandler = new ClassificationAveragesHandler(Model, this),
                 MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
-                PostingAdjustmentsHandler = new PostingAdjustmentsHandler(Model, this),
                 ClassifiedPostingsHandler = new ClassifiedPostingsHandler(Model, this),
                 LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log)
             };

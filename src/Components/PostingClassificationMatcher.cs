@@ -8,7 +8,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         }
 
         private static bool DoesPostingMatchDebitCredit(IPosting posting, IPostingClassification classification) {
-            return classification.IgnoreCredit || classification.Credit == posting.Amount > 0 || !classification.Credit == posting.Amount < 0;
+            return classification.IsMonthClassification || classification.Credit == posting.Amount > 0 || !classification.Credit == posting.Amount < 0;
         }
 
         private static bool DoesPostingMatchClue(IPosting posting, IPostingClassification classification) {

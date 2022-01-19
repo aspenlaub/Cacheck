@@ -9,19 +9,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         private readonly IPostingClassificationFormatter PostingClassificationFormatter;
         private readonly IPostingClassificationMatcher PostingClassificationMatcher;
         private readonly IFormattedClassificationComparer FormattedClassificationComparer;
-        // private readonly ISpecialClueMatcher SpecialClueMatcher;
 
         public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher,
-            // ReSharper disable once UnusedParameter.Local
-            IFormattedClassificationComparer formattedClassificationComparer, ISpecialClueMatcher specialClueMatcher) {
+                IFormattedClassificationComparer formattedClassificationComparer) {
             PostingClassificationFormatter = postingClassificationFormatter;
             PostingClassificationMatcher = postingClassificationMatcher;
             FormattedClassificationComparer = formattedClassificationComparer;
-            // SpecialClueMatcher = specialClueMatcher;
         }
 
         public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings,
-                IList<IPostingClassification> postingClassifications, IList<ISpecialClue> specialClues, IErrorsAndInfos errorsAndInfos) {
+                IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
             var result = new Dictionary<IFormattedClassification, double>(FormattedClassificationComparer);
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
@@ -44,7 +41,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                     result[formattedClassification] = 0;
                 }
 
-                result[formattedClassification] += classification.IgnoreCredit ? posting.Amount : Math.Abs(posting.Amount);
+                result[formattedClassification] += classification.IsMonthClassification ? posting.Amount : Math.Abs(posting.Amount);
             }
             return result;
         }

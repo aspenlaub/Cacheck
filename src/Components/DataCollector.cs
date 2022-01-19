@@ -5,7 +5,6 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 using IContainer = Autofac.IContainer;
 
@@ -32,15 +31,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             var errorsAndInfos = new ErrorsAndInfos();
             var secretRepository = container.Resolve<ISecretRepository>();
 
-            var specialCluesSecret = await secretRepository.GetAsync(new SpecialCluesSecret(), errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
-                return;
-            }
-
-            var specialClues = specialCluesSecret.Cast<ISpecialClue>().ToList();
-
-            var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest, specialClues);
+            var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest);
 
             var postingClassificationsSecret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
@@ -53,10 +44,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
             await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
 
-            var postingAdjustments = await PostingCollector.GetPostingAdjustmentsAsync(container, isIntegrationTest, allPostings, specialClues);
-
-            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications, specialClues, postingAdjustments);
-            await DataPresenter.Handlers.PostingAdjustmentsHandler.CollectionChangedAsync(postingAdjustments.OfType<ICollectionViewSourceEntity>().ToList());
+            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
             await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications);
         }
