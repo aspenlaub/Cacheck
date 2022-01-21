@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
@@ -14,10 +17,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                 return postings;
             }
 
-            var lines = File.ReadAllLines(fileName);
-            foreach (var line in lines) {
-                if (!TryReadPostings(line, out var posting)) { continue; }
+            var lines = File.ReadAllLines(fileName).ToList();
+            for(var i = 0; i < lines.Count; i ++) {
+                if (!TryReadPostings(lines[i], out var posting)) { continue; }
 
+                var unreadableLines = new List<string>();
+                for (var j = i + 1; j < lines.Count && j < i + 2 && !TryReadPostings(lines[j], out _); j ++) {
+                    unreadableLines.Add(lines[j].Trim());
+                }
+
+                if (unreadableLines.Any()) {
+                    posting = new Posting {
+                        Amount = posting.Amount,
+                        Date = posting.Date,
+                        Remark = posting.Remark + '/' + string.Join('/', unreadableLines)
+                    };
+                }
                 postings.Add(posting);
             }
             return postings;

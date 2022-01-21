@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
@@ -46,7 +47,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
             await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
-            await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications);
+            await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications, DateTime.Now.AddYears(-1), 70);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -22,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
             var postings = new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 };
             postings = postings.Select(p => IncreasePostingAmount(p)).ToList();
             var postingClassifications = new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationD1 };
-            await Sut.CalculateAndShowClassifiedPostingsAsync(postings, postingClassifications);
+            await Sut.CalculateAndShowClassifiedPostingsAsync(postings, postingClassifications, new DateTime(2020, 12, 31), 250);
 
             var items = FakeDataPresenter.ClassifiedPostings;
             Assert.AreEqual(2, items.Count);

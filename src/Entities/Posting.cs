@@ -7,5 +7,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         public DateTime Date { get; init; }
         public double Amount { get; init; }
         public string Remark { get; init; }
+
+        public override string ToString() {
+            return $"{Date.ToShortDateString()}, {Amount}, {Remark}";
+        }
     }
 }

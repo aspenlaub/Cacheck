@@ -20,13 +20,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings,
                 IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
             var result = new Dictionary<IFormattedClassification, double>(FormattedClassificationComparer);
+            var resultDrillDown = new Dictionary<string, IList<IPosting>>();
             foreach (var posting in postings) {
                 var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
-                switch (classifications.Count) {
-                    case 0 when Math.Abs(posting.Amount) <= 250:
+                var combinedClassifications = classifications.Select(c => PostingClassificationFormatter.Format(c).CombinedClassification).Distinct().ToList();
+                switch (combinedClassifications.Count) {
+                    case 0 when Math.Abs(posting.Amount) <= 70:
                         continue;
                     case 0:
-                        errorsAndInfos.Infos.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
+                        errorsAndInfos.Errors.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
                         continue;
                     case > 1 when posting.Amount != 0:
                         var combinedClassification0 = PostingClassificationFormatter.Format(classifications[0]).CombinedClassification;
@@ -37,11 +39,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
 
                 var classification = classifications[0];
                 var formattedClassification = PostingClassificationFormatter.Format(classification);
+                var formattedClassificationToString = formattedClassification.ToString() ?? "";
                 if (!result.ContainsKey(formattedClassification)) {
                     result[formattedClassification] = 0;
+                    resultDrillDown[formattedClassificationToString] = new List<IPosting>();
                 }
 
                 result[formattedClassification] += classification.IsMonthClassification ? posting.Amount : Math.Abs(posting.Amount);
+                resultDrillDown[formattedClassificationToString].Add(posting);
             }
             return result;
         }

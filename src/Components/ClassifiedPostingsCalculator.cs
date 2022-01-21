@@ -16,11 +16,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             PostingClassificationMatcher = postingClassificationMatcher;
         }
 
-        public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+        public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications, DateTime minDate, double minAmount) {
             var classifiedPostings = new List<IClassifiedPosting>();
 
             foreach (var posting in allPostings) {
-                if (!IsPostingRelevantHere(posting, postingClassifications, out var classification)) { continue; }
+                if (!IsPostingRelevantHere(posting, postingClassifications, minDate, minAmount, out var classification)) { continue; }
 
                 var classifiedPosting = new ClassifiedPosting {
                     Date = posting.Date,
@@ -37,12 +37,16 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.Cast<ICollectionViewSourceEntity>().ToList());
         }
 
-        private bool IsPostingRelevantHere(IPosting posting, IEnumerable<IPostingClassification> postingClassifications, out IPostingClassification classification) {
+        private bool IsPostingRelevantHere(IPosting posting, IEnumerable<IPostingClassification> postingClassifications, DateTime minDate, double minAmount, out IPostingClassification classification) {
             classification = null;
-            if (Math.Abs(posting.Amount) < 250) { return false; }
+            if (Math.Abs(posting.Amount) < minAmount) { return false; }
+            if (posting.Date < minDate) { return false; }
 
-            classification = postingClassifications.SingleOrDefault(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c));
-            return classification != null;
+            var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+            if (classifications.Count != 1) { return false; }
+
+            classification = classifications[0];
+            return true;
         }
     }
 }

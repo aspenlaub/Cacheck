@@ -6,5 +6,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
         public string Classification { get; init; }
 
         public string CombinedClassification { get; init; }
+
+        public override string ToString() {
+            return string.IsNullOrEmpty(CombinedClassification) ? $"{Classification} {Sign}" : CombinedClassification;
+        }
     }
 }
