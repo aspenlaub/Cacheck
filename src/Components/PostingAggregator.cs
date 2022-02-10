@@ -9,12 +9,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         private readonly IPostingClassificationFormatter PostingClassificationFormatter;
         private readonly IPostingClassificationMatcher PostingClassificationMatcher;
         private readonly IFormattedClassificationComparer FormattedClassificationComparer;
+        private readonly ICalculationLogger CalculationLogger;
 
         public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher,
-                IFormattedClassificationComparer formattedClassificationComparer) {
+                IFormattedClassificationComparer formattedClassificationComparer, ICalculationLogger calculationLogger) {
             PostingClassificationFormatter = postingClassificationFormatter;
             PostingClassificationMatcher = postingClassificationMatcher;
             FormattedClassificationComparer = formattedClassificationComparer;
+            CalculationLogger = calculationLogger;
         }
 
         public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings,
@@ -45,7 +47,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
                     resultDrillDown[formattedClassificationToString] = new List<IPosting>();
                 }
 
-                result[formattedClassification] += classification.IsMonthClassification ? posting.Amount : Math.Abs(posting.Amount);
+                var amount = classification.IsMonthClassification ? posting.Amount : Math.Abs(posting.Amount);
+                CalculationLogger.RegisterContribution(formattedClassificationToString, amount, posting);
+                result[formattedClassification] += amount;
                 resultDrillDown[formattedClassificationToString].Add(posting);
             }
             return result;

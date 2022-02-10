@@ -13,13 +13,15 @@ using Autofac;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
     public static class CacheckAppContainerBuilder {
         public static async Task<ContainerBuilder> UseCacheckVishizhukelNetAndPeghAsync(this ContainerBuilder builder, CacheckWindow cacheckWindow) {
-            await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), new LogConfiguration());
+            var logConfiguration = new LogConfiguration();
+            await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
 
             builder.RegisterType<AverageCalculator>().As<IAverageCalculator>();
             builder.RegisterType<CacheckApplication>().As<CacheckApplication>().As<IGuiAndAppHandler>().As<IDataPresenter>().SingleInstance();
             builder.RegisterType<CacheckApplicationModel>().As<CacheckApplicationModel>().As<ICacheckApplicationModel>().As<IApplicationModel>().As<IBusy>().SingleInstance();
             builder.RegisterType<CacheckGuiAndApplicationSynchronizer>().WithParameter((p, _) => p.ParameterType == typeof(CacheckWindow), (_, _) => cacheckWindow).As<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>>();
             builder.RegisterType<CacheckGuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
+            builder.RegisterInstance<ICalculationLogger>(new CalculationLogger(logConfiguration));
             builder.RegisterType<ClassifiedPosting>().As<IClassifiedPosting>();
             builder.RegisterType<ClassifiedPostingsCalculator>().As<IClassifiedPostingsCalculator>();
             builder.RegisterType<DataCollector>().As<IDataCollector>();

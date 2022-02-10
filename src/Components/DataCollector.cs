@@ -17,20 +17,24 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
         private readonly IAverageCalculator AverageCalculator;
         private readonly IMonthlyDeltaCalculator MonthlyDeltaCalculator;
         private readonly IClassifiedPostingsCalculator ClassifiedPostingsCalculator;
+        private readonly ICalculationLogger CalculationLogger;
 
         public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator,
-                IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator) {
+                IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator, ICalculationLogger calculationLogger) {
             DataPresenter = dataPresenter;
             PostingCollector = postingCollector;
             SummaryCalculator = summaryCalculator;
             AverageCalculator = averageCalculator;
             MonthlyDeltaCalculator = monthlyDeltaCalculator;
             ClassifiedPostingsCalculator = classifiedPostingsCalculator;
+            CalculationLogger = calculationLogger;
         }
 
         public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
             var errorsAndInfos = new ErrorsAndInfos();
             var secretRepository = container.Resolve<ISecretRepository>();
+
+            CalculationLogger.ClearLogs();
 
             var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest);
 
@@ -48,6 +52,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
             await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
             await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications, DateTime.Now.AddYears(-1), 70);
+
+            CalculationLogger.Flush();
         }
     }
 }

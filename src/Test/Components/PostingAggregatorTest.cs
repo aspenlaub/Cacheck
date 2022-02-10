@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
@@ -16,7 +17,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext context) {
-            Sut = new PostingAggregator(new PostingClassificationFormatter(), new PostingClassificationMatcher(), new FormattedClassificationComparer());
+            Sut = new PostingAggregator(new PostingClassificationFormatter(), new PostingClassificationMatcher(), new FormattedClassificationComparer(), new CalculationLogger(new LogConfiguration()));
         }
 
         [TestMethod]
