@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
@@ -24,9 +25,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         public CacheckWindow() {
             InitializeComponent();
 
-            var builder = new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(this).Result;
-            Container = builder.Build();
-
             Title = Properties.Resources.CacheckWindowTitle;
             Name = Properties.Resources.CacheckWindowName;
             AutomationProperties.SetAutomationId(this, Name);
@@ -34,6 +32,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e) {
+            await BuildContainerIfNecessaryAsync();
             CacheckApp = Container.Resolve<CacheckApplication>();
             await CacheckApp.OnLoadedAsync();
 
@@ -62,6 +61,13 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
 
         private void OnClosing(object sender, CancelEventArgs e) {
             TashTimer?.StopTimerAndConfirmDead(false);
+        }
+
+        private async Task BuildContainerIfNecessaryAsync() {
+            if (Container != null) { return; }
+
+            var builder = await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(this);
+            Container = builder.Build();
         }
     }
 }
