@@ -10,13 +10,14 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 using IContainer = Autofac.IContainer;
+using WindowsApplication = System.Windows.Application;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
     /// <summary>
     /// Interaction logic for CacheckWindow.xaml
     /// </summary>
     // ReSharper disable once UnusedMember.Global
-    public partial class CacheckWindow : IDisposable {
+    public partial class CacheckWindow : IAsyncDisposable {
         private static IContainer Container { get; set; }
 
         private CacheckApplication CacheckApp;
@@ -55,12 +56,19 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             await dataCollector.CollectAndShowAsync(Container, Cacheck.CacheckApp.IsIntegrationTest);
         }
 
-        public void Dispose() {
-            TashTimer?.StopTimerAndConfirmDead(false);
+        public async ValueTask DisposeAsync() {
+            if (TashTimer == null) { return; }
+
+            await TashTimer.StopTimerAndConfirmDeadAsync(false);
         }
 
-        private void OnClosing(object sender, CancelEventArgs e) {
-            TashTimer?.StopTimerAndConfirmDead(false);
+        private async void OnClosing(object sender, CancelEventArgs e) {
+            e.Cancel = true;
+
+            if (TashTimer == null) { return; }
+
+            await TashTimer.StopTimerAndConfirmDeadAsync(false);
+            WindowsApplication.Current.Shutdown();
         }
 
         private async Task BuildContainerIfNecessaryAsync() {
