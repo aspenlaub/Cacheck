@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
     /// <summary>
@@ -12,7 +11,6 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
             IsIntegrationTest = e.Args.Any(a => a == "/UnitTest");
-            ExceptionHandlerUpSetter.SetUp(this);
         }
     }
 }

@@ -7,6 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
+using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 using IContainer = Autofac.IContainer;
@@ -54,6 +55,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
 
             var dataCollector = Container.Resolve<IDataCollector>();
             await dataCollector.CollectAndShowAsync(Container, Cacheck.CacheckApp.IsIntegrationTest);
+
+            await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(2));
         }
 
         public async ValueTask DisposeAsync() {

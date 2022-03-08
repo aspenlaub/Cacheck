@@ -1,5 +1,6 @@
 ﻿using System;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+// ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
     public class ClassifiedPosting : IClassifiedPosting {
