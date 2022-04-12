@@ -5,6 +5,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Vishizhukel.Interfaces.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Application;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
@@ -22,8 +23,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
 
         public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
             IGuiAndApplicationSynchronizer<ICacheckApplicationModel> guiAndApplicationSynchronizer, ICacheckApplicationModel model,
-            ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration
-            ) : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model) {
+            ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
+            IBasicHtmlHelper basicHtmlHelper, IApplicationLogger applicationLogger
+            ) : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
             LogConfiguration = logConfiguration;
