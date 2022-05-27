@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
@@ -22,7 +23,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
         private static IContainer Container { get; set; }
 
         private CacheckApplication CacheckApp;
-        private ITashTimer<ICacheckApplicationModel> TashTimer;
+        private ITashTimer<CacheckApplicationModel> TashTimer;
 
         public CacheckWindow() {
             InitializeComponent();
@@ -46,7 +47,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, items => CacheckApp.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(items));
             guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => CacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 
-            TashTimer = new TashTimer<ICacheckApplicationModel>(Container.Resolve<ITashAccessor>(), CacheckApp.TashHandler, guiToAppGate);
+            TashTimer = new TashTimer<CacheckApplicationModel>(Container.Resolve<ITashAccessor>(), CacheckApp.TashHandler, guiToAppGate);
             if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
                 Close();
             }

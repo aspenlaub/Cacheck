@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
@@ -18,7 +19,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
         public ISimpleTextHandler LogTextHandler { get; }
 
-        public FakeCacheckHandlers(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        public FakeCacheckHandlers(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
             OverallSumsHandler = new FakeCacheckHandler<ITypeItemSum>(OverallSums);
             ClassificationSumsHandler = new FakeCacheckHandler<ITypeItemSum>(ClassificationSums);
             ClassificationAveragesHandler = new FakeCacheckHandler<ITypeItemSum>(ClassificationAverages);

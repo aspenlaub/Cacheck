@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
@@ -14,7 +15,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components {
         public List<ITypeMonthDelta> MonthlyDeltas => FakeCacheckHandlers.MonthlyDeltas;
         public List<IClassifiedPosting> ClassifiedPostings => FakeCacheckHandlers.ClassifiedPostings;
 
-        public FakeDataPresenter(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        public FakeDataPresenter(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
             FakeCacheckHandlers = new FakeCacheckHandlers(model, guiAndAppHandler);
         }
 

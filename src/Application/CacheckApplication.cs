@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Commands;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
@@ -12,20 +13,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Handlers;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
-    public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>, ICacheckApplicationModel>, IDataPresenter {
+    public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer<CacheckApplicationModel>, CacheckApplicationModel>, IDataPresenter {
         public ICacheckHandlers Handlers { get; private set; }
         public ICacheckCommands Commands { get; private set; }
-        public ITashHandler<ICacheckApplicationModel> TashHandler { get; private set; }
+        public ITashHandler<CacheckApplicationModel> TashHandler { get; private set; }
 
         private readonly ITashAccessor TashAccessor;
         private readonly ISimpleLogger SimpleLogger;
         private readonly ILogConfiguration LogConfiguration;
 
         public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
-            IGuiAndApplicationSynchronizer<ICacheckApplicationModel> guiAndApplicationSynchronizer, ICacheckApplicationModel model,
-            ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration,
-            IBasicHtmlHelper basicHtmlHelper, IApplicationLogger applicationLogger
-            ) : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, basicHtmlHelper, applicationLogger) {
+            IGuiAndApplicationSynchronizer<CacheckApplicationModel> guiAndApplicationSynchronizer, CacheckApplicationModel model,
+            ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfiguration logConfiguration, IApplicationLogger applicationLogger
+            ) : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, applicationLogger) {
             TashAccessor = tashAccessor;
             SimpleLogger = simpleLogger;
             LogConfiguration = logConfiguration;
@@ -54,8 +54,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application {
             TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfiguration, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
         }
 
-        public ITashTaskHandlingStatus<ICacheckApplicationModel> CreateTashTaskHandlingStatus() {
-            return new TashTaskHandlingStatus<ICacheckApplicationModel>(Model, System.Environment.ProcessId);
+        public ITashTaskHandlingStatus<CacheckApplicationModel> CreateTashTaskHandlingStatus() {
+            return new TashTaskHandlingStatus<CacheckApplicationModel>(Model, System.Environment.ProcessId);
         }
 
         public string GetLogText() {

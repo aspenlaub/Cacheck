@@ -18,9 +18,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck {
             await builder.UseVishizhukelNetDvinAndPeghAsync(new DummyCsArgumentPrompter(), logConfiguration);
 
             builder.RegisterType<AverageCalculator>().As<IAverageCalculator>();
-            builder.RegisterType<CacheckApplication>().As<CacheckApplication>().As<IGuiAndAppHandler>().As<IDataPresenter>().SingleInstance();
+            builder.RegisterType<CacheckApplication>().As<CacheckApplication>().As<IGuiAndAppHandler<CacheckApplicationModel>>().As<IDataPresenter>().SingleInstance();
             builder.RegisterType<CacheckApplicationModel>().As<CacheckApplicationModel>().As<ICacheckApplicationModel>().As<IApplicationModelBase>().As<IBusy>().SingleInstance();
-            builder.RegisterType<CacheckGuiAndApplicationSynchronizer>().WithParameter((p, _) => p.ParameterType == typeof(CacheckWindow), (_, _) => cacheckWindow).As<IGuiAndApplicationSynchronizer<ICacheckApplicationModel>>();
+            builder.RegisterType<CacheckGuiAndApplicationSynchronizer>()
+                .WithParameter((p, _) => p.ParameterType == typeof(CacheckWindow), (_, _) => cacheckWindow)
+                .As<IGuiAndApplicationSynchronizer<CacheckApplicationModel>>();
             builder.RegisterType<CacheckGuiToApplicationGate>().As<IGuiToApplicationGate>().SingleInstance();
             builder.RegisterInstance<ICalculationLogger>(new CalculationLogger(logConfiguration));
             builder.RegisterType<ClassifiedPosting>().As<IClassifiedPosting>();

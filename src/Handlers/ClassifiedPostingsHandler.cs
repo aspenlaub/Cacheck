@@ -9,9 +9,9 @@ using Newtonsoft.Json;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers {
     public class ClassifiedPostingsHandler : ISimpleCollectionViewSourceHandler {
         private readonly ICacheckApplicationModel Model;
-        private readonly IGuiAndAppHandler GuiAndAppHandler;
+        private readonly IGuiAndAppHandler<CacheckApplicationModel> GuiAndAppHandler;
 
-        public ClassifiedPostingsHandler(ICacheckApplicationModel model, IGuiAndAppHandler guiAndAppHandler) {
+        public ClassifiedPostingsHandler(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
             Model = model;
             GuiAndAppHandler = guiAndAppHandler;
         }
