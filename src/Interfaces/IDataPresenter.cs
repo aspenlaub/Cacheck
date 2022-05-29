@@ -1,7 +1,7 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
-    public interface IDataPresenter {
-        ICacheckHandlers Handlers { get; }
+﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
-        string GetLogText();
-    }
+public interface IDataPresenter {
+    ICacheckHandlers Handlers { get; }
+
+    string GetLogText();
 }

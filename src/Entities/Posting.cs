@@ -1,15 +1,15 @@
 ﻿using System;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities {
-    public class Posting : IPosting {
-        public string Guid { get; init; } = System.Guid.NewGuid().ToString();
-        public DateTime Date { get; init; }
-        public double Amount { get; init; }
-        public string Remark { get; init; }
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 
-        public override string ToString() {
-            return $"{Date.ToShortDateString()}, {Amount}, {Remark}";
-        }
+public class Posting : IPosting {
+    public string Guid { get; init; } = System.Guid.NewGuid().ToString();
+    public DateTime Date { get; init; }
+    public double Amount { get; init; }
+    public string Remark { get; init; }
+
+    public override string ToString() {
+        return $"{Date.ToShortDateString()}, {Amount}, {Remark}";
     }
 }

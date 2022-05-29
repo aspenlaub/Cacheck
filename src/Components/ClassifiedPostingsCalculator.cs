@@ -6,47 +6,47 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
-    public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
-        private readonly IDataPresenter DataPresenter;
-        private readonly IPostingClassificationMatcher PostingClassificationMatcher;
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-        public ClassifiedPostingsCalculator(IDataPresenter dataPresenter, IPostingClassificationMatcher postingClassificationMatcher) {
-            DataPresenter = dataPresenter;
-            PostingClassificationMatcher = postingClassificationMatcher;
+public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
+    private readonly IDataPresenter DataPresenter;
+    private readonly IPostingClassificationMatcher PostingClassificationMatcher;
+
+    public ClassifiedPostingsCalculator(IDataPresenter dataPresenter, IPostingClassificationMatcher postingClassificationMatcher) {
+        DataPresenter = dataPresenter;
+        PostingClassificationMatcher = postingClassificationMatcher;
+    }
+
+    public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications, DateTime minDate, double minAmount) {
+        var classifiedPostings = new List<IClassifiedPosting>();
+
+        foreach (var posting in allPostings) {
+            if (!IsPostingRelevantHere(posting, postingClassifications, minDate, minAmount, out var classification)) { continue; }
+
+            var classifiedPosting = new ClassifiedPosting {
+                Date = posting.Date,
+                Amount = posting.Amount,
+                Classification = classification.Classification,
+                Clue = classification.Clue,
+                Remark = posting.Remark
+            };
+            classifiedPostings.Add(classifiedPosting);
         }
 
-        public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications, DateTime minDate, double minAmount) {
-            var classifiedPostings = new List<IClassifiedPosting>();
+        classifiedPostings = classifiedPostings.OrderByDescending(cp => cp.Date).ToList();
 
-            foreach (var posting in allPostings) {
-                if (!IsPostingRelevantHere(posting, postingClassifications, minDate, minAmount, out var classification)) { continue; }
+        await DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.Cast<ICollectionViewSourceEntity>().ToList());
+    }
 
-                var classifiedPosting = new ClassifiedPosting {
-                    Date = posting.Date,
-                    Amount = posting.Amount,
-                    Classification = classification.Classification,
-                    Clue = classification.Clue,
-                    Remark = posting.Remark
-                };
-                classifiedPostings.Add(classifiedPosting);
-            }
+    private bool IsPostingRelevantHere(IPosting posting, IEnumerable<IPostingClassification> postingClassifications, DateTime minDate, double minAmount, out IPostingClassification classification) {
+        classification = null;
+        if (Math.Abs(posting.Amount) < minAmount) { return false; }
+        if (posting.Date < minDate) { return false; }
 
-            classifiedPostings = classifiedPostings.OrderByDescending(cp => cp.Date).ToList();
+        var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+        if (classifications.Count != 1) { return false; }
 
-            await DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.Cast<ICollectionViewSourceEntity>().ToList());
-        }
-
-        private bool IsPostingRelevantHere(IPosting posting, IEnumerable<IPostingClassification> postingClassifications, DateTime minDate, double minAmount, out IPostingClassification classification) {
-            classification = null;
-            if (Math.Abs(posting.Amount) < minAmount) { return false; }
-            if (posting.Date < minDate) { return false; }
-
-            var classifications = postingClassifications.Where(c => PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
-            if (classifications.Count != 1) { return false; }
-
-            classification = classifications[0];
-            return true;
-        }
+        classification = classifications[0];
+        return true;
     }
 }

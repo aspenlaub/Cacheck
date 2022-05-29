@@ -1,4 +1,4 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
-    public interface ICacheckCommands {
-    }
+﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+
+public interface ICacheckCommands {
 }

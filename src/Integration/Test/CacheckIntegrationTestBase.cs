@@ -4,37 +4,37 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data;
 using Aspenlaub.Net.GitHub.CSharp.Tash;
 using Autofac;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test {
-    public class CacheckIntegrationTestBase {
-        protected readonly IContainer Container;
-        protected ControllableProcess ControllableProcess;
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test;
 
-        public CacheckIntegrationTestBase() {
-            Container = new ContainerBuilder().RegisterForCacheckIntegrationTest().Build();
-            TestDataGenerator.ResetTestFolder();
-        }
+public class CacheckIntegrationTestBase {
+    protected readonly IContainer Container;
+    protected ControllableProcess ControllableProcess;
 
-        protected async Task<CacheckWindowUnderTest> CreateCacheckWindowUnderTestAsync() {
-            var sut = Container.Resolve<CacheckWindowUnderTest>();
-            await sut.InitializeAsync();
-            await EnsureControllableProcessAsync(sut);
+    public CacheckIntegrationTestBase() {
+        Container = new ContainerBuilder().RegisterForCacheckIntegrationTest().Build();
+        TestDataGenerator.ResetTestFolder();
+    }
 
-            var process = ControllableProcess;
-            var tasks = new List<ControllableProcessTask> {
-                sut.CreateResetTask(process)
-            };
-            await sut.RemotelyProcessTaskListAsync(process, tasks);
-            return sut;
-        }
+    protected async Task<CacheckWindowUnderTest> CreateCacheckWindowUnderTestAsync() {
+        var sut = Container.Resolve<CacheckWindowUnderTest>();
+        await sut.InitializeAsync();
+        await EnsureControllableProcessAsync(sut);
 
-        protected async Task EnsureControllableProcessAsync(CacheckWindowUnderTest sut) {
-            if (ControllableProcess != null) { return; }
+        var process = ControllableProcess;
+        var tasks = new List<ControllableProcessTask> {
+            sut.CreateResetTask(process)
+        };
+        await sut.RemotelyProcessTaskListAsync(process, tasks);
+        return sut;
+    }
 
-            ControllableProcess = await sut.FindIdleProcessAsync();
-        }
+    protected async Task EnsureControllableProcessAsync(CacheckWindowUnderTest sut) {
+        if (ControllableProcess != null) { return; }
 
-        public virtual void Cleanup() {
-            TestDataGenerator.RemoveTestFolder();
-        }
+        ControllableProcess = await sut.FindIdleProcessAsync();
+    }
+
+    public virtual void Cleanup() {
+        TestDataGenerator.RemoveTestFolder();
     }
 }

@@ -9,51 +9,51 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Autofac;
 using IContainer = Autofac.IContainer;
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components {
-    public class DataCollector : IDataCollector {
-        private readonly IDataPresenter DataPresenter;
-        private readonly IPostingCollector PostingCollector;
-        private readonly ISummaryCalculator SummaryCalculator;
-        private readonly IAverageCalculator AverageCalculator;
-        private readonly IMonthlyDeltaCalculator MonthlyDeltaCalculator;
-        private readonly IClassifiedPostingsCalculator ClassifiedPostingsCalculator;
-        private readonly ICalculationLogger CalculationLogger;
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-        public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator,
-                IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator, ICalculationLogger calculationLogger) {
-            DataPresenter = dataPresenter;
-            PostingCollector = postingCollector;
-            SummaryCalculator = summaryCalculator;
-            AverageCalculator = averageCalculator;
-            MonthlyDeltaCalculator = monthlyDeltaCalculator;
-            ClassifiedPostingsCalculator = classifiedPostingsCalculator;
-            CalculationLogger = calculationLogger;
+public class DataCollector : IDataCollector {
+    private readonly IDataPresenter DataPresenter;
+    private readonly IPostingCollector PostingCollector;
+    private readonly ISummaryCalculator SummaryCalculator;
+    private readonly IAverageCalculator AverageCalculator;
+    private readonly IMonthlyDeltaCalculator MonthlyDeltaCalculator;
+    private readonly IClassifiedPostingsCalculator ClassifiedPostingsCalculator;
+    private readonly ICalculationLogger CalculationLogger;
+
+    public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator, IAverageCalculator averageCalculator,
+        IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator, ICalculationLogger calculationLogger) {
+        DataPresenter = dataPresenter;
+        PostingCollector = postingCollector;
+        SummaryCalculator = summaryCalculator;
+        AverageCalculator = averageCalculator;
+        MonthlyDeltaCalculator = monthlyDeltaCalculator;
+        ClassifiedPostingsCalculator = classifiedPostingsCalculator;
+        CalculationLogger = calculationLogger;
+    }
+
+    public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
+        var errorsAndInfos = new ErrorsAndInfos();
+        var secretRepository = container.Resolve<ISecretRepository>();
+
+        CalculationLogger.ClearLogs();
+
+        var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest);
+
+        var postingClassificationsSecret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            return;
         }
 
-        public async Task CollectAndShowAsync(IContainer container, bool isIntegrationTest) {
-            var errorsAndInfos = new ErrorsAndInfos();
-            var secretRepository = container.Resolve<ISecretRepository>();
+        var postingClassifications = postingClassificationsSecret.Cast<IPostingClassification>().ToList();
 
-            CalculationLogger.ClearLogs();
+        await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
+        await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
 
-            var allPostings = await PostingCollector.CollectPostingsAsync(container, isIntegrationTest);
+        await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
-            var postingClassificationsSecret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                await DataPresenter.WriteErrorsAsync(errorsAndInfos);
-                return;
-            }
+        await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications, DateTime.Now.AddYears(-1), 70);
 
-            var postingClassifications = postingClassificationsSecret.Cast<IPostingClassification>().ToList();
-
-            await SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications);
-            await AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
-
-            await MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
-
-            await ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications, DateTime.Now.AddYears(-1), 70);
-
-            CalculationLogger.Flush();
-        }
+        CalculationLogger.Flush();
     }
 }

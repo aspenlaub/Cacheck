@@ -2,12 +2,12 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedMemberInSuper.Global
 
-namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
-    public interface ITypeItemSum : ICollectionViewSourceEntity {
-        string Type { get; set; }
-        string Item { get; set; }
-        double Sum { get; set; }
-        double SumThisYear { get; set; }
-        double SumLastYear { get; set; }
-    }
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+
+public interface ITypeItemSum : ICollectionViewSourceEntity {
+    string Type { get; set; }
+    string Item { get; set; }
+    double Sum { get; set; }
+    double SumThisYear { get; set; }
+    double SumLastYear { get; set; }
 }

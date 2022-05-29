@@ -1,8 +1,8 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces {
-    public interface IFormattedClassification {
-        string Sign { get; }
-        string Classification { get; }
+﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
-        string CombinedClassification { get; }
-    }
+public interface IFormattedClassification {
+    string Sign { get; }
+    string Classification { get; }
+
+    string CombinedClassification { get; }
 }
