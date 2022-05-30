@@ -13,8 +13,7 @@ public class CalculationLogger : ICalculationLogger {
     private readonly IFolder CalculationLogFolder;
     private readonly Dictionary<string, List<ClassificationContribution>> ContributionsPerClassification;
 
-    public CalculationLogger(ILogConfigurationFactory logConfigurationFactory) {
-        var logConfiguration = logConfigurationFactory.Create();
+    public CalculationLogger(ILogConfiguration logConfiguration) {
         CalculationLogFolder = new Folder(Path.GetTempPath()).SubFolder(logConfiguration.LogSubFolder).SubFolder(nameof(CalculationLogger));
         ContributionsPerClassification = new Dictionary<string, List<ClassificationContribution>>();
     }

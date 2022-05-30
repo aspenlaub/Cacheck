@@ -19,14 +19,12 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
     public ITashHandler<CacheckApplicationModel> TashHandler { get; private set; }
 
     private readonly ITashAccessor TashAccessor;
-    private readonly ILogConfigurationFactory LogConfigurationFactory;
 
     public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<CacheckApplicationModel> guiAndApplicationSynchronizer, CacheckApplicationModel model,
-        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, ILogConfigurationFactory logConfigurationFactory)
+        ITashAccessor tashAccessor, ISimpleLogger simpleLogger)
         : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         TashAccessor = tashAccessor;
-        LogConfigurationFactory = logConfigurationFactory;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -46,10 +44,10 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
 
         var selectors = new Dictionary<string, ISelector>();
 
-        var communicator = new TashCommunicatorBase<ICacheckApplicationModel>(TashAccessor, SimpleLogger, LogConfigurationFactory);
+        var communicator = new TashCommunicatorBase<ICacheckApplicationModel>(TashAccessor, SimpleLogger);
         var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors);
         var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors);
-        TashHandler = new TashHandler(TashAccessor, SimpleLogger, LogConfigurationFactory, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
+        TashHandler = new TashHandler(TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator);
     }
 
     public ITashTaskHandlingStatus<CacheckApplicationModel> CreateTashTaskHandlingStatus() {
