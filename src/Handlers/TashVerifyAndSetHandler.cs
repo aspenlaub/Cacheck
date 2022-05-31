@@ -10,7 +10,8 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<ICacheckAppli
     private readonly ICacheckHandlers CacheckHandlers;
 
     public TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler, ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
-        Dictionary<string, ISelector> selectors) : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors) {
+        Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor) 
+            : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
         CacheckHandlers = cudotosiHandlers;
     }
 
