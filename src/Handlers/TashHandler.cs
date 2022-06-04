@@ -21,7 +21,7 @@ public class TashHandler : TashHandlerBase<CacheckApplicationModel> {
     }
 
     protected override async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<CacheckApplicationModel> status) {
-        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor), SimpleLogger.LogId))) {
+        using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor)))) {
             var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
             var s = string.IsNullOrEmpty(status.TaskBeingProcessed.ControlName)
                 ? $"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandler)}"
