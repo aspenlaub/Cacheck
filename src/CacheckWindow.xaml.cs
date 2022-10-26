@@ -56,7 +56,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         _TashTimer.CreateAndStartTimer(_CacheckApp.CreateTashTaskHandlingStatus());
 
         var dataCollector = Container.Resolve<IDataCollector>();
-        await dataCollector.CollectAndShowAsync(Container, Cacheck.CacheckApp.IsIntegrationTest);
+        await dataCollector.CollectAndShowAsync(Container, CacheckApp.IsIntegrationTest);
 
         await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(2));
     }

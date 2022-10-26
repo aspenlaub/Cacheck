@@ -56,7 +56,7 @@ public class DataCollector : IDataCollector {
         var inverseClassifications = inverseClassificationsSecret.Cast<IInverseClassificationPair>().ToList();
 
         await _SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications, inverseClassifications);
-        await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications);
+        await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
