@@ -11,18 +11,18 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
-    private readonly IDataPresenter DataPresenter;
-    private readonly IPostingAggregator PostingAggregator;
-    private readonly IPostingClassificationMatcher PostingClassificationMatcher;
+    private readonly IDataPresenter _DataPresenter;
+    private readonly IPostingAggregator _PostingAggregator;
+    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
 
     public MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator, IPostingClassificationMatcher postingClassificationMatcher) {
-        DataPresenter = dataPresenter;
-        PostingAggregator = postingAggregator;
-        PostingClassificationMatcher = postingClassificationMatcher;
+        _DataPresenter = dataPresenter;
+        _PostingAggregator = postingAggregator;
+        _PostingClassificationMatcher = postingClassificationMatcher;
     }
 
     public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
-        var fairPostings = allPostings.Where(p => postingClassifications.FirstOrDefault(c => PostingClassificationMatcher.DoesPostingMatchClassification(p, c))?.Unfair != true).ToList();
+        var fairPostings = allPostings.Where(p => postingClassifications.FirstOrDefault(c => _PostingClassificationMatcher.DoesPostingMatchClassification(p, c))?.Unfair != true).ToList();
         var minYear = fairPostings.Min(p => p.Date.Year);
         var years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
         var monthsClassifications = new List<IPostingClassification>();
@@ -43,15 +43,15 @@ public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
         }
 
         var errorsAndInfos = new ErrorsAndInfos();
-        var monthlyDeltas = PostingAggregator.AggregatePostings(fairPostings, monthsClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
+        var monthlyDeltas = _PostingAggregator.AggregatePostings(fairPostings, monthsClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
         if (errorsAndInfos.AnyErrors()) {
-            await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
         var monthlyDeltasList = monthlyDeltas.Select(
             result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value }
         ).Cast<ICollectionViewSourceEntity>().ToList();
-        await DataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
+        await _DataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
     }
 }

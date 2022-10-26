@@ -7,16 +7,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 
 public class FakeCacheckHandler<T> : ISimpleCollectionViewSourceHandler where T : ICollectionViewSourceEntity {
-    private readonly List<T> Items;
+    private readonly List<T> _Items;
 
     public FakeCacheckHandler(List<T> items) {
-        Items = items;
+        _Items = items;
     }
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
-        Items.Clear();
+        _Items.Clear();
         Assert.IsTrue(items.All(item => item is T));
-        Items.AddRange(items.OfType<T>());
+        _Items.AddRange(items.OfType<T>());
         await Task.CompletedTask;
     }
 

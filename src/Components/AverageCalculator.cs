@@ -10,34 +10,34 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class AverageCalculator : IAverageCalculator {
-    private readonly IDataPresenter DataPresenter;
-    private readonly IPostingAggregator PostingAggregator;
+    private readonly IDataPresenter _DataPresenter;
+    private readonly IPostingAggregator _PostingAggregator;
 
     public AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator) {
-        DataPresenter = dataPresenter;
-        PostingAggregator = postingAggregator;
+        _DataPresenter = dataPresenter;
+        _PostingAggregator = postingAggregator;
     }
 
     public async Task CalculateAndShowAverageAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
-        var detailedAggregation = PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
+        var detailedAggregation = _PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos).OrderBy(result => result.Key.CombinedClassification).ToList();
         if (errorsAndInfos.AnyErrors()) {
-            await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
         var thisYear = allPostings.Max(p => p.Date.Year);
         var lastYearsPostings = allPostings.Where(p => p.Date.Year < thisYear).ToList();
-        var lastYearsDetailedAggregation = PostingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos).ToList();
+        var lastYearsDetailedAggregation = _PostingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos).ToList();
         if (errorsAndInfos.AnyErrors()) {
-            await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
         var thisYearsPostings = allPostings.Where(p => p.Date.Year == thisYear).ToList();
-        var thisYearsDetailedAggregation = PostingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos).ToList();
+        var thisYearsDetailedAggregation = _PostingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos).ToList();
         if (errorsAndInfos.AnyErrors()) {
-            await DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
@@ -51,7 +51,7 @@ public class AverageCalculator : IAverageCalculator {
                 SumLastYear = GetOtherSum(result.Key, lastYearsDetailedAggregation) / numberOfDistinctMonthsLastYear
             }
         ).Cast<ICollectionViewSourceEntity>().ToList();
-        await DataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
+        await _DataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
     }
 
     private static double GetOtherSum(IFormattedClassification formattedClassification, IEnumerable<KeyValuePair<IFormattedClassification, double>> otherDetailedAggregation) {

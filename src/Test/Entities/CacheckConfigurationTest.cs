@@ -36,4 +36,15 @@ public class CacheckConfigurationTest {
         Assert.IsTrue(secret.Any(s => s.Credit));
         Assert.IsTrue(secret.Any(s => !s.Credit));
     }
+
+    [TestMethod]
+    public async Task CanGetInverseClassifications() {
+        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        var secretRepository = container.Resolve<ISecretRepository>();
+        var errorsAndInfos = new ErrorsAndInfos();
+        var secret = await secretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
+        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.IsTrue(secret.Count >= 5, "At least five inverse classifications expected");
+        Assert.IsTrue(secret.Any(s => s.Classification == "Savings" && s.InverseClassification == "SacrificedSavings"));
+    }
 }

@@ -7,12 +7,12 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
 public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<ICacheckApplicationModel> {
-    private readonly ICacheckHandlers CacheckHandlers;
+    private readonly ICacheckHandlers _CacheckHandlers;
 
     public TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler, ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
-        Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor) 
+        Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
             : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        CacheckHandlers = cudotosiHandlers;
+        _CacheckHandlers = cudotosiHandlers;
     }
 
     protected override void OnValueTaskProcessed(ITashTaskHandlingStatus<ICacheckApplicationModel> status, bool verify, bool set, string actualValue) { }
@@ -26,17 +26,17 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<ICacheckAppli
 
     protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleTextHandler> {
-            { nameof(status.Model.Log), CacheckHandlers.LogTextHandler }
+            { nameof(status.Model.Log), _CacheckHandlers.LogTextHandler }
         };
     }
 
     protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleCollectionViewSourceHandler> {
-            { nameof(status.Model.OverallSums), CacheckHandlers.OverallSumsHandler},
-            { nameof(status.Model.ClassificationSums), CacheckHandlers.ClassificationSumsHandler},
-            { nameof(status.Model.ClassificationAverages), CacheckHandlers.ClassificationAveragesHandler},
-            { nameof(status.Model.MonthlyDeltas), CacheckHandlers.MonthlyDeltasHandler},
-            { nameof(status.Model.ClassifiedPostings), CacheckHandlers.ClassifiedPostingsHandler},
+            { nameof(status.Model.OverallSums), _CacheckHandlers.OverallSumsHandler},
+            { nameof(status.Model.ClassificationSums), _CacheckHandlers.ClassificationSumsHandler},
+            { nameof(status.Model.ClassificationAverages), _CacheckHandlers.ClassificationAveragesHandler},
+            { nameof(status.Model.MonthlyDeltas), _CacheckHandlers.MonthlyDeltasHandler},
+            { nameof(status.Model.ClassifiedPostings), _CacheckHandlers.ClassifiedPostingsHandler},
         };
     }
 

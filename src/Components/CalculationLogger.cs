@@ -10,32 +10,32 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class CalculationLogger : ICalculationLogger {
-    private readonly IFolder CalculationLogFolder;
-    private readonly Dictionary<string, List<ClassificationContribution>> ContributionsPerClassification;
+    private readonly IFolder _CalculationLogFolder;
+    private readonly Dictionary<string, List<ClassificationContribution>> _ContributionsPerClassification;
 
     public CalculationLogger(ILogConfiguration logConfiguration) {
-        CalculationLogFolder = new Folder(Path.GetTempPath()).SubFolder(logConfiguration.LogSubFolder).SubFolder(nameof(CalculationLogger));
-        ContributionsPerClassification = new Dictionary<string, List<ClassificationContribution>>();
+        _CalculationLogFolder = new Folder(Path.GetTempPath()).SubFolder(logConfiguration.LogSubFolder).SubFolder(nameof(CalculationLogger));
+        _ContributionsPerClassification = new Dictionary<string, List<ClassificationContribution>>();
     }
 
     public void ClearLogs() {
-        CalculationLogFolder.CreateIfNecessary();
-        foreach (var fileName in Directory.GetFiles(CalculationLogFolder.FullName, "*.log")) {
+        _CalculationLogFolder.CreateIfNecessary();
+        foreach (var fileName in Directory.GetFiles(_CalculationLogFolder.FullName, "*.log")) {
             File.Delete(fileName);
         }
     }
 
     public void RegisterContribution(string classification, double amount, IPosting posting) {
-        if (!ContributionsPerClassification.ContainsKey(classification)) {
-            ContributionsPerClassification[classification] = new List<ClassificationContribution>();
+        if (!_ContributionsPerClassification.ContainsKey(classification)) {
+            _ContributionsPerClassification[classification] = new List<ClassificationContribution>();
         }
 
-        ContributionsPerClassification[classification].Add(new ClassificationContribution { Amount = amount, Posting = posting });
+        _ContributionsPerClassification[classification].Add(new ClassificationContribution { Amount = amount, Posting = posting });
     }
 
     public void Flush() {
-        foreach (var classification in ContributionsPerClassification.Keys) {
-            var contributions = ContributionsPerClassification[classification].OrderByDescending(c => Math.Abs(c.Amount)).ToList();
+        foreach (var classification in _ContributionsPerClassification.Keys) {
+            var contributions = _ContributionsPerClassification[classification].OrderByDescending(c => Math.Abs(c.Amount)).ToList();
             double sum = 0;
             var contents = "";
             foreach (var contribution in contributions) {
@@ -43,13 +43,13 @@ public class CalculationLogger : ICalculationLogger {
                 contents = contents + "\r\n" + contribution.Amount + " (" + contribution.Posting + "; new balance " + Math.Ceiling(sum) + ")";
             }
 
-            var fileName = CalculationLogFolder.FullName + @"\" + classification + ".log";
+            var fileName = _CalculationLogFolder.FullName + @"\" + classification + ".log";
             if (!File.Exists(fileName)) {
                 File.WriteAllText(fileName, contents);
             } else {
                 File.AppendAllText(fileName, contents);
             }
-            ContributionsPerClassification[classification] = new List<ClassificationContribution>();
+            _ContributionsPerClassification[classification] = new List<ClassificationContribution>();
         }
     }
 }

@@ -9,20 +9,20 @@ using Newtonsoft.Json;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
 public class ClassificationSumsHandler : ISimpleCollectionViewSourceHandler {
-    private readonly ICacheckApplicationModel Model;
-    private readonly IGuiAndAppHandler<CacheckApplicationModel> GuiAndAppHandler;
+    private readonly ICacheckApplicationModel _Model;
+    private readonly IGuiAndAppHandler<CacheckApplicationModel> _GuiAndAppHandler;
 
     public ClassificationSumsHandler(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
-        Model = model;
-        GuiAndAppHandler = guiAndAppHandler;
+        _Model = model;
+        _GuiAndAppHandler = guiAndAppHandler;
     }
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
-        Model.ClassificationSums.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == Model.ClassificationSums.EntityType)) {
-            Model.ClassificationSums.Items.Add(item);
+        _Model.ClassificationSums.Items.Clear();
+        foreach (var item in items.Where(item => item.GetType() == _Model.ClassificationSums.EntityType)) {
+            _Model.ClassificationSums.Items.Add(item);
         }
-        await GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        await _GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJsonObject(string text) {

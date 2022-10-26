@@ -16,6 +16,7 @@ public static class CacheckAppContainerBuilder {
         await builder.UseVishizhukelNetDvinAndPeghAsync("Cacheck", new DummyCsArgumentPrompter());
 
         builder.RegisterType<AverageCalculator>().As<IAverageCalculator>();
+        builder.RegisterType<AggregatedPostingsNetter>().As<IAggregatedPostingsNetter>();
         builder.RegisterType<CacheckApplication>().As<CacheckApplication>().As<IGuiAndAppHandler<CacheckApplicationModel>>().As<IDataPresenter>().SingleInstance();
         builder.RegisterType<CacheckApplicationModel>().As<CacheckApplicationModel>().As<ICacheckApplicationModel>().As<IApplicationModelBase>().As<IBusy>().SingleInstance();
         builder.RegisterType<CacheckGuiAndApplicationSynchronizer>()

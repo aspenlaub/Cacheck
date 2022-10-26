@@ -7,22 +7,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test;
 
 public class CacheckWindowUnderTest : CacheckWindowUnderTestActions, IDisposable {
-    private readonly IStarterAndStopper CacheckStarterAndStopper;
-    private bool IsInitialized;
+    private readonly IStarterAndStopper _CacheckStarterAndStopper;
+    private bool _IsInitialized;
 
     public CacheckWindowUnderTest(ITashAccessor tashAccessor, IStarterAndStopper roustStarterAndStopper) : base(tashAccessor) {
-        CacheckStarterAndStopper = roustStarterAndStopper;
-        IsInitialized = false;
+        _CacheckStarterAndStopper = roustStarterAndStopper;
+        _IsInitialized = false;
     }
 
     public override async Task InitializeAsync() {
-        Assert.IsFalse(IsInitialized, "Window already has been initialized");
+        Assert.IsFalse(_IsInitialized, "Window already has been initialized");
         await base.InitializeAsync();
-        CacheckStarterAndStopper.Start();
-        IsInitialized = true;
+        _CacheckStarterAndStopper.Start();
+        _IsInitialized = true;
     }
 
     public void Dispose() {
-        CacheckStarterAndStopper.Stop();
+        _CacheckStarterAndStopper.Stop();
     }
 }

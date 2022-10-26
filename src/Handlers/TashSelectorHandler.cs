@@ -11,12 +11,12 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
 public class TashSelectorHandler : TashSelectorHandlerBase<ICacheckApplicationModel> {
     // ReSharper disable once NotAccessedField.Local
-    private readonly ICacheckHandlers CacheckHandlers;
+    private readonly ICacheckHandlers _CacheckHandlers;
 
     public TashSelectorHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger, ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
             Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
         : base(simpleLogger, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        CacheckHandlers = cudotosiHandlers;
+        _CacheckHandlers = cudotosiHandlers;
     }
 
     public override async Task ProcessSelectComboOrResetTaskAsync(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {

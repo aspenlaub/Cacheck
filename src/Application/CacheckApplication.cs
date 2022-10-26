@@ -18,15 +18,15 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
     public ICacheckCommands Commands { get; private set; }
     public ITashHandler<CacheckApplicationModel> TashHandler { get; private set; }
 
-    private readonly ITashAccessor TashAccessor;
-    private readonly IMethodNamesFromStackFramesExtractor MethodNamesFromStackFramesExtractor;
+    private readonly ITashAccessor _TashAccessor;
+    private readonly IMethodNamesFromStackFramesExtractor _MethodNamesFromStackFramesExtractor;
 
     public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<CacheckApplicationModel> guiAndApplicationSynchronizer, CacheckApplicationModel model,
         ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
             : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
-        TashAccessor = tashAccessor;
-        MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor;
+        _TashAccessor = tashAccessor;
+        _MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -46,10 +46,10 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
 
         var selectors = new Dictionary<string, ISelector>();
 
-        var communicator = new TashCommunicatorBase<ICacheckApplicationModel>(TashAccessor, SimpleLogger, MethodNamesFromStackFramesExtractor);
-        var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors, MethodNamesFromStackFramesExtractor);
-        var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors, MethodNamesFromStackFramesExtractor);
-        TashHandler = new TashHandler(TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator, MethodNamesFromStackFramesExtractor);
+        var communicator = new TashCommunicatorBase<ICacheckApplicationModel>(_TashAccessor, SimpleLogger, _MethodNamesFromStackFramesExtractor);
+        var selectorHandler = new TashSelectorHandler(Handlers, SimpleLogger, communicator, selectors, _MethodNamesFromStackFramesExtractor);
+        var verifyAndSetHandler = new TashVerifyAndSetHandler(Handlers, SimpleLogger, selectorHandler, communicator, selectors, _MethodNamesFromStackFramesExtractor);
+        TashHandler = new TashHandler(_TashAccessor, SimpleLogger, ButtonNameToCommandMapper, ToggleButtonNameToHandlerMapper, this, verifyAndSetHandler, selectorHandler, communicator, _MethodNamesFromStackFramesExtractor);
     }
 
     public ITashTaskHandlingStatus<CacheckApplicationModel> CreateTashTaskHandlingStatus() {

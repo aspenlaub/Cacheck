@@ -23,8 +23,8 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck;
 public partial class CacheckWindow : IAsyncDisposable {
     private static IContainer Container { get; set; }
 
-    private CacheckApplication CacheckApp;
-    private ITashTimer<CacheckApplicationModel> TashTimer;
+    private CacheckApplication _CacheckApp;
+    private ITashTimer<CacheckApplicationModel> _TashTimer;
 
     public CacheckWindow() {
         InitializeComponent();
@@ -37,23 +37,23 @@ public partial class CacheckWindow : IAsyncDisposable {
 
     private async void OnLoaded(object sender, RoutedEventArgs e) {
         await BuildContainerIfNecessaryAsync();
-        CacheckApp = Container.Resolve<CacheckApplication>();
-        await CacheckApp.OnLoadedAsync();
+        _CacheckApp = Container.Resolve<CacheckApplication>();
+        await _CacheckApp.OnLoadedAsync();
 
         var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-        guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, items => CacheckApp.Handlers.OverallSumsHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => CacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => CacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => CacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, items => CacheckApp.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => CacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
+        guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, items => _CacheckApp.Handlers.OverallSumsHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => _CacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => _CacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => _CacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, items => _CacheckApp.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(items));
+        guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => _CacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
 
-        TashTimer = new TashTimer<CacheckApplicationModel>(Container.Resolve<ITashAccessor>(), CacheckApp.TashHandler, guiToAppGate);
-        if (!await TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
+        _TashTimer = new TashTimer<CacheckApplicationModel>(Container.Resolve<ITashAccessor>(), _CacheckApp.TashHandler, guiToAppGate);
+        if (!await _TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
             Close();
         }
 
-        TashTimer.CreateAndStartTimer(CacheckApp.CreateTashTaskHandlingStatus());
+        _TashTimer.CreateAndStartTimer(_CacheckApp.CreateTashTaskHandlingStatus());
 
         var dataCollector = Container.Resolve<IDataCollector>();
         await dataCollector.CollectAndShowAsync(Container, Cacheck.CacheckApp.IsIntegrationTest);
@@ -62,17 +62,17 @@ public partial class CacheckWindow : IAsyncDisposable {
     }
 
     public async ValueTask DisposeAsync() {
-        if (TashTimer == null) { return; }
+        if (_TashTimer == null) { return; }
 
-        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        await _TashTimer.StopTimerAndConfirmDeadAsync(false);
     }
 
     private async void OnClosing(object sender, CancelEventArgs e) {
         e.Cancel = true;
 
-        if (TashTimer == null) { return; }
+        if (_TashTimer == null) { return; }
 
-        await TashTimer.StopTimerAndConfirmDeadAsync(false);
+        await _TashTimer.StopTimerAndConfirmDeadAsync(false);
         WindowsApplication.Current.Shutdown();
     }
 
