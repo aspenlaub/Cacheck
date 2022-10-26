@@ -48,7 +48,7 @@ public class SummaryCalculator : ISummaryCalculator {
             return;
         }
 
-        detailedAggregation = _AggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications);
+        detailedAggregation = _AggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, new List<string>());
 
         if (detailedAggregation.Any()) {
             var classificationSumList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).Select(

@@ -6,7 +6,8 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class AggregatedPostingsNetter : IAggregatedPostingsNetter {
-    public IDictionary<IFormattedClassification, double> Net(IDictionary<IFormattedClassification, double> aggregation, IList<IInverseClassificationPair> inverseClassifications) {
+    public IDictionary<IFormattedClassification, double> Net(IDictionary<IFormattedClassification, double> aggregation,
+            IList<IInverseClassificationPair> inverseClassifications, IList<string> classificationsToKeepEvenIfZero) {
         foreach (var inverseClassificationPair in inverseClassifications) {
             var classification = inverseClassificationPair.Classification;
             var classification2 = inverseClassificationPair.InverseClassification;
@@ -29,6 +30,6 @@ public class AggregatedPostingsNetter : IAggregatedPostingsNetter {
             }
         }
 
-        return aggregation.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
+        return aggregation.Where(x => x.Value > 0 || classificationsToKeepEvenIfZero.Contains(x.Key.Classification)).ToDictionary(x => x.Key, x => x.Value);
     }
 }

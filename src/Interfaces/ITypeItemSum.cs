@@ -8,6 +8,7 @@ public interface ITypeItemSum : ICollectionViewSourceEntity {
     string Type { get; set; }
     string Item { get; set; }
     double Sum { get; set; }
+    double SumPastHalfYear { get; set; }
     double SumThisYear { get; set; }
     double SumLastYear { get; set; }
 }
