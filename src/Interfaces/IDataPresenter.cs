@@ -1,7 +1,15 @@
-﻿namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 public interface IDataPresenter {
     ICacheckHandlers Handlers { get; }
 
     string GetLogText();
+    Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
+        IList<IInverseClassificationPair> inverseClassifications);
+
+    void SetDataCollector(IDataCollector dataCollector);
+    string SingleClassification();
 }

@@ -75,16 +75,22 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Classifications" Padding="60,5,60,5">
-                <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
-                          Name="ClassifiedPostings" ItemsSource="{Binding Source={StaticResource ClassifiedPostings}}" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Width="20*" Binding="{Binding FormattedDate, StringFormat=d}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                        <DataGridTextColumn Header="Amount" Width="20*" Binding="{Binding Amount, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                        <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Classification}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                        <DataGridTextColumn Header="Clue" Width="20*" Binding="{Binding Clue}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                        <DataGridTextColumn Header="Remark" Width="60*" Binding="{Binding Remark}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Name="SingleClassificationLabel" Margin="5">Single Classification</Label>
+                        <ComboBox Name="SingleClassification" Margin="5" MinWidth="240"/>
+                    </StackPanel>
+                    <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                              Name="ClassifiedPostings" ItemsSource="{Binding Source={StaticResource ClassifiedPostings}}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Width="20*" Binding="{Binding FormattedDate, StringFormat=d}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Amount" Width="20*" Binding="{Binding Amount, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Classification}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Clue" Width="20*" Binding="{Binding Clue}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Remark" Width="60*" Binding="{Binding Remark}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
             </TabItem>
             <TabItem Header="Log" Padding="60,5,60,5">
                 <Grid>

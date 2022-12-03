@@ -9,4 +9,5 @@ public interface ICacheckApplicationModel : IApplicationModelBase {
     ICollectionViewSource MonthlyDeltas { get; }
     ICollectionViewSource ClassifiedPostings { get; }
     ITextBox Log { get; }
+    ISelector SingleClassification { get; }
 }

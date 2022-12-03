@@ -9,4 +9,5 @@ public interface ICacheckHandlers {
     ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; }
     ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
     ISimpleTextHandler LogTextHandler { get; }
+    ISingleClassificationHandler SingleClassificationHandler { get; }
 }

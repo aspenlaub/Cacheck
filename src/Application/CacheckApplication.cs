@@ -20,13 +20,17 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
 
     private readonly ITashAccessor _TashAccessor;
     private readonly IMethodNamesFromStackFramesExtractor _MethodNamesFromStackFramesExtractor;
+    private IDataCollector _DataCollector;
+    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
 
     public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<CacheckApplicationModel> guiAndApplicationSynchronizer, CacheckApplicationModel model,
-        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
+        ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor,
+        IPostingClassificationMatcher postingClassificationMatcher)
             : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         _TashAccessor = tashAccessor;
         _MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor;
+        _PostingClassificationMatcher = postingClassificationMatcher;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -40,7 +44,8 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
             ClassificationAveragesHandler = new ClassificationAveragesHandler(Model, this),
             MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
             ClassifiedPostingsHandler = new ClassifiedPostingsHandler(Model, this),
-            LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log)
+            LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
+            SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, _PostingClassificationMatcher)
         };
         Commands = new CacheckCommands();
 
@@ -58,5 +63,23 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
 
     public string GetLogText() {
         return Model.Log.Text;
+    }
+
+    public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
+            IList<IInverseClassificationPair> inverseClassifications) {
+        await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(classifications, postings, inverseClassifications);
+    }
+
+    public override async Task OnLoadedAsync() {
+        await base.OnLoadedAsync();
+        await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync();
+    }
+
+    public void SetDataCollector(IDataCollector dataCollector) {
+        _DataCollector = dataCollector;
+    }
+
+    public string SingleClassification() {
+        return Model.SingleClassification.SelectedItem?.Name ?? "";
     }
 }

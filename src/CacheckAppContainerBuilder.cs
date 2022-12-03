@@ -26,7 +26,9 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<CalculationLogger>().As<ICalculationLogger>().SingleInstance();
         builder.RegisterType<ClassifiedPosting>().As<IClassifiedPosting>();
         builder.RegisterType<ClassifiedPostingsCalculator>().As<IClassifiedPostingsCalculator>();
-        builder.RegisterType<DataCollector>().As<IDataCollector>();
+        builder.RegisterType<DataCollector>()
+               .WithParameter((p, _) => p.Name == "isIntegrationTest", (_, _) => CacheckApp.IsIntegrationTest)
+               .As<IDataCollector>();
         builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
         builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
         builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();

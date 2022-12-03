@@ -24,7 +24,7 @@ public class ClassifiedPostingsCalculatorTest : CalculatorTestBase {
         var postings = new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 };
         postings = postings.Select(IncreasePostingAmount).ToList();
         var postingClassifications = new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationD1 };
-        await Sut.CalculateAndShowClassifiedPostingsAsync(postings, postingClassifications, new DateTime(2020, 12, 31), 250);
+        await Sut.CalculateAndShowClassifiedPostingsAsync(postings, postingClassifications, new DateTime(2020, 12, 31), 250, "", "");
 
         var items = FakeDataPresenter.ClassifiedPostings;
         Assert.AreEqual(2, items.Count);

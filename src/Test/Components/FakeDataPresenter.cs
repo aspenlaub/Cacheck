@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
@@ -22,5 +23,15 @@ public class FakeDataPresenter : IDataPresenter {
 
     public string GetLogText() {
         throw new System.NotImplementedException();
+    }
+
+    public void SetDataCollector(IDataCollector dataCollector) {
+    }
+
+    public string SingleClassification() => "";
+
+    public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
+                                                  IList<IInverseClassificationPair> inverseClassifications) {
+        await Task.CompletedTask;
     }
 }

@@ -19,6 +19,7 @@ public class FakeCacheckHandlers : ICacheckHandlers {
     public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; }
     public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
     public ISimpleTextHandler LogTextHandler { get; }
+    public ISingleClassificationHandler SingleClassificationHandler { get; }
 
     public FakeCacheckHandlers(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
         OverallSumsHandler = new FakeCacheckHandler<ITypeItemSum>(OverallSums);
@@ -27,5 +28,6 @@ public class FakeCacheckHandlers : ICacheckHandlers {
         MonthlyDeltasHandler = new FakeCacheckHandler<ITypeMonthDelta>(MonthlyDeltas);
         ClassifiedPostingsHandler = new FakeCacheckHandler<IClassifiedPosting>(ClassifiedPostings);
         LogTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.Log);
+        SingleClassificationHandler = new FakeCacheckSelectorHandler();
     }
 }

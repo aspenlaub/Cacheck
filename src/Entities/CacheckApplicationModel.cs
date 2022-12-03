@@ -12,4 +12,5 @@ public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplication
     public ICollectionViewSource MonthlyDeltas { get; } = new CollectionViewSource { EntityType = typeof(TypeMonthDelta) };
     public ICollectionViewSource ClassifiedPostings { get; } = new CollectionViewSource { EntityType = typeof(ClassifiedPosting) };
     public ITextBox Log { get; } = new TextBox();
+    public ISelector SingleClassification { get; } = new ComboBox();
 }

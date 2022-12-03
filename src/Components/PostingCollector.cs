@@ -8,33 +8,34 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
-using Autofac;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class PostingCollector : IPostingCollector {
     private readonly IDataPresenter _DataPresenter;
+    private readonly ISecretRepository _SecretRepository;
+    private readonly IFolderResolver _FolderResolver;
+    private readonly ISourceFileReader _SourceFileReader;
 
-    public PostingCollector(IDataPresenter dataPresenter) {
+    public PostingCollector(IDataPresenter dataPresenter, ISecretRepository secretRepository, IFolderResolver folderResolver,
+            ISourceFileReader sourceFileReader) {
         _DataPresenter = dataPresenter;
+        _SecretRepository = secretRepository;
+        _FolderResolver = folderResolver;
+        _SourceFileReader = sourceFileReader;
     }
 
-    public async Task<IList<IPosting>> CollectPostingsAsync(IContainer container, bool isIntegrationTest) {
-        if (container == null) {
-            throw new ArgumentNullException(nameof(container));
-        }
-
+    public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
         var allPostings = new List<IPosting>();
 
-        var sourceFolder = await GetSourceFolderAsync(container, isIntegrationTest);
+        var sourceFolder = await GetSourceFolderAsync(_SecretRepository, _FolderResolver, isIntegrationTest);
         if (sourceFolder == null) { return allPostings; }
 
         var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
-        var reader = container.Resolve<ISourceFileReader>();
         foreach (var file in files) {
             await _DataPresenter.WriteLineAsync($"File: {file}");
             var errorsAndInfos = new ErrorsAndInfos();
-            var postings = reader.ReadPostings(file, errorsAndInfos);
+            var postings = _SourceFileReader.ReadPostings(file, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
                 await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return allPostings;
@@ -54,10 +55,9 @@ public class PostingCollector : IPostingCollector {
         return allPostings;
     }
 
-    private async Task<IFolder> GetSourceFolderAsync(IComponentContext container, bool isIntegrationTest) {
+    private async Task<IFolder> GetSourceFolderAsync(ISecretRepository secretRepository, IFolderResolver resolver, bool isIntegrationTest) {
         IFolder sourceFolder;
         var errorsAndInfos = new ErrorsAndInfos();
-        var secretRepository = container.Resolve<ISecretRepository>();
 
         if (isIntegrationTest) {
             sourceFolder = Folders.IntegrationTestFolder;
@@ -68,7 +68,6 @@ public class PostingCollector : IPostingCollector {
                 return null;
             }
 
-            var resolver = container.Resolve<IFolderResolver>();
             sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
             if (!errorsAndInfos.AnyErrors()) {
                 return sourceFolder;

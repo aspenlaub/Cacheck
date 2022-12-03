@@ -41,12 +41,14 @@ public partial class CacheckWindow : IAsyncDisposable {
         await _CacheckApp.OnLoadedAsync();
 
         var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-        guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, items => _CacheckApp.Handlers.OverallSumsHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, items => _CacheckApp.Handlers.ClassificationSumsHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, items => _CacheckApp.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, items => _CacheckApp.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, items => _CacheckApp.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(items));
-        guiToAppGate.RegisterAsyncTextBoxCallback(Log, t => _CacheckApp.Handlers.LogTextHandler.TextChangedAsync(t));
+        var handlers = _CacheckApp.Handlers;
+        guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, handlers.OverallSumsHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, handlers.ClassificationSumsHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, handlers.ClassificationAveragesHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, handlers.MonthlyDeltasHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, handlers.ClassifiedPostingsHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncTextBoxCallback(Log, handlers.LogTextHandler.TextChangedAsync);
+        guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
 
         _TashTimer = new TashTimer<CacheckApplicationModel>(Container.Resolve<ITashAccessor>(), _CacheckApp.TashHandler, guiToAppGate);
         if (!await _TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
@@ -56,7 +58,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         _TashTimer.CreateAndStartTimer(_CacheckApp.CreateTashTaskHandlingStatus());
 
         var dataCollector = Container.Resolve<IDataCollector>();
-        await dataCollector.CollectAndShowAsync(Container, CacheckApp.IsIntegrationTest);
+        await dataCollector.CollectAndShowAsync(); // CacheckApp.IsIntegrationTest
 
         await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(2));
     }
