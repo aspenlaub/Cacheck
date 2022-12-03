@@ -75,8 +75,8 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Classifications" Padding="60,5,60,5">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal">
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Label Name="SingleClassificationLabel" Margin="5">Single Classification</Label>
                         <ComboBox Name="SingleClassification" Margin="5" MinWidth="240"/>
                     </StackPanel>
@@ -90,7 +90,7 @@
                             <DataGridTextColumn Header="Remark" Width="60*" Binding="{Binding Remark}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                </StackPanel>
+                </DockPanel>
             </TabItem>
             <TabItem Header="Log" Padding="60,5,60,5">
                 <Grid>
