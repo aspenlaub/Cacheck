@@ -11,5 +11,5 @@ public class ClassifiedPosting : IClassifiedPosting {
     public string Classification { get; set; }
     public string Clue { get; set; }
     public string Remark { get; set; }
-    public string FormattedDate => $"{Date.Day:D2}.{Date.Month:D2}.{Date.Year}";
+    public string FormattedDate => $"{Date.Year}-{Date.Month:D2}-{Date.Day:D2}";
 }
