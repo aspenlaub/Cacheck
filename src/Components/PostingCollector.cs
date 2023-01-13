@@ -57,6 +57,7 @@ public class PostingCollector : IPostingCollector {
         }
 
         var maxDate = allPostings.Max(p => p.Date);
+        transactions = transactions.Where(t => t.Date.Year < maxDate.Year || t.Date.Year == maxDate.Year && t.Date.Month <= maxDate.Month).ToList();
 
         allPostings.AddRange(transactions.SelectMany(_TransactionIntoPostingConverter.Convert));
         if (!allPostings.Any()) { return allPostings; }
