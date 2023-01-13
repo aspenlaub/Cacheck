@@ -16,13 +16,18 @@ public class PostingCollector : IPostingCollector {
     private readonly ISecretRepository _SecretRepository;
     private readonly IFolderResolver _FolderResolver;
     private readonly ISourceFileReader _SourceFileReader;
+    private readonly IFundamentalTransactionsReader _FundamentalTransactionsReader;
+    private readonly ITransactionIntoPostingsConverter _TransactionIntoPostingConverter;
 
     public PostingCollector(IDataPresenter dataPresenter, ISecretRepository secretRepository, IFolderResolver folderResolver,
-            ISourceFileReader sourceFileReader) {
+            ISourceFileReader sourceFileReader,
+            IFundamentalTransactionsReader fundamentalTransactionsReader, ITransactionIntoPostingsConverter transactionIntoPostingConverter) {
         _DataPresenter = dataPresenter;
         _SecretRepository = secretRepository;
         _FolderResolver = folderResolver;
         _SourceFileReader = sourceFileReader;
+        _FundamentalTransactionsReader = fundamentalTransactionsReader;
+        _TransactionIntoPostingConverter = transactionIntoPostingConverter;
     }
 
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
@@ -32,9 +37,9 @@ public class PostingCollector : IPostingCollector {
         if (sourceFolder == null) { return allPostings; }
 
         var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
+        var errorsAndInfos = new ErrorsAndInfos();
         foreach (var file in files) {
             await _DataPresenter.WriteLineAsync($"File: {file}");
-            var errorsAndInfos = new ErrorsAndInfos();
             var postings = _SourceFileReader.ReadPostings(file, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
                 await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -45,9 +50,17 @@ public class PostingCollector : IPostingCollector {
             allPostings.AddRange(postings);
         }
 
-        if (!allPostings.Any()) { return allPostings; }
+        var transactions = await _FundamentalTransactionsReader.LoadTransactionsIfAvailableAsync(errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            return allPostings;
+        }
 
         var maxDate = allPostings.Max(p => p.Date);
+
+        allPostings.AddRange(transactions.SelectMany(_TransactionIntoPostingConverter.Convert));
+        if (!allPostings.Any()) { return allPostings; }
+
         var minDate = new DateTime(maxDate.Year - 1, 1, 1);
         await _DataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
         allPostings.RemoveAll(p => p.Date < minDate);

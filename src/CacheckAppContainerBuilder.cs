@@ -38,6 +38,7 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<PostingCollector>().As<IPostingCollector>();
         builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
         builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();
+        builder.RegisterType<TransactionIntoPostingsConverter>().As<ITransactionIntoPostingsConverter>();
         builder.RegisterType<TypeItemSum>().As<ITypeItemSum>();
         builder.RegisterType<TypeMonthDelta>().As<ITypeMonthDelta>();
         return builder;

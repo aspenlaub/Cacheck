@@ -30,7 +30,7 @@ public class FundamentalTransactionsReader : IFundamentalTransactionsReader {
         var fileName = folder.FullName + @"\" + TransactionsJsonFileName;
         if (!File.Exists(fileName)) { return new List<Transaction>(); }
 
-        var stream = new FileStream(fileName, FileMode.Open);
+        await using var stream = new FileStream(fileName, FileMode.Open);
         var transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(stream) ?? new List<Transaction>();
         transactions = transactions.Where(t => t.TransactionType != TransactionType.Buy && t.TransactionType != TransactionType.Sell).ToList();
         return transactions;
