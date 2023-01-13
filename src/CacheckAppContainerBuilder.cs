@@ -30,6 +30,7 @@ public static class CacheckAppContainerBuilder {
                .WithParameter((p, _) => p.Name == "isIntegrationTest", (_, _) => CacheckApp.IsIntegrationTest)
                .As<IDataCollector>();
         builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
+        builder.RegisterType<FundamentalTransactionsReader>().As<IFundamentalTransactionsReader>();
         builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
         builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
         builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
