@@ -56,15 +56,13 @@ public class PostingCollector : IPostingCollector {
             return allPostings;
         }
 
+        var minDate = allPostings.Min(p => p.Date);
         var maxDate = allPostings.Max(p => p.Date);
-        transactions = transactions.Where(t => t.Date.Year < maxDate.Year || t.Date.Year == maxDate.Year && t.Date.Month <= maxDate.Month).ToList();
+        transactions = transactions.Where(t
+            => t.Date.Year >= minDate.Year && (t.Date.Year < maxDate.Year || t.Date.Year == maxDate.Year && t.Date.Month <= maxDate.Month)
+        ).ToList();
 
         allPostings.AddRange(transactions.SelectMany(_TransactionIntoPostingConverter.Convert));
-        if (!allPostings.Any()) { return allPostings; }
-
-        var minDate = new DateTime(maxDate.Year - 1, 1, 1);
-        await _DataPresenter.WriteLineAsync($"{allPostings.Count(p => p.Date < minDate)} posting/-s removed");
-        allPostings.RemoveAll(p => p.Date < minDate);
 
         return allPostings;
     }

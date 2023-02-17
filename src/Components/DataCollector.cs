@@ -40,7 +40,11 @@ public class DataCollector : IDataCollector {
 
         _CalculationLogger.ClearLogs();
 
-        var allPostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
+        var allTimePostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
+        var maxDate = allTimePostings.Max(p => p.Date);
+        var minDate = new DateTime(maxDate.Year - 1, 1, 1);
+        var allPostings = allTimePostings.Where(p => p.Date >= minDate).ToList();
+        await _DataPresenter.WriteLineAsync($"{allTimePostings.Count(p => p.Date < minDate)} posting/-s removed except for summary tab");
 
         var postingClassificationsSecret = await _SecretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
@@ -60,7 +64,7 @@ public class DataCollector : IDataCollector {
 
         await _DataPresenter.OnClassificationsFoundAsync(postingClassifications, allPostings, inverseClassifications);
 
-        await _SummaryCalculator.CalculateAndShowSummaryAsync(allPostings, postingClassifications, inverseClassifications);
+        await _SummaryCalculator.CalculateAndShowSummaryAsync(allTimePostings, postingClassifications, inverseClassifications);
         await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
