@@ -35,7 +35,15 @@ public class DataCollector : IDataCollector {
         _IsIntegrationTest = isIntegrationTest;
     }
 
+    private DateTime _LastCallToCollectAndShow = DateTime.MinValue;
+
     public async Task CollectAndShowAsync() {
+        var now = DateTime.Now;
+        if (_LastCallToCollectAndShow > now.AddSeconds(-5)) {
+            return;
+        }
+
+        _LastCallToCollectAndShow = now;
         var errorsAndInfos = new ErrorsAndInfos();
 
         _CalculationLogger.ClearLogs();
@@ -64,7 +72,11 @@ public class DataCollector : IDataCollector {
 
         await _DataPresenter.OnClassificationsFoundAsync(postingClassifications, allPostings, inverseClassifications);
 
-        await _SummaryCalculator.CalculateAndShowSummaryAsync(allTimePostings, postingClassifications, inverseClassifications);
+        if (!await _SummaryCalculator.CalculateAndShowSummaryAsync(allTimePostings, postingClassifications, inverseClassifications)) {
+            _CalculationLogger.Flush();
+            return;
+        }
+
         await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);

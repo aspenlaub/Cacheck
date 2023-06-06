@@ -23,7 +23,7 @@ public class SummaryCalculator : ISummaryCalculator {
         _AggregatedPostingsNetter = aggregatedPostingsNetter;
     }
 
-    public async Task CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
+    public async Task<bool> CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
                 IList<IInverseClassificationPair> inverseClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
         var fairPostings = allPostings.Where(p => postingClassifications.FirstOrDefault(c => _PostingClassificationMatcher.DoesPostingMatchClassification(p, c))?.Unfair != true).ToList();
@@ -33,7 +33,7 @@ public class SummaryCalculator : ISummaryCalculator {
         }, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
-            return;
+            return false;
         }
 
         var overallSumList = pureDebitCreditAggregation.Select(
@@ -45,16 +45,19 @@ public class SummaryCalculator : ISummaryCalculator {
         var detailedAggregation = _PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
-            return;
+            return false;
         }
 
         detailedAggregation = _AggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, new List<string>());
 
-        if (detailedAggregation.Any()) {
-            var classificationSumList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).Select(
-                result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
-            ).Cast<ICollectionViewSourceEntity>().ToList();
-            await _DataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
+        if (!detailedAggregation.Any()) {
+            return true;
         }
+
+        var classificationSumList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).Select(
+            result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
+        ).Cast<ICollectionViewSourceEntity>().ToList();
+        await _DataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
+        return true;
     }
 }
