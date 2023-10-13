@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
-using Newtonsoft.Json;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
@@ -25,8 +25,8 @@ public class MonthlyDeltasHandler : ISimpleCollectionViewSourceHandler {
         await _GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
-    public IList<ICollectionViewSourceEntity> DeserializeJsonObject(string text) {
-        var list = JsonConvert.DeserializeObject<List<TypeMonthDelta>>(text);
-        return list == null ? new List<ICollectionViewSourceEntity>() : list.Cast<ICollectionViewSourceEntity>().ToList();
+    public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
+        var list = JsonSerializer.Deserialize<List<TypeMonthDelta>>(json);
+        return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? new List<ICollectionViewSourceEntity>();
     }
 }

@@ -20,7 +20,7 @@ public class FakeCacheckHandler<T> : ISimpleCollectionViewSourceHandler where T 
         await Task.CompletedTask;
     }
 
-    public IList<ICollectionViewSourceEntity> DeserializeJsonObject(string text) {
+    public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
         throw new System.NotImplementedException();
     }
 }
