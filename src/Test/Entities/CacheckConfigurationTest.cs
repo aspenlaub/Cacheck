@@ -47,4 +47,26 @@ public class CacheckConfigurationTest {
         Assert.IsTrue(secret.Count >= 5, "At least five inverse classifications expected");
         Assert.IsTrue(secret.Any(s => s.Classification == "Savings" && s.InverseClassification == "SacrificedSavings"));
     }
+
+    [TestMethod]
+    public async Task CanGetIrregularDebitClassifications() {
+        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        var secretRepository = container.Resolve<ISecretRepository>();
+        var errorsAndInfos = new ErrorsAndInfos();
+        var secret = await secretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
+        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.IsTrue(secret.Count >= 5, "At least five irregular debit classifications expected");
+        Assert.IsTrue(secret.Any(s => s.Classification == "Holiday" && s.Percentage == 100));
+    }
+
+    [TestMethod]
+    public async Task CanGetLiquidityPlanClassifications() {
+        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        var secretRepository = container.Resolve<ISecretRepository>();
+        var errorsAndInfos = new ErrorsAndInfos();
+        var secret = await secretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
+        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.IsTrue(secret.Count >= 5, "At least five irregular debit classifications expected");
+        Assert.IsTrue(secret.Any(s => s.Classification == "Holiday" && s.LiquidityClassification == "Fix" && s.Percentage == 100));
+    }
 }
