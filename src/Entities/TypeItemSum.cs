@@ -8,6 +8,7 @@ public class TypeItemSum : ITypeItemSum {
     public string Item { get; set; }
     public double Sum { get; set; }
     public double SumPastHalfYear { get; set; }
+    public double SumPastTwelveMonths { get; set; }
     public double SumThisYear { get; set; }
     public double SumLastYear { get; set; }
 }
