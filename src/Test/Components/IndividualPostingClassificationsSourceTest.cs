@@ -12,11 +12,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 [TestClass]
 public class IndividualPostingClassificationsSourceTest {
     private IIndividualPostingClassificationsSource _Sut;
+    private IPostingCollector _PostingCollector;
+    private IPostingHasher _PostingHasher;
 
     [TestInitialize]
     public async Task Initialize() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
         _Sut = container.Resolve<IIndividualPostingClassificationsSource>();
+        _PostingCollector = container.Resolve<IPostingCollector>();
+        _PostingHasher = container.Resolve<IPostingHasher>();
     }
 
     [TestMethod]
@@ -25,8 +29,11 @@ public class IndividualPostingClassificationsSourceTest {
         var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         individualPostingClassifications = individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists)).ToList();
-        Assert.IsTrue(!individualPostingClassifications.Any(),
-            "Individual posting classifications have changed, please adjust this test");
+        Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
+        Assert.IsTrue(individualPostingClassifications.Any(i
+            => i.PostingHash == "202305039976900011102000280653886462435000"
+            && i.Credit == false
+            && i.Classification == "ElectronicsAndSoftware"));
     }
 
     [TestMethod]
@@ -35,8 +42,13 @@ public class IndividualPostingClassificationsSourceTest {
         var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         individualPostingClassifications = individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists)).ToList();
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-        Assert.IsTrue(!individualPostingClassifications.Any(),
-            "Individual posting classifications have changed, please adjust this test");
+        Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
+        var postings = await _PostingCollector.CollectPostingsAsync(false);
+        var postingHashes = postings.Select(_PostingHasher.Hash).ToList();
+        foreach (var individualPostingClassification in individualPostingClassifications) {
+            Assert.IsTrue(postingHashes.Contains(individualPostingClassification.PostingHash),
+                $"Hash {individualPostingClassification.PostingHash} does not correspond to a posting");
+        }
     }
 
     [TestMethod]

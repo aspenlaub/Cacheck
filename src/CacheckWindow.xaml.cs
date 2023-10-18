@@ -1,11 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Helpers;
@@ -83,5 +87,59 @@ public partial class CacheckWindow : IAsyncDisposable {
 
         var builder = await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(this);
         Container = builder.Build();
+    }
+
+    private async void OnChangeClassificationClickAsync(object sender, RoutedEventArgs e) {
+        var postings = ClassifiedPostings.SelectedCells.Select(c => c.Item).OfType<ClassifiedPosting>().Distinct().ToList();
+        if (postings.Count != 1) {
+            MessageBox.Show($"{postings.Count} posting/s selected", Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+        if (postings[0].Amount == 0) {
+            MessageBox.Show("The amount cannot be zero", Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        var posting = new Posting { Date = postings[0].Date, Amount = postings[0].Amount, Remark = postings[0].Remark };
+        var hasher = Container.Resolve<IPostingHasher>();
+        var hash = hasher.Hash(posting);
+        var changeClassificationWindow = new ChangeClassificationWindow {
+            Posting = posting, PostingHash = hash
+        };
+
+        var errorsAndInfos = new ErrorsAndInfos();
+        var postingClassificationsSecret = await Container.Resolve<ISecretRepository>().GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            MessageBox.Show("Could find available classifications", Title, MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        var credit = posting.Amount >= 0;
+        var postingClassifications = postingClassificationsSecret
+                .OfType<IPostingClassification>()
+                .Where(c => c.Credit == credit)
+                .Select(c => c.Classification)
+                .Distinct()
+                .Order()
+                .ToList();
+        changeClassificationWindow.SetClassificationChoices(postingClassifications);
+        if (changeClassificationWindow.ShowDialog() != true) {
+            return;
+        }
+
+        var individualPostingClassification = new IndividualPostingClassification {
+            Classification = changeClassificationWindow.SelectedClassification,
+            Credit = credit,
+            PostingHash = changeClassificationWindow.Hash.Text
+        };
+        var source = Container.Resolve<IIndividualPostingClassificationsSource>();
+        await source.AddAsync(individualPostingClassification, errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            MessageBox.Show($"Could not set classification to {individualPostingClassification.Classification} for posting hash {individualPostingClassification.PostingHash}",
+                Title, MessageBoxButton.OK, MessageBoxImage.Error);
+        } else {
+            MessageBox.Show($"Classification set to {individualPostingClassification.Classification}, please reload Cacheck",
+                Title, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
     }
 }

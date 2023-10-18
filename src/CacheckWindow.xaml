@@ -85,6 +85,11 @@
                     </StackPanel>
                     <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
                               Name="ClassifiedPostings" ItemsSource="{Binding Source={StaticResource ClassifiedPostings}}" AutoGenerateColumns="False">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Change classification" Click="OnChangeClassificationClickAsync"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Date" Width="20*" Binding="{Binding FormattedDate, StringFormat=d}" ElementStyle="{StaticResource CellLeftAlign}"/>
                             <DataGridTextColumn Header="Amount" Width="20*" Binding="{Binding Amount, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
