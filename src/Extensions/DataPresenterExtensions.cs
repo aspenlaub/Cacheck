@@ -14,7 +14,11 @@ public static class DataPresenterExtensions {
     }
 
     public static async Task WriteLineAsync(this IDataPresenter dataPresenter, string s) {
+        if (!dataPresenter.Enabled) { return; }
+
         var logText = dataPresenter.GetLogText();
+        if (string.IsNullOrEmpty(s)) { return; }
+
         var textHandler = dataPresenter.Handlers.LogTextHandler;
         s = logText + (string.IsNullOrEmpty(logText) ? "" : "\r\n") + s;
         await textHandler.TextChangedAsync(s);

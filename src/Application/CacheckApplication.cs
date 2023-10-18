@@ -15,6 +15,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 
 public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer<CacheckApplicationModel>, CacheckApplicationModel>, IDataPresenter {
     public ICacheckHandlers Handlers { get; private set; }
+    public bool Enabled => true;
     public ICacheckCommands Commands { get; private set; }
     public ITashHandler<CacheckApplicationModel> TashHandler { get; private set; }
 

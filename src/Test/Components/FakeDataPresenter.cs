@@ -10,6 +10,7 @@ public class FakeDataPresenter : IDataPresenter {
     private readonly FakeCacheckHandlers _FakeCacheckHandlers;
 
     public ICacheckHandlers Handlers => _FakeCacheckHandlers;
+    public bool Enabled => false;
 
     public List<ITypeItemSum> OverallSums => _FakeCacheckHandlers.OverallSums;
     public List<ITypeItemSum> ClassificationSums => _FakeCacheckHandlers.ClassificationSums;
@@ -21,9 +22,7 @@ public class FakeDataPresenter : IDataPresenter {
         _FakeCacheckHandlers = new FakeCacheckHandlers(model, guiAndAppHandler);
     }
 
-    public string GetLogText() {
-        throw new System.NotImplementedException();
-    }
+    public string GetLogText() => "";
 
     public void SetDataCollector(IDataCollector dataCollector) {
     }

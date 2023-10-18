@@ -5,6 +5,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 public interface IDataPresenter {
     ICacheckHandlers Handlers { get; }
+    bool Enabled { get; }
 
     string GetLogText();
     Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,

@@ -37,6 +37,7 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
         builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
         builder.RegisterType<PostingCollector>().As<IPostingCollector>();
+        builder.RegisterType<PostingHasher>().As<IPostingHasher>();
         builder.RegisterType<ReservationsCalculator>().As<IReservationsCalculator>();
         builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
         builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();

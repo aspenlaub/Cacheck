@@ -21,8 +21,16 @@ public class SourceFileReader : ISourceFileReader {
             if (!TryReadPostings(lines[i], out var posting)) { continue; }
 
             var unreadableLines = new List<string>();
-            for (var j = i + 1; j < lines.Count && j < i + 2 && !TryReadPostings(lines[j], out _); j ++) {
+            int j;
+            for (j = i + 1; j < lines.Count && j < i + 2 && !TryReadPostings(lines[j], out _); j ++) {
                 unreadableLines.Add(lines[j].Trim());
+            }
+
+            var numberOfDigits = string.Join("", unreadableLines).ToCharArray().Count(char.IsDigit);
+            if (numberOfDigits < 10) {
+                for (; j < lines.Count && j < i + 4 && !TryReadPostings(lines[j], out _); j++) {
+                    unreadableLines.Add(lines[j].Trim());
+                }
             }
 
             if (unreadableLines.Any()) {
