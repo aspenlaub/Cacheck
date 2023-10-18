@@ -38,7 +38,7 @@ public class SummaryCalculator : ISummaryCalculator {
 
         var overallSumList = pureDebitCreditAggregation.Select(
             result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
-        ).Cast<ICollectionViewSourceEntity>().ToList();
+        ).OfType<ICollectionViewSourceEntity>().ToList();
         await _DataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
 
         errorsAndInfos = new ErrorsAndInfos();
@@ -56,7 +56,7 @@ public class SummaryCalculator : ISummaryCalculator {
 
         var classificationSumList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).Select(
             result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
-        ).Cast<ICollectionViewSourceEntity>().ToList();
+        ).OfType<ICollectionViewSourceEntity>().ToList();
         await _DataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
         return true;
     }

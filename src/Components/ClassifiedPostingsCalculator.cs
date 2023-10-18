@@ -37,7 +37,7 @@ public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
 
         classifiedPostings = classifiedPostings.OrderByDescending(cp => cp.Date).ToList();
 
-        await _DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.Cast<ICollectionViewSourceEntity>().ToList());
+        await _DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
     }
 
     private bool IsPostingRelevantHere(IPosting posting, IEnumerable<IPostingClassification> postingClassifications, DateTime minDate, double minAmount,

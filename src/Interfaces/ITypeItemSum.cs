@@ -10,6 +10,8 @@ public interface ITypeItemSum : ICollectionViewSourceEntity {
     double Sum { get; set; }
     double SumPastHalfYear { get; set; }
     double SumPastTwelveMonths { get; set; }
+    double LiquidityPlan { get; set; }
+    double Reservation { get; set; }
     double SumThisYear { get; set; }
     double SumLastYear { get; set; }
 }

@@ -60,7 +60,7 @@ public class DataCollector : IDataCollector {
             return;
         }
 
-        var postingClassifications = postingClassificationsSecret.Cast<IPostingClassification>().ToList();
+        var postingClassifications = postingClassificationsSecret.OfType<IPostingClassification>().ToList();
 
         var inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
@@ -68,7 +68,7 @@ public class DataCollector : IDataCollector {
             return;
         }
 
-        var inverseClassifications = inverseClassificationsSecret.Cast<IInverseClassificationPair>().ToList();
+        var inverseClassifications = inverseClassificationsSecret.OfType<IInverseClassificationPair>().ToList();
 
         await _DataPresenter.OnClassificationsFoundAsync(postingClassifications, allPostings, inverseClassifications);
 
@@ -77,7 +77,24 @@ public class DataCollector : IDataCollector {
             return;
         }
 
-        await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
+        var liquidityPlanClassificationsSecret = await _SecretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            return;
+        }
+
+        var liquidityPlanClassifications = liquidityPlanClassificationsSecret.OfType<ILiquidityPlanClassification>().ToList();
+
+        var irregularDebitClassificationsSecret = await _SecretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            return;
+        }
+
+        var irregularDebitClassifications = irregularDebitClassificationsSecret.OfType<IIrregularDebitClassification>().ToList();
+
+        await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications,
+                                                              liquidityPlanClassifications, irregularDebitClassifications);
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 

@@ -20,7 +20,7 @@ public class AverageCalculatorTest : CalculatorTestBase {
     public async Task CanCalculateAverage() {
         await Sut.CalculateAndShowAverageAsync(new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
             new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 },
-            new List<IInverseClassificationPair>());
+            new List<IInverseClassificationPair>(), new List<ILiquidityPlanClassification>(), new List<IIrregularDebitClassification>());
 
         var items = FakeDataPresenter.ClassificationAverages;
         VerifyResult(items[0], "-", "1510", 10, 0);

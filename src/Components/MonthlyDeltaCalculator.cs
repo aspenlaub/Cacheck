@@ -51,7 +51,7 @@ public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
 
         var monthlyDeltasList = monthlyDeltas.Select(
             result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value }
-        ).Cast<ICollectionViewSourceEntity>().ToList();
+        ).OfType<ICollectionViewSourceEntity>().ToList();
         await _DataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
     }
 }

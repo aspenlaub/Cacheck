@@ -60,6 +60,8 @@
                         <DataGridTextColumn Header="Average" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         <DataGridTextColumn Header="Average Past Half Year" Width="20*" Binding="{Binding SumPastHalfYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         <DataGridTextColumn Header="Average Past 12 Months" Width="20*" Binding="{Binding SumPastTwelveMonths, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        <DataGridTextColumn Header="Liquidity Plan" Width="20*" Binding="{Binding LiquidityPlan, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}" SortMemberPath="LiquidityPlanAbsolute"/>
+                        <DataGridTextColumn Header="Reservation" Width="20*" Binding="{Binding Reservation, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         <DataGridTextColumn Header="Average This Year" Width="20*" Binding="{Binding SumThisYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         <DataGridTextColumn Header="Average End Of Last Year" Width="20*" Binding="{Binding SumLastYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                     </DataGrid.Columns>

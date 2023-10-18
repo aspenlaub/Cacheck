@@ -1,8 +1,9 @@
 ﻿using System.Xml.Serialization;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 
-public class LiquidityPlanClassification {
+public class LiquidityPlanClassification : ILiquidityPlanClassification {
     [XmlAttribute("classification")]
     public string Classification { get; init; }
 

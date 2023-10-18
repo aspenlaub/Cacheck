@@ -31,11 +31,13 @@ public static class CacheckAppContainerBuilder {
                .As<IDataCollector>();
         builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
         builder.RegisterType<FundamentalTransactionsReader>().As<IFundamentalTransactionsReader>();
+        builder.RegisterType<LiquidityPlanCalculator>().As<ILiquidityPlanCalculator>();
         builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
         builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
         builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
         builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
         builder.RegisterType<PostingCollector>().As<IPostingCollector>();
+        builder.RegisterType<ReservationsCalculator>().As<IReservationsCalculator>();
         builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
         builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();
         builder.RegisterType<TransactionIntoPostingsConverter>().As<ITransactionIntoPostingsConverter>();
