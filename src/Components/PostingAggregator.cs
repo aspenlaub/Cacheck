@@ -8,14 +8,14 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class PostingAggregator : IPostingAggregator {
     private readonly IPostingClassificationFormatter _PostingClassificationFormatter;
-    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
+    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
     private readonly IFormattedClassificationComparer _FormattedClassificationComparer;
     private readonly ICalculationLogger _CalculationLogger;
 
-    public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationMatcher postingClassificationMatcher,
+    public PostingAggregator(IPostingClassificationFormatter postingClassificationFormatter, IPostingClassificationsMatcher postingClassificationsMatcher,
         IFormattedClassificationComparer formattedClassificationComparer, ICalculationLogger calculationLogger) {
         _PostingClassificationFormatter = postingClassificationFormatter;
-        _PostingClassificationMatcher = postingClassificationMatcher;
+        _PostingClassificationsMatcher = postingClassificationsMatcher;
         _FormattedClassificationComparer = formattedClassificationComparer;
         _CalculationLogger = calculationLogger;
     }
@@ -25,7 +25,8 @@ public class PostingAggregator : IPostingAggregator {
         var result = new Dictionary<IFormattedClassification, double>(_FormattedClassificationComparer);
         var resultDrillDown = new Dictionary<string, IList<IPosting>>();
         foreach (var posting in postings) {
-            var classifications = postingClassifications.Where(c => _PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+            var classifications = _PostingClassificationsMatcher.MatchingClassifications(posting, postingClassifications)
+                .ToList();
             var combinedClassifications = classifications.Select(c => _PostingClassificationFormatter.Format(c).CombinedClassification).Distinct().ToList();
             switch (combinedClassifications.Count) {
                 case 0 when Math.Abs(posting.Amount) <= 70:

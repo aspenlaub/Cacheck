@@ -21,4 +21,7 @@ public class PostingClassification : IPostingClassification {
 
     [XmlAttribute("unfair")]
     public bool Unfair { get; init; }
+
+    [XmlIgnore]
+    public bool IsIndividual { get; init; } = false;
 }

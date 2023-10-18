@@ -10,11 +10,11 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
     private readonly IDataPresenter _DataPresenter;
-    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
+    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
 
-    public ClassifiedPostingsCalculator(IDataPresenter dataPresenter, IPostingClassificationMatcher postingClassificationMatcher) {
+    public ClassifiedPostingsCalculator(IDataPresenter dataPresenter, IPostingClassificationsMatcher postingClassificationsMatcher) {
         _DataPresenter = dataPresenter;
-        _PostingClassificationMatcher = postingClassificationMatcher;
+        _PostingClassificationsMatcher = postingClassificationsMatcher;
     }
 
     public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
@@ -40,13 +40,13 @@ public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
         await _DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
     }
 
-    private bool IsPostingRelevantHere(IPosting posting, IEnumerable<IPostingClassification> postingClassifications, DateTime minDate, double minAmount,
+    private bool IsPostingRelevantHere(IPosting posting, IList<IPostingClassification> postingClassifications, DateTime minDate, double minAmount,
             string singleClassification, string singleClassificationInverse, out IPostingClassification classification) {
         classification = null;
         if (Math.Abs(posting.Amount) < minAmount) { return false; }
         if (posting.Date < minDate) { return false; }
 
-        var classifications = postingClassifications.Where(c => _PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+        var classifications = _PostingClassificationsMatcher.MatchingClassifications(posting, postingClassifications);
         if (classifications.Count != 1) { return false; }
 
         classification = classifications[0];

@@ -21,7 +21,11 @@ public class PostingAggregatorTest {
     [ClassInitialize]
     public static void ClassInitialize(TestContext context) {
         var container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
-        Sut = new PostingAggregator(new PostingClassificationFormatter(), new PostingClassificationMatcher(), new FormattedClassificationComparer(), new CalculationLogger(container.Resolve<ILogConfiguration>()));
+        var classificationsMatcher = new PostingClassificationsMatcher(
+            new PostingClassificationMatcher(new PostingHasher())
+        );
+        Sut = new PostingAggregator(new PostingClassificationFormatter(), classificationsMatcher,
+            new FormattedClassificationComparer(), new CalculationLogger(container.Resolve<ILogConfiguration>()));
     }
 
     [TestMethod]

@@ -22,16 +22,16 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
     private readonly ITashAccessor _TashAccessor;
     private readonly IMethodNamesFromStackFramesExtractor _MethodNamesFromStackFramesExtractor;
     private IDataCollector _DataCollector;
-    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
+    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
 
     public CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMapper, IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
         IGuiAndApplicationSynchronizer<CacheckApplicationModel> guiAndApplicationSynchronizer, CacheckApplicationModel model,
         ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor,
-        IPostingClassificationMatcher postingClassificationMatcher)
+        IPostingClassificationsMatcher postingClassificationsMatcher)
             : base(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndApplicationSynchronizer, model, simpleLogger) {
         _TashAccessor = tashAccessor;
         _MethodNamesFromStackFramesExtractor = methodNamesFromStackFramesExtractor;
-        _PostingClassificationMatcher = postingClassificationMatcher;
+        _PostingClassificationsMatcher = postingClassificationsMatcher;
     }
 
     protected override async Task EnableOrDisableButtonsAsync() {
@@ -46,7 +46,7 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
             MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
             ClassifiedPostingsHandler = new ClassifiedPostingsHandler(Model, this),
             LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
-            SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, _PostingClassificationMatcher)
+            SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, _PostingClassificationsMatcher)
         };
         Commands = new CacheckCommands();
 

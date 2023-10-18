@@ -4,8 +4,16 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class PostingClassificationMatcher : IPostingClassificationMatcher {
+    private readonly IPostingHasher _PostingHasher;
+
+    public PostingClassificationMatcher(IPostingHasher postingHasher) {
+        _PostingHasher = postingHasher;
+    }
+
     public bool DoesPostingMatchClassification(IPosting posting, IPostingClassification classification) {
-        return DoesPostingMatchDebitCredit(posting, classification) && DoesPostingMatchClue(posting, classification) && DoesPostingMatchYearAndMonth(posting, classification);
+        return classification.IsIndividual
+            ? DoesPostingMatchIndividualClassification(posting, classification)
+            : DoesPostingMatchDebitCredit(posting, classification) && DoesPostingMatchClue(posting, classification) && DoesPostingMatchYearAndMonth(posting, classification);
     }
 
     private static bool DoesPostingMatchDebitCredit(IPosting posting, IPostingClassification classification) {
@@ -20,5 +28,9 @@ public class PostingClassificationMatcher : IPostingClassificationMatcher {
         if (classification.Month == 0 && classification.Year == 0) { return true; }
 
         return classification.Month == posting.Date.Month && classification.Year == posting.Date.Year;
+    }
+
+    private bool DoesPostingMatchIndividualClassification(IPosting posting, IPostingClassification classification) {
+        return _PostingHasher.Hash(posting) == classification.Clue;
     }
 }

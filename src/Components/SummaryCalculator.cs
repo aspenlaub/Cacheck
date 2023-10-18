@@ -12,21 +12,23 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 public class SummaryCalculator : ISummaryCalculator {
     private readonly IDataPresenter _DataPresenter;
     private readonly IPostingAggregator _PostingAggregator;
-    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
+    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
     private readonly IAggregatedPostingsNetter _AggregatedPostingsNetter;
 
-    public SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator, IPostingClassificationMatcher postingClassificationMatcher,
-            IAggregatedPostingsNetter aggregatedPostingsNetter) {
+    public SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
+            IAggregatedPostingsNetter aggregatedPostingsNetter, IPostingClassificationsMatcher postingClassificationsMatcher) {
         _DataPresenter = dataPresenter;
         _PostingAggregator = postingAggregator;
-        _PostingClassificationMatcher = postingClassificationMatcher;
         _AggregatedPostingsNetter = aggregatedPostingsNetter;
+        _PostingClassificationsMatcher = postingClassificationsMatcher;
     }
 
     public async Task<bool> CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
                 IList<IInverseClassificationPair> inverseClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
-        var fairPostings = allPostings.Where(p => postingClassifications.FirstOrDefault(c => _PostingClassificationMatcher.DoesPostingMatchClassification(p, c))?.Unfair != true).ToList();
+        var fairPostings = _PostingClassificationsMatcher
+            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
+            .ToList();
         var pureDebitCreditAggregation = _PostingAggregator.AggregatePostings(fairPostings, new List<IPostingClassification> {
             new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
             new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }

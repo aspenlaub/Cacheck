@@ -13,16 +13,19 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
     private readonly IDataPresenter _DataPresenter;
     private readonly IPostingAggregator _PostingAggregator;
-    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
+    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
 
-    public MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator, IPostingClassificationMatcher postingClassificationMatcher) {
+    public MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
+            IPostingClassificationsMatcher postingClassificationsMatcher) {
         _DataPresenter = dataPresenter;
         _PostingAggregator = postingAggregator;
-        _PostingClassificationMatcher = postingClassificationMatcher;
+        _PostingClassificationsMatcher = postingClassificationsMatcher;
     }
 
     public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
-        var fairPostings = allPostings.Where(p => postingClassifications.FirstOrDefault(c => _PostingClassificationMatcher.DoesPostingMatchClassification(p, c))?.Unfair != true).ToList();
+        var fairPostings = _PostingClassificationsMatcher
+            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
+            .ToList();
         var minYear = fairPostings.Min(p => p.Date.Year);
         var years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
         var monthsClassifications = new List<IPostingClassification>();

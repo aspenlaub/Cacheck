@@ -7,6 +7,7 @@ public interface IPostingClassification {
     int Month { get; }
     int Year { get; }
     bool Unfair { get; }
+    bool IsIndividual { get; }
 
     bool IsMonthClassification => Month != 0 && Year != 0;
 }

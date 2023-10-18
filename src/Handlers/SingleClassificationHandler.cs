@@ -13,16 +13,16 @@ public class SingleClassificationHandler : ISingleClassificationHandler {
     private readonly ICacheckApplicationModel _Model;
     private readonly IGuiAndAppHandler<CacheckApplicationModel> _GuiAndAppHandler;
     private readonly Func<IDataCollector> _DataCollectorGetter;
-    private readonly IPostingClassificationMatcher _PostingClassificationMatcher;
+    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
 
     protected IList<IPostingClassification> Classifications;
 
     public SingleClassificationHandler(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler,
-            Func<IDataCollector> dataCollectorGetter, IPostingClassificationMatcher postingClassificationMatcher) {
+            Func<IDataCollector> dataCollectorGetter, IPostingClassificationsMatcher postingClassificationsMatcher) {
         _Model = model;
         _GuiAndAppHandler = guiAndAppHandler;
         _DataCollectorGetter = dataCollectorGetter;
-        _PostingClassificationMatcher = postingClassificationMatcher;
+        _PostingClassificationsMatcher = postingClassificationsMatcher;
         Classifications = new List<IPostingClassification>();
     }
 
@@ -42,8 +42,7 @@ public class SingleClassificationHandler : ISingleClassificationHandler {
 
     public async Task UpdateSelectableValuesAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
             IList<IInverseClassificationPair> inverseClassifications) {
-        var usedClassifications = classifications
-            .Where(c => postings.Any(p => _PostingClassificationMatcher.DoesPostingMatchClassification(p, c)))
+        var usedClassifications = _PostingClassificationsMatcher.MatchingClassifications(postings, classifications)
             .Where(c => !IsInverseClassification(c, inverseClassifications)).ToList();
         Classifications = new List<IPostingClassification>(usedClassifications);
         await UpdateSelectableValuesAsync();

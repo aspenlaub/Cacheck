@@ -31,14 +31,18 @@ public static class CacheckAppContainerBuilder {
                .As<IDataCollector>();
         builder.RegisterType<FormattedClassificationComparer>().As<IFormattedClassificationComparer>();
         builder.RegisterType<FundamentalTransactionsReader>().As<IFundamentalTransactionsReader>();
+        builder.RegisterType<IndividualPostingClassificationConverter>().As<IIndividualPostingClassificationConverter>();
+        builder.RegisterType<IndividualPostingClassificationsSource>().As<IIndividualPostingClassificationsSource>();
         builder.RegisterType<LiquidityPlanCalculator>().As<ILiquidityPlanCalculator>();
         builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
         builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
         builder.RegisterType<PostingClassificationFormatter>().As<IPostingClassificationFormatter>();
         builder.RegisterType<PostingClassificationMatcher>().As<IPostingClassificationMatcher>();
+        builder.RegisterType<PostingClassificationsMatcher>().As<IPostingClassificationsMatcher>();
         builder.RegisterType<PostingCollector>().As<IPostingCollector>();
         builder.RegisterType<PostingHasher>().As<IPostingHasher>();
         builder.RegisterType<ReservationsCalculator>().As<IReservationsCalculator>();
+        builder.RegisterType<SecretRepositoryFactory>().As<ISecretRepositoryFactory>();
         builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
         builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();
         builder.RegisterType<TransactionIntoPostingsConverter>().As<ITransactionIntoPostingsConverter>();

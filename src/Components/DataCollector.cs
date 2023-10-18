@@ -18,11 +18,15 @@ public class DataCollector : IDataCollector {
     private readonly IClassifiedPostingsCalculator _ClassifiedPostingsCalculator;
     private readonly ICalculationLogger _CalculationLogger;
     private readonly ISecretRepository _SecretRepository;
+    private readonly IIndividualPostingClassificationsSource _IndividualPostingClassificationsSource;
+    private readonly IIndividualPostingClassificationConverter _IndividualPostingClassificationConverter;
     private readonly bool _IsIntegrationTest;
 
     public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator,
             IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator,
-            ICalculationLogger calculationLogger, ISecretRepository secretRepository, bool isIntegrationTest) {
+            ICalculationLogger calculationLogger, ISecretRepository secretRepository, bool isIntegrationTest,
+            IIndividualPostingClassificationsSource individualPostingClassificationsSource,
+            IIndividualPostingClassificationConverter individualPostingClassificationConverter) {
         _DataPresenter = dataPresenter;
         _DataPresenter.SetDataCollector(this);
         _PostingCollector = postingCollector;
@@ -33,6 +37,8 @@ public class DataCollector : IDataCollector {
         _CalculationLogger = calculationLogger;
         _SecretRepository = secretRepository;
         _IsIntegrationTest = isIntegrationTest;
+        _IndividualPostingClassificationsSource = individualPostingClassificationsSource;
+        _IndividualPostingClassificationConverter = individualPostingClassificationConverter;
     }
 
     private DateTime _LastCallToCollectAndShow = DateTime.MinValue;
@@ -61,6 +67,13 @@ public class DataCollector : IDataCollector {
         }
 
         var postingClassifications = postingClassificationsSecret.OfType<IPostingClassification>().ToList();
+
+        var individualPostingClassifications = await _IndividualPostingClassificationsSource.GetAsync(errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) {
+            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            return;
+        }
+        postingClassifications.AddRange(individualPostingClassifications.Select(_IndividualPostingClassificationConverter.Convert));
 
         var inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
@@ -94,7 +107,7 @@ public class DataCollector : IDataCollector {
         var irregularDebitClassifications = irregularDebitClassificationsSecret.OfType<IIrregularDebitClassification>().ToList();
 
         await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications,
-                                                              liquidityPlanClassifications, irregularDebitClassifications);
+            liquidityPlanClassifications, irregularDebitClassifications);
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
