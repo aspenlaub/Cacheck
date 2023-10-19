@@ -133,7 +133,7 @@ public partial class CacheckWindow : IAsyncDisposable {
             PostingHash = changeClassificationWindow.Hash.Text
         };
         var source = Container.Resolve<IIndividualPostingClassificationsSource>();
-        await source.AddAsync(individualPostingClassification, errorsAndInfos);
+        await source.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             MessageBox.Show($"Could not set classification to {individualPostingClassification.Classification} for posting hash {individualPostingClassification.PostingHash}",
                 Title, MessageBoxButton.OK, MessageBoxImage.Error);

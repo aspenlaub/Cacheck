@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,19 +33,23 @@ public class IndividualPostingClassificationsSource : IIndividualPostingClassifi
         _SecretRepository = _SecretRepositoryFactory.Create();
     }
 
-    public async Task AddAsync(IndividualPostingClassification individualPostingClassification, IErrorsAndInfos errorsAndInfos) {
-        var individualPostingClassifications
-            = await _SecretRepository.GetAsync(new IndividualPostingClassificationsSecret(), errorsAndInfos);
-        if (errorsAndInfos.AnyErrors()) { return; }
-
-        if (individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash)) {
-            throw new ArgumentException("Individual posting classification already exists");
-        }
-
-        individualPostingClassifications.Add(individualPostingClassification);
+    public async Task AddOrUpdateAsync(IndividualPostingClassification individualPostingClassification, IErrorsAndInfos errorsAndInfos) {
         var secret = new IndividualPostingClassificationsSecret();
-        secret.DefaultValue.AddRange(individualPostingClassifications);
+        var fileName = _SecretRepository.FileName(secret, false, false);
+        if (!File.Exists(fileName)) { return; }
 
-        await _SecretRepository.SetAsync(secret, errorsAndInfos);
+        var lines = (await File.ReadAllLinesAsync(fileName)).Where(l => !string.IsNullOrEmpty(l));
+        var newLines = lines.Where(l => !l.Contains(individualPostingClassification.PostingHash)).ToList();
+        newLines.Add(newLines[^1]);
+        newLines[^2] = "  <IndividualPostingClassification credit=\""
+              + (individualPostingClassification.Credit ? "true" : "false")
+              + "\" hash=\""
+              + individualPostingClassification.PostingHash
+              + "\" classification=\""
+              + individualPostingClassification.Classification
+              + "\" />";
+
+        await File.WriteAllLinesAsync(fileName, newLines);
+        _SecretRepository = _SecretRepositoryFactory.Create();
     }
 }

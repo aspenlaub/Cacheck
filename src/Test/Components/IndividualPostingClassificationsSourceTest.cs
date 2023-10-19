@@ -63,7 +63,7 @@ public class IndividualPostingClassificationsSourceTest {
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         if (individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash)) { return; }
 
-        await _Sut.AddAsync(individualPostingClassification, errorsAndInfos);
+        await _Sut.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
@@ -89,7 +89,7 @@ public class IndividualPostingClassificationsSourceTest {
                 "Individual posting classification could not be removed");
         }
 
-        await _Sut.AddAsync(individualPostingClassification, errorsAndInfos);
+        await _Sut.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
