@@ -24,6 +24,10 @@ public class FakeDataPresenter : IDataPresenter {
 
     public string GetLogText() => "";
 
+    public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
+        await Task.CompletedTask;
+    }
+
     public void SetDataCollector(IDataCollector dataCollector) {
     }
 

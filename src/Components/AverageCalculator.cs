@@ -93,13 +93,17 @@ public class AverageCalculator : IAverageCalculator {
         var numberOfDistinctMonthsPastHalfYear = pastHalfYearsPostings.Any() ? pastHalfYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
         var numberOfDistinctMonthsPastTwelveMonths = pastTwelveMonthsPostings.Any() ? pastTwelveMonthsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
 
+        double liquidityPlanSum = 0, reservationsSum = 0;
         var classificationAverageList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).ToList().Select(
             result => CreateTypeItemSum(result.Key, result.Value, numberOfDistinctMonths, pastHalfYearsDetailedAggregationList,
             numberOfDistinctMonthsPastHalfYear, pastTwelveMonthsDetailedAggregationList, numberOfDistinctMonthsPastTwelveMonths,
             thisYearsDetailedAggregationList, numberOfDistinctMonthsThisYear, lastYearsDetailedAggregationList,
-            numberOfDistinctMonthsLastYear, liquidityPlanClassifications, irregularDebitClassifications)
+            numberOfDistinctMonthsLastYear, liquidityPlanClassifications, irregularDebitClassifications,
+            ref liquidityPlanSum, ref reservationsSum)
         ).OfType<ICollectionViewSourceEntity>().ToList();
         await _DataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
+
+        await _DataPresenter.OnSumsChanged(liquidityPlanSum, reservationsSum);
     }
 
     private TypeItemSum CreateTypeItemSum(IFormattedClassification classification, double sum,
@@ -108,13 +112,18 @@ public class AverageCalculator : IAverageCalculator {
             int numberOfDistinctMonthsPastTwelveMonths, IEnumerable<KeyValuePair<IFormattedClassification, double>> thisYearsDetailedAggregationList,
             int numberOfDistinctMonthsThisYear, IEnumerable<KeyValuePair<IFormattedClassification, double>> lastYearsDetailedAggregationList,
             int numberOfDistinctMonthsLastYear, IList<ILiquidityPlanClassification> liquidityPlanClassifications,
-            IList<IIrregularDebitClassification> irregularDebitClassifications) {
+            IList<IIrregularDebitClassification> irregularDebitClassifications,
+            ref double liquidityPlanSum, ref double reservationsSum) {
         var sumPastTwelveMonths = GetOtherSum(classification, pastTwelveMonthsDetailedAggregationList) / numberOfDistinctMonthsPastTwelveMonths;
+        var liquidityPlanContribution = _LiquidityPlanCalculator.Calculate(classification, sumPastTwelveMonths, liquidityPlanClassifications);
+        liquidityPlanSum += liquidityPlanContribution;
+        var reservationsContribution = _ReservationsCalculator.Calculate(classification, sumPastTwelveMonths, irregularDebitClassifications);
+        reservationsSum += reservationsContribution;
         return new TypeItemSum { Type = classification.Sign, Item = classification.Classification, Sum = sum / numberOfDistinctMonths,
             SumPastHalfYear = GetOtherSum(classification, pastHalfYearsDetailedAggregationList) / numberOfDistinctMonthsPastHalfYear,
             SumPastTwelveMonths = sumPastTwelveMonths,
-            LiquidityPlan = _LiquidityPlanCalculator.Calculate(classification, sumPastTwelveMonths, liquidityPlanClassifications),
-            Reservation = _ReservationsCalculator.Calculate(classification, sumPastTwelveMonths, irregularDebitClassifications),
+            LiquidityPlan = liquidityPlanContribution,
+            Reservation = reservationsContribution,
             SumThisYear = GetOtherSum(classification, thisYearsDetailedAggregationList) / numberOfDistinctMonthsThisYear,
             SumLastYear = GetOtherSum(classification, lastYearsDetailedAggregationList) / numberOfDistinctMonthsLastYear
         };

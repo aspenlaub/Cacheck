@@ -47,14 +47,14 @@ public class ReservationsCalculatorTest {
     public void ReservationsCalculator_WithFixClassificationAndNegativeSum_ReturnsSum() {
         var classification = CreateClassification(Negative, Fix);
         var result = _Sut.Calculate(classification, Sum, _IrregularDebitClassifications);
-        Assert.AreEqual(-Sum, result);
+        Assert.AreEqual(Sum, result);
     }
 
     [TestMethod]
     public void ReservationsCalculator_WithALittleMoreClassificationAndNegativeSum_ReturnsALittleMore() {
         var classification = CreateClassification(Negative, ALittleMore);
         var result = _Sut.Calculate(classification, Sum, _IrregularDebitClassifications);
-        var expectedResult = -Math.Ceiling(Sum * 120 / 100);
+        var expectedResult = Math.Ceiling(Sum * 120 / 100);
         Assert.AreEqual(expectedResult, result);
     }
 

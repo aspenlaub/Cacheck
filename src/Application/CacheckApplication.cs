@@ -73,6 +73,11 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(classifications, postings, inverseClassifications);
     }
 
+    public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
+        await Handlers.LiquidityPlanSumTextHandler.TextChangedAsync(liquidityPlanSum.ToString("F2"));
+        await Handlers.ReservationsSumTextHandler.TextChangedAsync(reservationsSum.ToString("F2"));
+    }
+
     public override async Task OnLoadedAsync() {
         await base.OnLoadedAsync();
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync();
