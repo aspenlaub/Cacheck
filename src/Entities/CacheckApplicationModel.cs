@@ -13,4 +13,6 @@ public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplication
     public ICollectionViewSource ClassifiedPostings { get; } = new CollectionViewSource { EntityType = typeof(ClassifiedPosting) };
     public ITextBox Log { get; } = new TextBox();
     public ISelector SingleClassification { get; } = new ComboBox();
+    public ITextBox LiquidityPlanSum { get; } = new TextBox();
+    public ITextBox ReservationsSum { get; } = new TextBox();
 }

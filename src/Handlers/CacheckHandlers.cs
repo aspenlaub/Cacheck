@@ -11,4 +11,6 @@ public class CacheckHandlers : ICacheckHandlers {
     public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; init; }
     public ISimpleTextHandler LogTextHandler { get; init; }
     public ISingleClassificationHandler SingleClassificationHandler { get; init; }
+    public ISimpleTextHandler LiquidityPlanSumTextHandler { get; init; }
+    public ISimpleTextHandler ReservationsSumTextHandler { get; init; }
 }

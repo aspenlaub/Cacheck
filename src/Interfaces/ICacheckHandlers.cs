@@ -10,4 +10,6 @@ public interface ICacheckHandlers {
     ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
     ISimpleTextHandler LogTextHandler { get; }
     ISingleClassificationHandler SingleClassificationHandler { get; }
+    ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
+    ISimpleTextHandler ReservationsSumTextHandler { get; }
 }

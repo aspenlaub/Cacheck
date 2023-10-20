@@ -10,4 +10,6 @@ public interface ICacheckApplicationModel : IApplicationModelBase {
     ICollectionViewSource ClassifiedPostings { get; }
     ITextBox Log { get; }
     ISelector SingleClassification { get; }
+    ITextBox LiquidityPlanSum { get; }
+    ITextBox ReservationsSum { get; }
 }

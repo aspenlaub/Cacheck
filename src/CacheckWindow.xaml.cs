@@ -53,6 +53,8 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, handlers.ClassifiedPostingsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(Log, handlers.LogTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
+        guiToAppGate.RegisterAsyncTextBoxCallback(LiquidityPlanSum, handlers.LiquidityPlanSumTextHandler.TextChangedAsync);
+        guiToAppGate.RegisterAsyncTextBoxCallback(ReservationsSum, handlers.ReservationsSumTextHandler.TextChangedAsync);
 
         _TashTimer = new TashTimer<CacheckApplicationModel>(Container.Resolve<ITashAccessor>(), _CacheckApp.TashHandler, guiToAppGate);
         if (!await _TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {

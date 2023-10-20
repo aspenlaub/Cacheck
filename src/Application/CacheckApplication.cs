@@ -46,7 +46,9 @@ public class CacheckApplication : ApplicationBase<IGuiAndApplicationSynchronizer
             MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
             ClassifiedPostingsHandler = new ClassifiedPostingsHandler(Model, this),
             LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
-            SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, _PostingClassificationsMatcher)
+            SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, _PostingClassificationsMatcher),
+            LiquidityPlanSumTextHandler = new CacheckTextHandler(Model, this, m => m.LiquidityPlanSum),
+            ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum)
         };
         Commands = new CacheckCommands();
 
