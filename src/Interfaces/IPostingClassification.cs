@@ -8,6 +8,7 @@ public interface IPostingClassification {
     int Year { get; }
     bool Unfair { get; }
     bool IsIndividual { get; }
+    bool IsUnassigned { get; }
 
     bool IsMonthClassification => Month != 0 && Year != 0;
 }

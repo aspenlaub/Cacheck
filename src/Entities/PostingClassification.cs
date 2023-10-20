@@ -24,4 +24,7 @@ public class PostingClassification : IPostingClassification {
 
     [XmlIgnore]
     public bool IsIndividual { get; init; } = false;
+
+    [XmlIgnore]
+    public bool IsUnassigned { get; init; } = false;
 }

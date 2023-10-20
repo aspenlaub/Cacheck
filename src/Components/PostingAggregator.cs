@@ -29,8 +29,6 @@ public class PostingAggregator : IPostingAggregator {
                 .ToList();
             var combinedClassifications = classifications.Select(c => _PostingClassificationFormatter.Format(c).CombinedClassification).Distinct().ToList();
             switch (combinedClassifications.Count) {
-                case 0 when Math.Abs(posting.Amount) <= 70:
-                    continue;
                 case 0:
                     errorsAndInfos.Errors.Add($"Amount of {posting.Amount} ('{posting.Remark}') could not be classified");
                     continue;

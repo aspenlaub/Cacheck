@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -75,6 +76,8 @@ public class DataCollector : IDataCollector {
         }
         postingClassifications.AddRange(individualPostingClassifications.Select(_IndividualPostingClassificationConverter.Convert));
 
+        postingClassifications.AddRange(CreateUnassignedClassifications());
+
         var inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -124,5 +127,12 @@ public class DataCollector : IDataCollector {
             singleClassification, singleClassificationInverse);
 
         _CalculationLogger.Flush();
+    }
+
+    private IEnumerable<PostingClassification> CreateUnassignedClassifications() {
+        return new List<PostingClassification> {
+            new() { IsUnassigned = true, Classification = "UnassignedDebit", Credit = false, Clue = Guid.NewGuid().ToString() },
+            new() { IsUnassigned = true, Classification = "UnassignedCredit", Credit = true, Clue = Guid.NewGuid().ToString() }
+        };
     }
 }

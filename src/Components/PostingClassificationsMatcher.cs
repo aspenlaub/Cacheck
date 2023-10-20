@@ -19,8 +19,14 @@ public class PostingClassificationsMatcher : IPostingClassificationsMatcher {
             return matchingClassifications;
         }
 
+        matchingClassifications = postingClassifications
+            .Where(c => !c.IsUnassigned && _PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+        if (matchingClassifications.Any()) {
+            return matchingClassifications;
+        }
+
         return postingClassifications
-            .Where(c => _PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+            .Where(c => c.IsUnassigned && _PostingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
     }
 
     public IList<IPosting> MatchingPostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications,

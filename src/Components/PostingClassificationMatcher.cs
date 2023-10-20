@@ -11,9 +11,13 @@ public class PostingClassificationMatcher : IPostingClassificationMatcher {
     }
 
     public bool DoesPostingMatchClassification(IPosting posting, IPostingClassification classification) {
-        return classification.IsIndividual
-            ? DoesPostingMatchIndividualClassification(posting, classification)
-            : DoesPostingMatchDebitCredit(posting, classification) && DoesPostingMatchClue(posting, classification) && DoesPostingMatchYearAndMonth(posting, classification);
+        return classification.IsUnassigned
+            ? DoesPostingMatchUnassignedClassification(posting,classification)
+                : classification.IsIndividual
+                ? DoesPostingMatchIndividualClassification(posting, classification)
+                : DoesPostingMatchDebitCredit(posting, classification)
+                  && DoesPostingMatchClue(posting, classification)
+                  && DoesPostingMatchYearAndMonth(posting, classification);
     }
 
     private static bool DoesPostingMatchDebitCredit(IPosting posting, IPostingClassification classification) {
@@ -32,5 +36,9 @@ public class PostingClassificationMatcher : IPostingClassificationMatcher {
 
     private bool DoesPostingMatchIndividualClassification(IPosting posting, IPostingClassification classification) {
         return _PostingHasher.Hash(posting) == classification.Clue;
+    }
+
+    private bool DoesPostingMatchUnassignedClassification(IPosting posting, IPostingClassification classification) {
+        return classification.Credit == posting.Amount >= 0;
     }
 }
