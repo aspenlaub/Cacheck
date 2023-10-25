@@ -44,6 +44,9 @@ public class IndividualPostingClassificationsSourceTest {
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
         var postings = await _PostingCollector.CollectPostingsAsync(false);
+        if (postings.Count < 24) {
+            Assert.Inconclusive("Not enough production postings");
+        }
         var postingHashes = postings.Select(_PostingHasher.Hash).ToList();
         foreach (var individualPostingClassification in individualPostingClassifications) {
             Assert.IsTrue(postingHashes.Contains(individualPostingClassification.PostingHash),

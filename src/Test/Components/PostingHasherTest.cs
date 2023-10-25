@@ -16,6 +16,9 @@ public class PostingHasherTest {
         var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
         var postingCollector = container.Resolve<IPostingCollector>();
         var postings = await postingCollector.CollectPostingsAsync(false);
+        if (postings.Count < 24) {
+            Assert.Inconclusive("Not enough production postings");
+        }
         var hashToPosting = new Dictionary<string, IPosting>();
         var sut = new PostingHasher();
         foreach (var posting in postings) {
