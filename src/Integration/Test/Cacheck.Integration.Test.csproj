@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
     <AssemblyName>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</AssemblyName>
     <RootNamespace>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</RootNamespace>
@@ -18,10 +18,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
-    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.1552.1258" />
+    <PackageReference Include="VishnetIntegrationTestTools" Version="2.0.1574.1188" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Test\Cacheck.Test.csproj" />
