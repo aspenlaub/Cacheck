@@ -47,11 +47,23 @@ public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
         if (posting.Date < minDate) { return false; }
 
         var classifications = _PostingClassificationsMatcher.MatchingClassifications(posting, postingClassifications);
-        if (classifications.Count != 1) { return false; }
+        if (!AreClassificationsEquivalent(classifications)) { return false; }
 
         classification = classifications[0];
         if (singleClassification != "" || singleClassificationInverse != "") {
             return classification.Classification == singleClassification || classification.Classification == singleClassificationInverse;
+        }
+
+        return true;
+    }
+
+    private bool AreClassificationsEquivalent(IList<IPostingClassification> classifications) {
+        if (!classifications.Any()) { return false; }
+        if (classifications.Count == 1) { return true;  }
+
+        for (var i = 1; i < classifications.Count; i++) {
+            if (classifications[0].Classification != classifications[i].Classification) { return false; }
+            if (classifications[0].Credit != classifications[i].Credit) { return false; }
         }
 
         return true;
