@@ -10,20 +10,11 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
-    private readonly IDataPresenter _DataPresenter;
-    private readonly IPostingAggregator _PostingAggregator;
-    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
-
-    public MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
-            IPostingClassificationsMatcher postingClassificationsMatcher) {
-        _DataPresenter = dataPresenter;
-        _PostingAggregator = postingAggregator;
-        _PostingClassificationsMatcher = postingClassificationsMatcher;
-    }
+public class MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
+                IPostingClassificationsMatcher postingClassificationsMatcher) : IMonthlyDeltaCalculator {
 
     public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
-        var fairPostings = _PostingClassificationsMatcher
+        var fairPostings = postingClassificationsMatcher
             .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
             .ToList();
         var minYear = fairPostings.Min(p => p.Date.Year);
@@ -46,15 +37,15 @@ public class MonthlyDeltaCalculator : IMonthlyDeltaCalculator {
         }
 
         var errorsAndInfos = new ErrorsAndInfos();
-        var monthlyDeltas = _PostingAggregator.AggregatePostings(fairPostings, monthsClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
+        var monthlyDeltas = postingAggregator.AggregatePostings(fairPostings, monthsClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
         var monthlyDeltasList = monthlyDeltas.Select(
             result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value }
         ).OfType<ICollectionViewSourceEntity>().ToList();
-        await _DataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
+        await dataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
     }
 }

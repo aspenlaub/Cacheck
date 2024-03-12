@@ -11,14 +11,17 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class TashHandler : TashHandlerBase<CacheckApplicationModel> {
-    public TashHandler(ITashAccessor tashAccessor, ISimpleLogger simpleLogger, IButtonNameToCommandMapper buttonNameToCommandMapper,
-                IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler,
-                ITashVerifyAndSetHandler<ICacheckApplicationModel> tashVerifyAndSetHandler, ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler,
-                ITashCommunicator<ICacheckApplicationModel> tashCommunicator, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
-        : base(tashAccessor, simpleLogger, buttonNameToCommandMapper, toggleButtonNameToHandlerMapper, guiAndAppHandler, tashVerifyAndSetHandler,
-                tashSelectorHandler, tashCommunicator, methodNamesFromStackFramesExtractor) {
-    }
+public class TashHandler(ITashAccessor tashAccessor, ISimpleLogger simpleLogger,
+                IButtonNameToCommandMapper buttonNameToCommandMapper,
+                IToggleButtonNameToHandlerMapper toggleButtonNameToHandlerMapper,
+                IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler,
+                ITashVerifyAndSetHandler<ICacheckApplicationModel> tashVerifyAndSetHandler,
+                ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler,
+                ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
+                IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
+                    : TashHandlerBase<CacheckApplicationModel>(tashAccessor, simpleLogger, buttonNameToCommandMapper,
+                        toggleButtonNameToHandlerMapper, guiAndAppHandler, tashVerifyAndSetHandler,
+                        tashSelectorHandler, tashCommunicator, methodNamesFromStackFramesExtractor) {
 
     protected override async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<CacheckApplicationModel> status) {
         using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor)))) {

@@ -10,26 +10,14 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class AverageCalculator : IAverageCalculator {
-    private readonly IDataPresenter _DataPresenter;
-    private readonly IPostingAggregator _PostingAggregator;
-    private readonly IAggregatedPostingsNetter _AggregatedPostingsNetter;
-    private readonly ILiquidityPlanCalculator _LiquidityPlanCalculator;
-    private readonly IReservationsCalculator _ReservationsCalculator;
-
-    public AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
-            IAggregatedPostingsNetter aggregatedPostingsNetter, ILiquidityPlanCalculator liquidityPlanCalculator,
-            IReservationsCalculator reservationsCalculator) {
-        _DataPresenter = dataPresenter;
-        _PostingAggregator = postingAggregator;
-        _AggregatedPostingsNetter = aggregatedPostingsNetter;
-        _LiquidityPlanCalculator = liquidityPlanCalculator;
-        _ReservationsCalculator = reservationsCalculator;
-    }
+public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
+                IAggregatedPostingsNetter aggregatedPostingsNetter,
+                ILiquidityPlanCalculator liquidityPlanCalculator,
+                IReservationsCalculator reservationsCalculator) : IAverageCalculator {
 
     public async Task CalculateAndShowAverageAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                IList<IInverseClassificationPair> inverseClassifications, IList<ILiquidityPlanClassification> liquidityPlanClassifications,
-                IList<IIrregularDebitClassification> irregularDebitClassifications) {
+                                                   IList<IInverseClassificationPair> inverseClassifications, IList<ILiquidityPlanClassification> liquidityPlanClassifications,
+                                                   IList<IIrregularDebitClassification> irregularDebitClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
 
         var thisYear = allPostings.Max(p => p.Date.Year);
@@ -39,44 +27,44 @@ public class AverageCalculator : IAverageCalculator {
         aYearAgo = new DateTime(aYearAgo.Year, aYearAgo.Month, 1);
 
         var lastYearsPostings = allPostings.Where(p => p.Date.Year < thisYear).ToList();
-        var lastYearsDetailedAggregation = _PostingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
+        var lastYearsDetailedAggregation = postingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
-        var lastYearsDetailedAggregationList = _AggregatedPostingsNetter.Net(lastYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
+        var lastYearsDetailedAggregationList = aggregatedPostingsNetter.Net(lastYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var thisYearsPostings = allPostings.Where(p => p.Date.Year == thisYear).ToList();
-        var thisYearsDetailedAggregation = _PostingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos);
+        var thisYearsDetailedAggregation = postingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
-        var thisYearsDetailedAggregationList = _AggregatedPostingsNetter.Net(thisYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
+        var thisYearsDetailedAggregationList = aggregatedPostingsNetter.Net(thisYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var pastHalfYearsPostings = allPostings.Where(p => p.Date > halfAYearAgo).ToList();
-        var pastHalfYearsDetailedAggregation = _PostingAggregator.AggregatePostings(pastHalfYearsPostings, postingClassifications, errorsAndInfos);
+        var pastHalfYearsDetailedAggregation = postingAggregator.AggregatePostings(pastHalfYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
-        var pastHalfYearsDetailedAggregationList = _AggregatedPostingsNetter.Net(pastHalfYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
+        var pastHalfYearsDetailedAggregationList = aggregatedPostingsNetter.Net(pastHalfYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var pastTwelveMonthsPostings = allPostings.Where(p => p.Date > aYearAgo).ToList();
-        var pastTwelveMonthsDetailedAggregation = _PostingAggregator.AggregatePostings(pastTwelveMonthsPostings, postingClassifications, errorsAndInfos);
+        var pastTwelveMonthsDetailedAggregation = postingAggregator.AggregatePostings(pastTwelveMonthsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
-        var pastTwelveMonthsDetailedAggregationList = _AggregatedPostingsNetter.Net(pastTwelveMonthsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
+        var pastTwelveMonthsDetailedAggregationList = aggregatedPostingsNetter.Net(pastTwelveMonthsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
-        var detailedAggregation = _PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
+        var detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
         }
 
@@ -85,7 +73,7 @@ public class AverageCalculator : IAverageCalculator {
                 .Select(x => x.Key.Classification)
                 .Union(thisYearsDetailedAggregationList.Select(x => x.Key.Classification))
                 .ToList();
-        detailedAggregation = _AggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, classificationsToKeepEvenIfZero);
+        detailedAggregation = aggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, classificationsToKeepEvenIfZero);
 
         var numberOfDistinctMonths = allPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count();
         var numberOfDistinctMonthsLastYear = lastYearsPostings.Any() ? lastYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
@@ -101,9 +89,9 @@ public class AverageCalculator : IAverageCalculator {
             numberOfDistinctMonthsLastYear, liquidityPlanClassifications, irregularDebitClassifications,
             ref liquidityPlanSum, ref reservationsSum)
         ).OfType<ICollectionViewSourceEntity>().ToList();
-        await _DataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
+        await dataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
 
-        await _DataPresenter.OnSumsChanged(liquidityPlanSum, reservationsSum);
+        await dataPresenter.OnSumsChanged(liquidityPlanSum, reservationsSum);
     }
 
     private TypeItemSum CreateTypeItemSum(IFormattedClassification classification, double sum,
@@ -115,9 +103,9 @@ public class AverageCalculator : IAverageCalculator {
             IList<IIrregularDebitClassification> irregularDebitClassifications,
             ref double liquidityPlanSum, ref double reservationsSum) {
         var sumPastTwelveMonths = GetOtherSum(classification, pastTwelveMonthsDetailedAggregationList) / numberOfDistinctMonthsPastTwelveMonths;
-        var liquidityPlanContribution = _LiquidityPlanCalculator.Calculate(classification, sumPastTwelveMonths, liquidityPlanClassifications);
+        var liquidityPlanContribution = liquidityPlanCalculator.Calculate(classification, sumPastTwelveMonths, liquidityPlanClassifications);
         liquidityPlanSum += liquidityPlanContribution;
-        var reservationsContribution = _ReservationsCalculator.Calculate(classification, sumPastTwelveMonths, irregularDebitClassifications);
+        var reservationsContribution = reservationsCalculator.Calculate(classification, sumPastTwelveMonths, irregularDebitClassifications);
         reservationsSum += reservationsContribution;
         return new TypeItemSum { Type = classification.Sign, Item = classification.Classification, Sum = sum / numberOfDistinctMonths,
             SumPastHalfYear = GetOtherSum(classification, pastHalfYearsDetailedAggregationList) / numberOfDistinctMonthsPastHalfYear,

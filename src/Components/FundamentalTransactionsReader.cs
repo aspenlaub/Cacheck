@@ -10,16 +10,12 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class FundamentalTransactionsReader : IFundamentalTransactionsReader {
+public class FundamentalTransactionsReader(IFolderResolver folderResolver) : IFundamentalTransactionsReader {
+
     private const string TransactionsJsonFileName = "Transactions.json";
 
-    private readonly IFolderResolver _FolderResolver;
-
-    public FundamentalTransactionsReader(IFolderResolver folderResolver) {
-        _FolderResolver = folderResolver;
-    }
     public async Task<IFolder> FundamentalDumpFolderAsync(IErrorsAndInfos errorsAndInfos) {
-        var folder = await _FolderResolver.ResolveAsync(@"$(MainUserFolder)\Fundamental\Production\Dump", errorsAndInfos);
+        var folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Fundamental\Production\Dump", errorsAndInfos);
         return folder;
     }
 

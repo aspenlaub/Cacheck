@@ -9,22 +9,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class SingleClassificationHandler : ISingleClassificationHandler {
-    private readonly ICacheckApplicationModel _Model;
-    private readonly IGuiAndAppHandler<CacheckApplicationModel> _GuiAndAppHandler;
-    private readonly Func<IDataCollector> _DataCollectorGetter;
-    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
+public class SingleClassificationHandler(ICacheckApplicationModel model,
+                IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler,
+                Func<IDataCollector> dataCollectorGetter,
+                IPostingClassificationsMatcher postingClassificationsMatcher)
+                    : ISingleClassificationHandler {
 
-    protected IList<IPostingClassification> Classifications;
-
-    public SingleClassificationHandler(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler,
-            Func<IDataCollector> dataCollectorGetter, IPostingClassificationsMatcher postingClassificationsMatcher) {
-        _Model = model;
-        _GuiAndAppHandler = guiAndAppHandler;
-        _DataCollectorGetter = dataCollectorGetter;
-        _PostingClassificationsMatcher = postingClassificationsMatcher;
-        Classifications = new List<IPostingClassification>();
-    }
+    protected IList<IPostingClassification> Classifications = new List<IPostingClassification>();
 
     public async Task UpdateSelectableValuesAsync() {
         var selectables = Classifications.GroupBy(c => c.Classification).Select(c => c.Key)
@@ -32,17 +23,17 @@ public class SingleClassificationHandler : ISingleClassificationHandler {
             .Select(c => new Selectable { Guid = c, Name = c })
             .ToList();
 
-        if (_Model.SingleClassification.AreSelectablesIdentical(selectables)) { return; }
+        if (model.SingleClassification.AreSelectablesIdentical(selectables)) { return; }
 
-        _Model.SingleClassification.UpdateSelectables(selectables);
-        await _GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        model.SingleClassification.UpdateSelectables(selectables);
+        await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
-        await _DataCollectorGetter().CollectAndShowAsync();
+        await dataCollectorGetter().CollectAndShowAsync();
     }
 
     public async Task UpdateSelectableValuesAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
             IList<IInverseClassificationPair> inverseClassifications) {
-        var usedClassifications = _PostingClassificationsMatcher.MatchingClassifications(postings, classifications)
+        var usedClassifications = postingClassificationsMatcher.MatchingClassifications(postings, classifications)
             .Where(c => !IsInverseClassification(c, inverseClassifications)).ToList();
         Classifications = new List<IPostingClassification>(usedClassifications);
         await UpdateSelectableValuesAsync();
@@ -56,9 +47,9 @@ public class SingleClassificationHandler : ISingleClassificationHandler {
     }
 
     public async Task SelectedIndexChangedAsync(int selectedIndex) {
-        if (_Model.SingleClassification.SelectedIndex == selectedIndex) { return; }
+        if (model.SingleClassification.SelectedIndex == selectedIndex) { return; }
 
-        _Model.SingleClassification.SelectedIndex = selectedIndex;
-        await _DataCollectorGetter().CollectAndShowAsync();
+        model.SingleClassification.SelectedIndex = selectedIndex;
+        await dataCollectorGetter().CollectAndShowAsync();
     }
 }

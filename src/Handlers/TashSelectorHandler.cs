@@ -9,15 +9,11 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class TashSelectorHandler : TashSelectorHandlerBase<ICacheckApplicationModel> {
-    // ReSharper disable once NotAccessedField.Local
-    private readonly ICacheckHandlers _CacheckHandlers;
-
-    public TashSelectorHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger, ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
-            Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
-        : base(simpleLogger, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        _CacheckHandlers = cudotosiHandlers;
-    }
+public class TashSelectorHandler(ISimpleLogger simpleLogger,
+        ITashCommunicator<ICacheckApplicationModel> tashCommunicator, Dictionary<string, ISelector> selectors,
+        IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
+            : TashSelectorHandlerBase<ICacheckApplicationModel>(simpleLogger, tashCommunicator, selectors,
+                methodNamesFromStackFramesExtractor) {
 
     public override async Task ProcessSelectComboOrResetTaskAsync(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();

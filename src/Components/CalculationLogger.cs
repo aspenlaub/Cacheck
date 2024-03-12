@@ -9,14 +9,10 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class CalculationLogger : ICalculationLogger {
-    private readonly IFolder _CalculationLogFolder;
-    private readonly Dictionary<string, List<ClassificationContribution>> _ContributionsPerClassification;
+public class CalculationLogger(ILogConfiguration logConfiguration) : ICalculationLogger {
 
-    public CalculationLogger(ILogConfiguration logConfiguration) {
-        _CalculationLogFolder = new Folder(Path.GetTempPath()).SubFolder(logConfiguration.LogSubFolder).SubFolder(nameof(CalculationLogger));
-        _ContributionsPerClassification = new Dictionary<string, List<ClassificationContribution>>();
-    }
+    private readonly IFolder _CalculationLogFolder = new Folder(Path.GetTempPath()).SubFolder(logConfiguration.LogSubFolder).SubFolder(nameof(CalculationLogger));
+    private readonly Dictionary<string, List<ClassificationContribution>> _ContributionsPerClassification = new();
 
     public void ClearLogs() {
         _CalculationLogFolder.CreateIfNecessary();

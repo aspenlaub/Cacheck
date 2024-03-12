@@ -7,14 +7,10 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 
-public class IndividualPostingClassificationsSource : IIndividualPostingClassificationsSource {
-    private readonly ISecretRepositoryFactory _SecretRepositoryFactory;
-    private ISecretRepository _SecretRepository;
+public class IndividualPostingClassificationsSource(ISecretRepositoryFactory secretRepositoryFactory)
+                : IIndividualPostingClassificationsSource {
 
-    public IndividualPostingClassificationsSource(ISecretRepositoryFactory secretRepositoryFactory) {
-        _SecretRepositoryFactory = secretRepositoryFactory;
-        _SecretRepository = secretRepositoryFactory.Create();
-    }
+    private ISecretRepository _SecretRepository = secretRepositoryFactory.Create();
 
     public async Task<IEnumerable<IIndividualPostingClassification>> GetAsync(IErrorsAndInfos errorsAndInfos) {
         return await _SecretRepository.GetAsync(new IndividualPostingClassificationsSecret(), errorsAndInfos);
@@ -30,7 +26,7 @@ public class IndividualPostingClassificationsSource : IIndividualPostingClassifi
         if (lines.Length == newLines.Count) { return; }
 
         await File.WriteAllLinesAsync(fileName, newLines);
-        _SecretRepository = _SecretRepositoryFactory.Create();
+        _SecretRepository = secretRepositoryFactory.Create();
     }
 
     public async Task AddOrUpdateAsync(IndividualPostingClassification individualPostingClassification, IErrorsAndInfos errorsAndInfos) {
@@ -50,6 +46,6 @@ public class IndividualPostingClassificationsSource : IIndividualPostingClassifi
               + "\" />";
 
         await File.WriteAllLinesAsync(fileName, newLines);
-        _SecretRepository = _SecretRepositoryFactory.Create();
+        _SecretRepository = secretRepositoryFactory.Create();
     }
 }

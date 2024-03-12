@@ -13,16 +13,12 @@ public class ReservationsCalculatorTest {
     private const string Negative = "-", Positive = "+";
     private const double Sum = 4711;
 
-    private readonly List<IIrregularDebitClassification> _IrregularDebitClassifications;
+    private readonly List<IIrregularDebitClassification> _IrregularDebitClassifications = new() {
+        CreateIrregularDebitClassification(Fix, 100),
+        CreateIrregularDebitClassification(ALittleMore, 120)
+    };
 
     private IReservationsCalculator _Sut;
-
-    public ReservationsCalculatorTest() {
-        _IrregularDebitClassifications = new List<IIrregularDebitClassification> {
-            CreateIrregularDebitClassification(Fix, 100),
-            CreateIrregularDebitClassification(ALittleMore, 120)
-        };
-    }
 
     [TestInitialize]
     public void Initialize() {

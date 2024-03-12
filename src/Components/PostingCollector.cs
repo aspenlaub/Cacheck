@@ -10,48 +10,34 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class PostingCollector : IPostingCollector {
-    private readonly IDataPresenter _DataPresenter;
-    private readonly ISecretRepository _SecretRepository;
-    private readonly IFolderResolver _FolderResolver;
-    private readonly ISourceFileReader _SourceFileReader;
-    private readonly IFundamentalTransactionsReader _FundamentalTransactionsReader;
-    private readonly ITransactionIntoPostingsConverter _TransactionIntoPostingConverter;
-
-    public PostingCollector(IDataPresenter dataPresenter, ISecretRepository secretRepository, IFolderResolver folderResolver,
-            ISourceFileReader sourceFileReader,
-            IFundamentalTransactionsReader fundamentalTransactionsReader, ITransactionIntoPostingsConverter transactionIntoPostingConverter) {
-        _DataPresenter = dataPresenter;
-        _SecretRepository = secretRepository;
-        _FolderResolver = folderResolver;
-        _SourceFileReader = sourceFileReader;
-        _FundamentalTransactionsReader = fundamentalTransactionsReader;
-        _TransactionIntoPostingConverter = transactionIntoPostingConverter;
-    }
+public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository secretRepository,
+                IFolderResolver folderResolver, ISourceFileReader sourceFileReader,
+                IFundamentalTransactionsReader fundamentalTransactionsReader,
+                ITransactionIntoPostingsConverter transactionIntoPostingConverter) : IPostingCollector {
 
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
         var allPostings = new List<IPosting>();
 
-        var sourceFolder = await GetSourceFolderAsync(_SecretRepository, _FolderResolver, isIntegrationTest);
+        var sourceFolder = await GetSourceFolderAsync(secretRepository, folderResolver, isIntegrationTest);
         if (sourceFolder == null) { return allPostings; }
 
         var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
         var errorsAndInfos = new ErrorsAndInfos();
         foreach (var file in files) {
-            await _DataPresenter.WriteLineAsync($"File: {file}");
-            var postings = _SourceFileReader.ReadPostings(file, errorsAndInfos);
+            await dataPresenter.WriteLineAsync($"File: {file}");
+            var postings = sourceFileReader.ReadPostings(file, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
-                await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                await dataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return allPostings;
             }
 
-            await _DataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
+            await dataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
             allPostings.AddRange(postings);
         }
 
-        var transactions = await _FundamentalTransactionsReader.LoadTransactionsIfAvailableAsync(errorsAndInfos);
+        var transactions = await fundamentalTransactionsReader.LoadTransactionsIfAvailableAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return allPostings;
         }
 
@@ -61,7 +47,7 @@ public class PostingCollector : IPostingCollector {
             => t.Date.Year >= minDate.Year && (t.Date.Year < maxDate.Year || t.Date.Year == maxDate.Year && t.Date.Month <= maxDate.Month)
         ).ToList();
 
-        allPostings.AddRange(transactions.SelectMany(_TransactionIntoPostingConverter.Convert));
+        allPostings.AddRange(transactions.SelectMany(transactionIntoPostingConverter.Convert));
 
         return allPostings;
     }
@@ -75,7 +61,7 @@ public class PostingCollector : IPostingCollector {
         } else {
             var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
-                await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+                await dataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return null;
             }
 
@@ -84,7 +70,7 @@ public class PostingCollector : IPostingCollector {
                 return sourceFolder;
             }
 
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return null;
         }
 

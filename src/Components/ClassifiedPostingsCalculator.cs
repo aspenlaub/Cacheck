@@ -8,17 +8,11 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
-    private readonly IDataPresenter _DataPresenter;
-    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
-
-    public ClassifiedPostingsCalculator(IDataPresenter dataPresenter, IPostingClassificationsMatcher postingClassificationsMatcher) {
-        _DataPresenter = dataPresenter;
-        _PostingClassificationsMatcher = postingClassificationsMatcher;
-    }
+public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
+                IPostingClassificationsMatcher postingClassificationsMatcher) : IClassifiedPostingsCalculator {
 
     public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-            DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+                                                              DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
         var classifiedPostings = new List<IClassifiedPosting>();
 
         foreach (var posting in allPostings) {
@@ -37,7 +31,7 @@ public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
 
         classifiedPostings = classifiedPostings.OrderByDescending(cp => cp.Date).ToList();
 
-        await _DataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
+        await dataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
     }
 
     private bool IsPostingRelevantHere(IPosting posting, IList<IPostingClassification> postingClassifications, DateTime minDate, double minAmount,
@@ -46,7 +40,7 @@ public class ClassifiedPostingsCalculator : IClassifiedPostingsCalculator {
         if (Math.Abs(posting.Amount) < minAmount) { return false; }
         if (posting.Date < minDate) { return false; }
 
-        var classifications = _PostingClassificationsMatcher.MatchingClassifications(posting, postingClassifications);
+        var classifications = postingClassificationsMatcher.MatchingClassifications(posting, postingClassifications);
         if (!AreClassificationsEquivalent(classifications)) { return false; }
 
         classification = classifications[0];

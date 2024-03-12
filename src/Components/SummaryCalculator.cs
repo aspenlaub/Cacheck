@@ -9,48 +9,38 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class SummaryCalculator : ISummaryCalculator {
-    private readonly IDataPresenter _DataPresenter;
-    private readonly IPostingAggregator _PostingAggregator;
-    private readonly IPostingClassificationsMatcher _PostingClassificationsMatcher;
-    private readonly IAggregatedPostingsNetter _AggregatedPostingsNetter;
-
-    public SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
-            IAggregatedPostingsNetter aggregatedPostingsNetter, IPostingClassificationsMatcher postingClassificationsMatcher) {
-        _DataPresenter = dataPresenter;
-        _PostingAggregator = postingAggregator;
-        _AggregatedPostingsNetter = aggregatedPostingsNetter;
-        _PostingClassificationsMatcher = postingClassificationsMatcher;
-    }
+public class SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
+        IAggregatedPostingsNetter aggregatedPostingsNetter,
+        IPostingClassificationsMatcher postingClassificationsMatcher) : ISummaryCalculator {
 
     public async Task<bool> CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                IList<IInverseClassificationPair> inverseClassifications) {
+                                                         IList<IInverseClassificationPair> inverseClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
-        var fairPostings = _PostingClassificationsMatcher
+        var fairPostings = postingClassificationsMatcher
             .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
             .ToList();
-        var pureDebitCreditAggregation = _PostingAggregator.AggregatePostings(fairPostings, new List<IPostingClassification> {
+        var pureDebitCreditAggregation = postingAggregator.AggregatePostings(fairPostings, new List<IPostingClassification> {
             new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
             new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }
         }, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return false;
         }
 
         var overallSumList = pureDebitCreditAggregation.Select(
             result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
         ).OfType<ICollectionViewSourceEntity>().ToList();
-        await _DataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
+        await dataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
 
         errorsAndInfos = new ErrorsAndInfos();
-        var detailedAggregation = _PostingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
+        var detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
-            await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
+            await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return false;
         }
 
-        detailedAggregation = _AggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, new List<string>());
+        detailedAggregation = aggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, new List<string>());
 
         if (!detailedAggregation.Any()) {
             return true;
@@ -59,7 +49,7 @@ public class SummaryCalculator : ISummaryCalculator {
         var classificationSumList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).Select(
             result => new TypeItemSum { Type = result.Key.Sign, Item = result.Key.Classification, Sum = result.Value }
         ).OfType<ICollectionViewSourceEntity>().ToList();
-        await _DataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
+        await dataPresenter.Handlers.ClassificationSumsHandler.CollectionChangedAsync(classificationSumList);
         return true;
     }
 }

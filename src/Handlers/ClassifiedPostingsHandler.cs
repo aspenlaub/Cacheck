@@ -8,21 +8,15 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class ClassifiedPostingsHandler : ISimpleCollectionViewSourceHandler {
-    private readonly ICacheckApplicationModel _Model;
-    private readonly IGuiAndAppHandler<CacheckApplicationModel> _GuiAndAppHandler;
-
-    public ClassifiedPostingsHandler(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
-        _Model = model;
-        _GuiAndAppHandler = guiAndAppHandler;
-    }
+public class ClassifiedPostingsHandler(ICacheckApplicationModel model,
+                IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) : ISimpleCollectionViewSourceHandler {
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
-        _Model.ClassifiedPostings.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == _Model.ClassifiedPostings.EntityType)) {
-            _Model.ClassifiedPostings.Items.Add(item);
+        model.ClassifiedPostings.Items.Clear();
+        foreach (var item in items.Where(item => item.GetType() == model.ClassifiedPostings.EntityType)) {
+            model.ClassifiedPostings.Items.Add(item);
         }
-        await _GuiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+        await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {

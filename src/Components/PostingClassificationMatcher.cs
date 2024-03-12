@@ -3,12 +3,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class PostingClassificationMatcher : IPostingClassificationMatcher {
-    private readonly IPostingHasher _PostingHasher;
-
-    public PostingClassificationMatcher(IPostingHasher postingHasher) {
-        _PostingHasher = postingHasher;
-    }
+public class PostingClassificationMatcher(IPostingHasher postingHasher) : IPostingClassificationMatcher {
 
     public bool DoesPostingMatchClassification(IPosting posting, IPostingClassification classification) {
         return classification.IsUnassigned
@@ -35,7 +30,7 @@ public class PostingClassificationMatcher : IPostingClassificationMatcher {
     }
 
     private bool DoesPostingMatchIndividualClassification(IPosting posting, IPostingClassification classification) {
-        return _PostingHasher.Hash(posting) == classification.Clue;
+        return postingHasher.Hash(posting) == classification.Clue;
     }
 
     private bool DoesPostingMatchUnassignedClassification(IPosting posting, IPostingClassification classification) {

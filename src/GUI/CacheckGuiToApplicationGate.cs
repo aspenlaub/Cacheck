@@ -5,7 +5,5 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 
-public class CacheckGuiToApplicationGate : GuiToApplicationGateBase<CacheckApplication, CacheckApplicationModel> {
-    public CacheckGuiToApplicationGate(IBusy busy, CacheckApplication application) : base(busy, application) {
-    }
-}
+public class CacheckGuiToApplicationGate(IBusy busy, CacheckApplication application)
+                : GuiToApplicationGateBase<CacheckApplication, CacheckApplicationModel>(busy, application);

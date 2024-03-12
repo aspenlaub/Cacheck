@@ -34,7 +34,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         InitializeComponent();
 
         Title = Properties.Resources.CacheckWindowTitle;
-        Name = Properties.Resources.CacheckWindowName;
+        Name = Properties.Resources.CacheckWindowTitle;
         AutomationProperties.SetAutomationId(this, Name);
         AutomationProperties.SetName(this, Name);
     }

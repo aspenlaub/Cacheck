@@ -6,14 +6,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 [XmlRoot("CacheckConfiguration")]
 public class CacheckConfiguration : IGuid, ISecretResult<CacheckConfiguration> {
     [XmlAttribute("guid")]
-    public string Guid { get; set; }
+    public string Guid { get; set; } = System.Guid.NewGuid().ToString();
 
     [XmlElement("sourcefolder")]
     public string SourceFolder { get; set; }
-
-    public CacheckConfiguration() {
-        Guid = System.Guid.NewGuid().ToString();
-    }
 
     public CacheckConfiguration Clone() {
         var clone = (CacheckConfiguration)MemberwiseClone();

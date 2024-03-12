@@ -2,5 +2,4 @@
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
-public interface IFormattedClassificationComparer : IEqualityComparer<IFormattedClassification> {
-}
+public interface IFormattedClassificationComparer : IEqualityComparer<IFormattedClassification>;

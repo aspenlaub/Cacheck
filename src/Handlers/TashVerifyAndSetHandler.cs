@@ -6,14 +6,13 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<ICacheckApplicationModel> {
-    private readonly ICacheckHandlers _CacheckHandlers;
-
-    public TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger, ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler, ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
-        Dictionary<string, ISelector> selectors, IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
-            : base(simpleLogger, tashSelectorHandler, tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
-        _CacheckHandlers = cudotosiHandlers;
-    }
+public class TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger,
+        ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler,
+        ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
+        Dictionary<string, ISelector> selectors,
+        IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor)
+            : TashVerifyAndSetHandlerBase<ICacheckApplicationModel>(simpleLogger, tashSelectorHandler,
+                    tashCommunicator, selectors, methodNamesFromStackFramesExtractor) {
 
     protected override void OnValueTaskProcessed(ITashTaskHandlingStatus<ICacheckApplicationModel> status, bool verify, bool set, string actualValue) { }
 
@@ -26,19 +25,19 @@ public class TashVerifyAndSetHandler : TashVerifyAndSetHandlerBase<ICacheckAppli
 
     protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleTextHandler> {
-            { nameof(status.Model.Log), _CacheckHandlers.LogTextHandler },
-            { nameof(status.Model.LiquidityPlanSum), _CacheckHandlers.LiquidityPlanSumTextHandler},
-            { nameof(status.Model.ReservationsSum), _CacheckHandlers.ReservationsSumTextHandler }
+            { nameof(status.Model.Log), cudotosiHandlers.LogTextHandler },
+            { nameof(status.Model.LiquidityPlanSum), cudotosiHandlers.LiquidityPlanSumTextHandler},
+            { nameof(status.Model.ReservationsSum), cudotosiHandlers.ReservationsSumTextHandler }
         };
     }
 
     protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleCollectionViewSourceHandler> {
-            { nameof(status.Model.OverallSums), _CacheckHandlers.OverallSumsHandler},
-            { nameof(status.Model.ClassificationSums), _CacheckHandlers.ClassificationSumsHandler},
-            { nameof(status.Model.ClassificationAverages), _CacheckHandlers.ClassificationAveragesHandler},
-            { nameof(status.Model.MonthlyDeltas), _CacheckHandlers.MonthlyDeltasHandler},
-            { nameof(status.Model.ClassifiedPostings), _CacheckHandlers.ClassifiedPostingsHandler},
+            { nameof(status.Model.OverallSums), cudotosiHandlers.OverallSumsHandler},
+            { nameof(status.Model.ClassificationSums), cudotosiHandlers.ClassificationSumsHandler},
+            { nameof(status.Model.ClassificationAverages), cudotosiHandlers.ClassificationAveragesHandler},
+            { nameof(status.Model.MonthlyDeltas), cudotosiHandlers.MonthlyDeltasHandler},
+            { nameof(status.Model.ClassifiedPostings), cudotosiHandlers.ClassifiedPostingsHandler},
         };
     }
 
