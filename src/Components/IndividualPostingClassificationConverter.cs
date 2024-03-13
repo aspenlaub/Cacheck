@@ -9,7 +9,8 @@ public class IndividualPostingClassificationConverter : IIndividualPostingClassi
             Credit = individualPostingClassification.Credit,
             Classification = individualPostingClassification.Classification,
             Clue = individualPostingClassification.PostingHash,
-            IsIndividual = true
+            IsIndividual = true,
+            PostingHash = individualPostingClassification.PostingHash
         };
     }
 }

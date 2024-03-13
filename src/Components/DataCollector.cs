@@ -21,13 +21,15 @@ public class DataCollector : IDataCollector {
     private readonly ISecretRepository _SecretRepository;
     private readonly IIndividualPostingClassificationsSource _IndividualPostingClassificationsSource;
     private readonly IIndividualPostingClassificationConverter _IndividualPostingClassificationConverter;
+    private readonly IIndividualPostingEliminationAnalyzer _IndividualPostingEliminationAnalyzer;
     private readonly bool _IsIntegrationTest;
 
     public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator,
             IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator,
             ICalculationLogger calculationLogger, ISecretRepository secretRepository, bool isIntegrationTest,
             IIndividualPostingClassificationsSource individualPostingClassificationsSource,
-            IIndividualPostingClassificationConverter individualPostingClassificationConverter) {
+            IIndividualPostingClassificationConverter individualPostingClassificationConverter,
+            IIndividualPostingEliminationAnalyzer individualPostingEliminationAnalyzer) {
         _DataPresenter = dataPresenter;
         _DataPresenter.SetDataCollector(this);
         _PostingCollector = postingCollector;
@@ -40,6 +42,7 @@ public class DataCollector : IDataCollector {
         _IsIntegrationTest = isIntegrationTest;
         _IndividualPostingClassificationsSource = individualPostingClassificationsSource;
         _IndividualPostingClassificationConverter = individualPostingClassificationConverter;
+        _IndividualPostingEliminationAnalyzer = individualPostingEliminationAnalyzer;
     }
 
     private DateTime _LastCallToCollectAndShow = DateTime.MinValue;
@@ -123,8 +126,12 @@ public class DataCollector : IDataCollector {
             inverseClassification.Classification == singleClassification
                 ? inverseClassification.InverseClassification
                 : inverseClassification.Classification;
-        await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications, DateTime.Now.AddYears(-1), minAmount,
-            singleClassification, singleClassificationInverse);
+        var classifiedPostings = await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications,
+            DateTime.Now.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
+        var eliminationAnalyzerResults = _IndividualPostingEliminationAnalyzer.AnalyzeClassifiedPostings(classifiedPostings);
+        foreach(var eliminationAnalyzerResult in eliminationAnalyzerResults) {
+            await _DataPresenter.WriteLineAsync(eliminationAnalyzerResult);
+        }
 
         _CalculationLogger.Flush();
     }

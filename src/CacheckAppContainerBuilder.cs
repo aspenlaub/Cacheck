@@ -33,6 +33,7 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<FundamentalTransactionsReader>().As<IFundamentalTransactionsReader>();
         builder.RegisterType<IndividualPostingClassificationConverter>().As<IIndividualPostingClassificationConverter>();
         builder.RegisterType<IndividualPostingClassificationsSource>().As<IIndividualPostingClassificationsSource>();
+        builder.RegisterType<IndividualPostingEliminationAnalyzer>().As<IIndividualPostingEliminationAnalyzer>();
         builder.RegisterType<LiquidityPlanCalculator>().As<ILiquidityPlanCalculator>();
         builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
         builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();

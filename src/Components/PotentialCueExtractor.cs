@@ -27,7 +27,7 @@ public class PotentialCueExtractor : IPotentialCueExtractor {
     }
 
     private int FindLetter(string postingRemark, int startPos, int maxStartPos) {
-        for (; startPos <= maxStartPos && !char.IsLetter(postingRemark[startPos]); startPos++) {
+        for (; startPos <= maxStartPos && !IsCueCharacter(postingRemark[startPos]); startPos++) {
         }
 
         return startPos;
@@ -37,7 +37,7 @@ public class PotentialCueExtractor : IPotentialCueExtractor {
         int endPos;
         for (endPos = startPos;
              endPos < postingRemark.Length
-             && (char.IsLetter(postingRemark[endPos]) || postingRemark[endPos] == ' ');
+             && (IsCueCharacter(postingRemark[endPos]) || postingRemark[endPos] == ' ');
              endPos++) {
         }
 
@@ -58,5 +58,9 @@ public class PotentialCueExtractor : IPotentialCueExtractor {
             parts.UnionWith(FindSubParts(part.Substring(startPos)));
         }
         return parts;
+    }
+
+    private static bool IsCueCharacter(char c) {
+        return char.IsLetter(c) || c == ',' || c == '-';
     }
 }

@@ -11,31 +11,43 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 IPostingClassificationsMatcher postingClassificationsMatcher) : IClassifiedPostingsCalculator {
 
-    public async Task CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                                                              DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+    public async Task<IList<IClassifiedPosting>> CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
+                                                                                              DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+
+        var classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
+            singleClassification, singleClassificationInverse);
+        await dataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
+        return classifiedPostings;
+    }
+
+    public IList<IClassifiedPosting> CalculateClassifiedPostings(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
+                                                                 DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+
         var classifiedPostings = new List<IClassifiedPosting>();
 
         foreach (var posting in allPostings) {
             if (!IsPostingRelevantHere(posting, postingClassifications, minDate, minAmount,
-                singleClassification, singleClassificationInverse, out var classification)) { continue; }
+                                       singleClassification, singleClassificationInverse, out var classification)) { continue; }
 
             var classifiedPosting = new ClassifiedPosting {
                 Date = posting.Date,
                 Amount = posting.Amount,
                 Classification = classification.Classification,
                 Clue = classification.Clue,
-                Remark = posting.Remark
+                Remark = posting.Remark,
+                IsIndividual = classification.IsIndividual,
+                PostingHash = classification.PostingHash
             };
             classifiedPostings.Add(classifiedPosting);
         }
 
         classifiedPostings = classifiedPostings.OrderByDescending(cp => cp.Date).ToList();
 
-        await dataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
+        return classifiedPostings;
     }
 
     private bool IsPostingRelevantHere(IPosting posting, IList<IPostingClassification> postingClassifications, DateTime minDate, double minAmount,
-            string singleClassification, string singleClassificationInverse, out IPostingClassification classification) {
+                                       string singleClassification, string singleClassificationInverse, out IPostingClassification classification) {
         classification = null;
         if (Math.Abs(posting.Amount) < minAmount) { return false; }
         if (posting.Date < minDate) { return false; }

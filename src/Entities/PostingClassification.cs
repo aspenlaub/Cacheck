@@ -23,6 +23,9 @@ public class PostingClassification : IPostingClassification {
     public bool Unfair { get; init; }
 
     [XmlIgnore]
+    public string PostingHash { get; init; }
+
+    [XmlIgnore]
     public bool IsIndividual { get; init; } = false;
 
     [XmlIgnore]
