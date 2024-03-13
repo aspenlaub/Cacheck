@@ -30,4 +30,7 @@ public class PostingClassification : IPostingClassification {
 
     [XmlIgnore]
     public bool IsUnassigned { get; init; } = false;
+
+    [XmlIgnore]
+    public bool Ineliminable { get; init; } = false;
 }

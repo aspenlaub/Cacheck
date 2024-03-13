@@ -8,7 +8,7 @@ public class IndividualPostingEliminationAnalyzer(IPotentialCueExtractor potenti
     public IList<string> AnalyzeClassifiedPostings(IList<IClassifiedPosting> classifiedPostings) {
         var result = new List<string>();
         foreach (var classifiedPosting in classifiedPostings) {
-            if (!classifiedPosting.IsIndividual) { continue; }
+            if (classifiedPosting.Ineliminable || !classifiedPosting.IsIndividual) { continue; }
 
             var potentialCues = potentialCueExtractor
                 .ExtractPotentialCues(classifiedPosting.Remark)

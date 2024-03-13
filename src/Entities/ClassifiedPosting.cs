@@ -1,6 +1,5 @@
 ﻿using System;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-// ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 
@@ -13,5 +12,6 @@ public class ClassifiedPosting : IClassifiedPosting {
     public string Remark { get; set; }
     public bool IsIndividual { get; set; }
     public string PostingHash { get; set; }
+    public bool Ineliminable { get; set; }
     public string FormattedDate => $"{Date.Year}-{Date.Month:D2}-{Date.Day:D2}";
 }

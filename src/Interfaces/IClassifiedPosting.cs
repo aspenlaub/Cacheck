@@ -1,8 +1,6 @@
 ﻿using System;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
-// ReSharper disable UnusedMember.Global
-
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 public interface IClassifiedPosting : ICollectionViewSourceEntity {
@@ -13,4 +11,5 @@ public interface IClassifiedPosting : ICollectionViewSourceEntity {
     string Remark { get; set; }
     bool IsIndividual { get; set; }
     string PostingHash { get; set; }
+    bool Ineliminable { get; set; }
 }

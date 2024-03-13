@@ -79,7 +79,8 @@ public class IndividualPostingClassificationsSourceTest {
         var individualPostingClassification = new IndividualPostingClassification {
             Classification = nameof(IndividualPostingClassificationsSourceTest),
             PostingHash = nameof(CanAddIndividualPostingClassifications),
-            Credit = false
+            Credit = false,
+            Ineliminable = false
         };
         var errorsAndInfos = new ErrorsAndInfos();
         var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);

@@ -12,4 +12,7 @@ public class IndividualPostingClassification : IIndividualPostingClassification 
 
     [XmlAttribute("classification")]
     public string Classification { get; init; }
+
+    [XmlAttribute("ineliminable")]
+    public bool Ineliminable { get; init; }
 }

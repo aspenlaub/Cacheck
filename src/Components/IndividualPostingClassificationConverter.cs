@@ -10,7 +10,8 @@ public class IndividualPostingClassificationConverter : IIndividualPostingClassi
             Classification = individualPostingClassification.Classification,
             Clue = individualPostingClassification.PostingHash,
             IsIndividual = true,
-            PostingHash = individualPostingClassification.PostingHash
+            PostingHash = individualPostingClassification.PostingHash,
+            Ineliminable = individualPostingClassification.Ineliminable
         };
     }
 }

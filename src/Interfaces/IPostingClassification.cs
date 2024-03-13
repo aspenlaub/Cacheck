@@ -10,6 +10,7 @@ public interface IPostingClassification {
     bool IsIndividual { get; }
     bool IsUnassigned { get; }
     string PostingHash { get; }
+    bool Ineliminable { get; }
 
     bool IsMonthClassification => Month != 0 && Year != 0;
 }

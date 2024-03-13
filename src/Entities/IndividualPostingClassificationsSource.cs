@@ -43,6 +43,8 @@ public class IndividualPostingClassificationsSource(ISecretRepositoryFactory sec
               + individualPostingClassification.PostingHash
               + "\" classification=\""
               + individualPostingClassification.Classification
+              + "\" ineliminable=\""
+              + (individualPostingClassification.Ineliminable ? "true" : "false")
               + "\" />";
 
         await File.WriteAllLinesAsync(fileName, newLines);

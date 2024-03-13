@@ -36,7 +36,8 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 Clue = classification.Clue,
                 Remark = posting.Remark,
                 IsIndividual = classification.IsIndividual,
-                PostingHash = classification.PostingHash
+                PostingHash = classification.PostingHash,
+                Ineliminable = classification.Ineliminable
             };
             classifiedPostings.Add(classifiedPosting);
         }
