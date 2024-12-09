@@ -18,7 +18,7 @@ public class IndividualPostingClassificationsSource(ISecretRepositoryFactory sec
 
     public async Task RemoveAsync(IndividualPostingClassification individualPostingClassification) {
         var secret = new IndividualPostingClassificationsSecret();
-        var fileName = _SecretRepository.FileName(secret, false, false);
+        var fileName = _SecretRepository.FileName(secret, false);
         if (!File.Exists(fileName)) { return; }
 
         var lines = await File.ReadAllLinesAsync(fileName);
@@ -31,7 +31,7 @@ public class IndividualPostingClassificationsSource(ISecretRepositoryFactory sec
 
     public async Task AddOrUpdateAsync(IndividualPostingClassification individualPostingClassification, IErrorsAndInfos errorsAndInfos) {
         var secret = new IndividualPostingClassificationsSecret();
-        var fileName = _SecretRepository.FileName(secret, false, false);
+        var fileName = _SecretRepository.FileName(secret, false);
         if (!File.Exists(fileName)) { return; }
 
         var lines = (await File.ReadAllLinesAsync(fileName)).Where(l => !string.IsNullOrEmpty(l));
