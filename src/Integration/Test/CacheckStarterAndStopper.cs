@@ -5,7 +5,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test;
 
 public class CacheckStarterAndStopper : StarterAndStopperBase {
     protected override string ProcessName => "Aspenlaub.Net.GitHub.CSharp.Cacheck";
-    protected override List<string> AdditionalProcessNamesToStop => new();
+    protected override List<string> AdditionalProcessNamesToStop => [];
 
     protected override string ExecutableFile() {
         return typeof(CacheckWindowUnderTest).Assembly.Location

@@ -18,11 +18,11 @@ public class LiquidityPlanCalculatorTest {
     private ILiquidityPlanCalculator _Sut;
 
     public LiquidityPlanCalculatorTest() {
-        _LiquidityPlanClassifications = new List<ILiquidityPlanClassification> {
+        _LiquidityPlanClassifications = [
             CreateLiquidityPlanClassification(Fix, 100, 0),
             CreateLiquidityPlanClassification(ALittleMore, 120, 0),
             CreateLiquidityPlanClassification(Target, 0, TheTarget)
-        };
+        ];
     }
 
     [TestInitialize]

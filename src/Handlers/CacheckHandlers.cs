@@ -8,6 +8,7 @@ public class CacheckHandlers : ICacheckHandlers {
     public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; init; }
     public ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; init; }
     public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; init; }
+    public ISimpleCollectionViewSourceHandler MonthlyDetailsHandler { get; init; }
     public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; init; }
     public ISimpleTextHandler LogTextHandler { get; init; }
     public ISingleClassificationHandler SingleClassificationHandler { get; init; }

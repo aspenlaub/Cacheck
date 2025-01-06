@@ -6,7 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleLogger simpleLogger,
+public class TashVerifyAndSetHandler(ICacheckHandlers cacheckHandlers, ISimpleLogger simpleLogger,
         ITashSelectorHandler<ICacheckApplicationModel> tashSelectorHandler,
         ITashCommunicator<ICacheckApplicationModel> tashCommunicator,
         Dictionary<string, ISelector> selectors,
@@ -25,19 +25,20 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleL
 
     protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleTextHandler> {
-            { nameof(status.Model.Log), cudotosiHandlers.LogTextHandler },
-            { nameof(status.Model.LiquidityPlanSum), cudotosiHandlers.LiquidityPlanSumTextHandler},
-            { nameof(status.Model.ReservationsSum), cudotosiHandlers.ReservationsSumTextHandler }
+            { nameof(status.Model.Log), cacheckHandlers.LogTextHandler },
+            { nameof(status.Model.LiquidityPlanSum), cacheckHandlers.LiquidityPlanSumTextHandler},
+            { nameof(status.Model.ReservationsSum), cacheckHandlers.ReservationsSumTextHandler }
         };
     }
 
     protected override Dictionary<string, ISimpleCollectionViewSourceHandler> CollectionViewSourceNamesToCollectionViewSourceHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleCollectionViewSourceHandler> {
-            { nameof(status.Model.OverallSums), cudotosiHandlers.OverallSumsHandler},
-            { nameof(status.Model.ClassificationSums), cudotosiHandlers.ClassificationSumsHandler},
-            { nameof(status.Model.ClassificationAverages), cudotosiHandlers.ClassificationAveragesHandler},
-            { nameof(status.Model.MonthlyDeltas), cudotosiHandlers.MonthlyDeltasHandler},
-            { nameof(status.Model.ClassifiedPostings), cudotosiHandlers.ClassifiedPostingsHandler},
+            { nameof(status.Model.OverallSums), cacheckHandlers.OverallSumsHandler},
+            { nameof(status.Model.ClassificationSums), cacheckHandlers.ClassificationSumsHandler},
+            { nameof(status.Model.ClassificationAverages), cacheckHandlers.ClassificationAveragesHandler},
+            { nameof(status.Model.MonthlyDeltas), cacheckHandlers.MonthlyDeltasHandler},
+            { nameof(status.Model.MonthlyDetails), cacheckHandlers.MonthlyDetailsHandler},
+            { nameof(status.Model.ClassifiedPostings), cacheckHandlers.ClassifiedPostingsHandler},
         };
     }
 
@@ -47,6 +48,7 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cudotosiHandlers, ISimpleL
             { nameof(status.Model.ClassificationSums), status.Model.ClassificationSums },
             { nameof(status.Model.ClassificationAverages), status.Model.ClassificationAverages },
             { nameof(status.Model.MonthlyDeltas), status.Model.MonthlyDeltas },
+            { nameof(status.Model.MonthlyDetails), status.Model.MonthlyDetails },
             { nameof(status.Model.ClassifiedPostings), status.Model.ClassifiedPostings },
         };
     }

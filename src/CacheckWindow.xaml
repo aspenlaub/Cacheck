@@ -7,12 +7,13 @@
         mc:Ignorable="d"
         Title="Cacheck" Height="450" Width="1600"
         Icon="cacheck.ico"
-        Loaded="OnLoaded"  Closing="OnClosing">
+        Loaded="OnLoadedAsync"  Closing="OnClosingAsync">
     <Window.Resources>
         <CollectionViewSource x:Key="OverallSums" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
         <CollectionViewSource x:Key="ClassificationSums" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
         <CollectionViewSource x:Key="ClassificationAverages" d:DesignSource="{d:DesignInstance {x:Type entities:TypeItemSum}, CreateList=True}"/>
         <CollectionViewSource x:Key="MonthlyDeltas" d:DesignSource="{d:DesignInstance {x:Type entities:TypeMonthDelta}, CreateList=True}"/>
+        <CollectionViewSource x:Key="MonthlyDetails" d:DesignSource="{d:DesignInstance {x:Type entities:TypeMonthDetails}, CreateList=True}"/>
         <CollectionViewSource x:Key="ClassifiedPostings" d:DesignSource="{d:DesignInstance {x:Type entities:ClassifiedPosting}, CreateList=True}"/>
         <Style x:Key="CellLeftAlign">
             <Setter Property="Control.HorizontalAlignment" Value="Left" />
@@ -94,6 +95,48 @@
                         <DataGridTextColumn Header="Delta" Width="20*" Binding="{Binding Delta, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                     </DataGrid.Columns>
                 </DataGrid>
+            </TabItem>
+            <TabItem Header="Monthly Details" Padding="60,5,60,5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="66*"></ColumnDefinition>
+                        <ColumnDefinition Width="10*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                        <ColumnDefinition Width="7*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                              Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Name="MonthlyDetails"
+                              ItemsSource="{Binding Source={StaticResource MonthlyDetails}}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sign" Width="10*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Classification" Width="60*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="January" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="February" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="March" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="April" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="June" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="July" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="August" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="September" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="October" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="November" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="December" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
             </TabItem>
             <TabItem Header="Classifications" Padding="60,5,60,5">
                 <DockPanel>

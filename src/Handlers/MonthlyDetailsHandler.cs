@@ -8,19 +8,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 
-public class ClassifiedPostingsHandler(ICacheckApplicationModel model,
-                IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) : ISimpleCollectionViewSourceHandler {
+public class MonthlyDetailsHandler(ICacheckApplicationModel model,
+        IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) : ISimpleCollectionViewSourceHandler {
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
-        model.ClassifiedPostings.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == model.ClassifiedPostings.EntityType)) {
-            model.ClassifiedPostings.Items.Add(item);
+        model.MonthlyDetails.Items.Clear();
+        foreach (var item in items.Where(item => item.GetType() == model.MonthlyDetails.EntityType)) {
+            model.MonthlyDetails.Items.Add(item);
         }
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
-        var list = JsonSerializer.Deserialize<List<ClassifiedPosting>>(json);
+        var list = JsonSerializer.Deserialize<List<TypeMonthDetails>>(json);
         return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

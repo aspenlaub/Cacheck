@@ -48,7 +48,7 @@ public class PotentialCueExtractor : IPotentialCueExtractor {
     }
 
     private HashSet<string> FindSubParts(string part) {
-        if (part.Length < MinimumExtractedCueLength) { return new HashSet<string>(); }
+        if (part.Length < MinimumExtractedCueLength) { return []; }
 
         var parts = new HashSet<string> { part };
         for (var startPos = 2; startPos < part.Length; startPos++) {

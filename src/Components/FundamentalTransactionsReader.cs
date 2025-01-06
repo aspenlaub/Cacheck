@@ -27,7 +27,7 @@ public class FundamentalTransactionsReader(IFolderResolver folderResolver) : IFu
         if (!File.Exists(fileName)) { return new List<Transaction>(); }
 
         await using var stream = new FileStream(fileName, FileMode.Open);
-        var transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(stream) ?? new List<Transaction>();
+        var transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(stream) ?? [];
         transactions = transactions.Where(t => t.TransactionType != TransactionType.Buy && t.TransactionType != TransactionType.Sell).ToList();
         return transactions;
     }

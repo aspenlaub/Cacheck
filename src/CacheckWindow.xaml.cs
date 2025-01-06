@@ -39,7 +39,12 @@ public partial class CacheckWindow : IAsyncDisposable {
         AutomationProperties.SetName(this, Name);
     }
 
-    private async void OnLoaded(object sender, RoutedEventArgs e) {
+    // ReSharper disable once AsyncVoidMethod
+    private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
+        await OnLoadedAsync();
+    }
+
+    private async Task OnLoadedAsync() {
         await BuildContainerIfNecessaryAsync();
         _CacheckApp = Container.Resolve<CacheckApplication>();
         await _CacheckApp.OnLoadedAsync();
@@ -50,6 +55,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, handlers.ClassificationSumsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, handlers.ClassificationAveragesHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, handlers.MonthlyDeltasHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDetails, handlers.MonthlyDetailsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, handlers.ClassifiedPostingsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(Log, handlers.LogTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
@@ -75,7 +81,12 @@ public partial class CacheckWindow : IAsyncDisposable {
         await _TashTimer.StopTimerAndConfirmDeadAsync(false);
     }
 
-    private async void OnClosing(object sender, CancelEventArgs e) {
+    // ReSharper disable once AsyncVoidMethod
+    private async void OnClosingAsync(object sender, CancelEventArgs e) {
+        await OnClosingAsync(e);
+    }
+
+    private async Task OnClosingAsync(CancelEventArgs e) {
         e.Cancel = true;
 
         if (_TashTimer == null) { return; }
@@ -91,7 +102,12 @@ public partial class CacheckWindow : IAsyncDisposable {
         Container = builder.Build();
     }
 
+    // ReSharper disable once AsyncVoidMethod
     private async void OnChangeClassificationClickAsync(object sender, RoutedEventArgs e) {
+        await OnChangeClassificationClickAsync();
+    }
+
+    private async Task OnChangeClassificationClickAsync() {
         var postings = ClassifiedPostings.SelectedCells.Select(c => c.Item).OfType<ClassifiedPosting>().Distinct().ToList();
         if (postings.Count != 1) {
             MessageBox.Show($"{postings.Count} posting/s selected", Title, MessageBoxButton.OK, MessageBoxImage.Error);

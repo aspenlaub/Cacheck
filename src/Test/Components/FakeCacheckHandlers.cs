@@ -7,16 +7,18 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 
 public class FakeCacheckHandlers : ICacheckHandlers {
-    public List<ITypeItemSum> OverallSums { get; } = new();
-    public List<ITypeItemSum> ClassificationSums { get; } = new();
-    public List<ITypeItemSum> ClassificationAverages { get; } = new();
-    public List<ITypeMonthDelta> MonthlyDeltas { get; } = new();
-    public List<IClassifiedPosting> ClassifiedPostings { get; } = new();
+    public List<ITypeItemSum> OverallSums { get; } = [];
+    public List<ITypeItemSum> ClassificationSums { get; } = [];
+    public List<ITypeItemSum> ClassificationAverages { get; } = [];
+    public List<ITypeMonthDelta> MonthlyDeltas { get; } = [];
+    public List<ITypeMonthDetails> MonthlyDetails { get; } = [];
+    public List<IClassifiedPosting> ClassifiedPostings { get; } = [];
 
     public ISimpleCollectionViewSourceHandler OverallSumsHandler { get; }
     public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; }
     public ISimpleCollectionViewSourceHandler ClassificationAveragesHandler { get; }
     public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; }
+    public ISimpleCollectionViewSourceHandler MonthlyDetailsHandler { get; }
     public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
     public ISimpleTextHandler LogTextHandler { get; }
     public ISingleClassificationHandler SingleClassificationHandler { get; }
@@ -28,6 +30,7 @@ public class FakeCacheckHandlers : ICacheckHandlers {
         ClassificationSumsHandler = new FakeCacheckHandler<ITypeItemSum>(ClassificationSums);
         ClassificationAveragesHandler = new FakeCacheckHandler<ITypeItemSum>(ClassificationAverages);
         MonthlyDeltasHandler = new FakeCacheckHandler<ITypeMonthDelta>(MonthlyDeltas);
+        MonthlyDetailsHandler = new FakeCacheckHandler<ITypeMonthDetails>(MonthlyDetails);
         ClassifiedPostingsHandler = new FakeCacheckHandler<IClassifiedPosting>(ClassifiedPostings);
         LogTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.Log);
         SingleClassificationHandler = new FakeCacheckSelectorHandler();

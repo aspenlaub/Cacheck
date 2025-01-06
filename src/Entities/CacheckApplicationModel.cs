@@ -10,6 +10,7 @@ public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplication
     public ICollectionViewSource ClassificationSums { get; } = new CollectionViewSource { EntityType = typeof(TypeItemSum) };
     public ICollectionViewSource ClassificationAverages { get; } = new CollectionViewSource { EntityType = typeof(TypeItemSum) };
     public ICollectionViewSource MonthlyDeltas { get; } = new CollectionViewSource { EntityType = typeof(TypeMonthDelta) };
+    public ICollectionViewSource MonthlyDetails { get; } = new CollectionViewSource { EntityType = typeof(TypeMonthDetails) };
     public ICollectionViewSource ClassifiedPostings { get; } = new CollectionViewSource { EntityType = typeof(ClassifiedPosting) };
     public ITextBox Log { get; } = new TextBox();
     public ISelector SingleClassification { get; } = new ComboBox();

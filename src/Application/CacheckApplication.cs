@@ -40,6 +40,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             ClassificationSumsHandler = new ClassificationSumsHandler(Model, this),
             ClassificationAveragesHandler = new ClassificationAveragesHandler(Model, this),
             MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
+            MonthlyDetailsHandler = new MonthlyDetailsHandler(Model, this),
             ClassifiedPostingsHandler = new ClassifiedPostingsHandler(Model, this),
             LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, postingClassificationsMatcher),

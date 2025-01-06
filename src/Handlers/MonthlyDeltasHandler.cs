@@ -21,6 +21,6 @@ public class MonthlyDeltasHandler(ICacheckApplicationModel model,
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
         var list = JsonSerializer.Deserialize<List<TypeMonthDelta>>(json);
-        return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? new List<ICollectionViewSourceEntity>();
+        return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

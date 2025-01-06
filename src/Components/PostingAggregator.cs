@@ -12,7 +12,8 @@ public class PostingAggregator(IPostingClassificationFormatter postingClassifica
                 ICalculationLogger calculationLogger) : IPostingAggregator {
 
     public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings,
-                                                                           IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
+                IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
+
         var result = new Dictionary<IFormattedClassification, double>(formattedClassificationComparer);
         var resultDrillDown = new Dictionary<string, IList<IPosting>>();
         foreach (var posting in postings) {
@@ -33,8 +34,7 @@ public class PostingAggregator(IPostingClassificationFormatter postingClassifica
             var classification = classifications[0];
             var formattedClassification = postingClassificationFormatter.Format(classification);
             var formattedClassificationToString = formattedClassification.ToString() ?? "";
-            if (!result.ContainsKey(formattedClassification)) {
-                result[formattedClassification] = 0;
+            if (result.TryAdd(formattedClassification, 0)) {
                 resultDrillDown[formattedClassificationToString] = new List<IPosting>();
             }
 

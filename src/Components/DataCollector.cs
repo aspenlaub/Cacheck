@@ -16,6 +16,7 @@ public class DataCollector : IDataCollector {
     private readonly ISummaryCalculator _SummaryCalculator;
     private readonly IAverageCalculator _AverageCalculator;
     private readonly IMonthlyDeltaCalculator _MonthlyDeltaCalculator;
+    private readonly IMonthlyDetailsCalculator _MonthlyDetailsCalculator;
     private readonly IClassifiedPostingsCalculator _ClassifiedPostingsCalculator;
     private readonly ICalculationLogger _CalculationLogger;
     private readonly ISecretRepository _SecretRepository;
@@ -25,7 +26,8 @@ public class DataCollector : IDataCollector {
     private readonly bool _IsIntegrationTest;
 
     public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator,
-            IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator,
+            IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator,
+            IMonthlyDetailsCalculator monthlyDetailsCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator,
             ICalculationLogger calculationLogger, ISecretRepository secretRepository, bool isIntegrationTest,
             IIndividualPostingClassificationsSource individualPostingClassificationsSource,
             IIndividualPostingClassificationConverter individualPostingClassificationConverter,
@@ -36,6 +38,7 @@ public class DataCollector : IDataCollector {
         _SummaryCalculator = summaryCalculator;
         _AverageCalculator = averageCalculator;
         _MonthlyDeltaCalculator = monthlyDeltaCalculator;
+        _MonthlyDetailsCalculator = monthlyDetailsCalculator;
         _ClassifiedPostingsCalculator = classifiedPostingsCalculator;
         _CalculationLogger = calculationLogger;
         _SecretRepository = secretRepository;
@@ -116,6 +119,8 @@ public class DataCollector : IDataCollector {
             liquidityPlanClassifications, irregularDebitClassifications);
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
+
+        await _MonthlyDetailsCalculator.CalculateAndShowMonthlyDetailsAsync(allPostings, postingClassifications);
 
         var singleClassification = _DataPresenter.SingleClassification();
         var minAmount = singleClassification == "" ? 70 : 10;

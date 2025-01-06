@@ -23,12 +23,11 @@ public class PostingHasherTest {
         var sut = new PostingHasher();
         foreach (var posting in postings) {
             var hash = sut.Hash(posting);
-            if (!hashToPosting.ContainsKey(hash)) {
+            if (!hashToPosting.TryGetValue(hash, out var otherPosting)) {
                 hashToPosting[hash] = posting;
                 continue;
             }
 
-            var otherPosting = hashToPosting[hash];
             Assert.IsFalse(hashToPosting.ContainsKey(hash),
                 $"Hash '{hash}' found twice, remarks are {posting.Remark} and {otherPosting.Remark}");
         }

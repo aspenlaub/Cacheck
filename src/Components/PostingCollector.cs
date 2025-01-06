@@ -18,7 +18,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
         var allPostings = new List<IPosting>();
 
-        var sourceFolder = await GetSourceFolderAsync(secretRepository, folderResolver, isIntegrationTest);
+        var sourceFolder = await GetSourceFolderAsync(isIntegrationTest);
         if (sourceFolder == null) { return allPostings; }
 
         var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
@@ -52,7 +52,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
         return allPostings;
     }
 
-    private async Task<IFolder> GetSourceFolderAsync(ISecretRepository secretRepository, IFolderResolver resolver, bool isIntegrationTest) {
+    private async Task<IFolder> GetSourceFolderAsync(bool isIntegrationTest) {
         IFolder sourceFolder;
         var errorsAndInfos = new ErrorsAndInfos();
 
@@ -65,7 +65,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
                 return null;
             }
 
-            sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
+            sourceFolder = await folderResolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
             if (!errorsAndInfos.AnyErrors()) {
                 return sourceFolder;
             }

@@ -6,7 +6,7 @@ public class IndividualPostingClassificationsSecret : ISecret<IndividualPostingC
     private IndividualPostingClassifications _PrivateDefaultValue;
 
     public IndividualPostingClassifications DefaultValue
-        => _PrivateDefaultValue ??= new IndividualPostingClassifications();
+        => _PrivateDefaultValue ??= [];
 
     public string Guid => "1C3A5F6E-485C-4B08-801A-EFF63F05CCDC";
 }

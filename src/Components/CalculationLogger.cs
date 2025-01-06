@@ -23,7 +23,7 @@ public class CalculationLogger(ILogConfiguration logConfiguration) : ICalculatio
 
     public void RegisterContribution(string classification, double amount, IPosting posting) {
         if (!_ContributionsPerClassification.ContainsKey(classification)) {
-            _ContributionsPerClassification[classification] = new List<ClassificationContribution>();
+            _ContributionsPerClassification[classification] = [];
         }
 
         _ContributionsPerClassification[classification].Add(new ClassificationContribution { Amount = amount, Posting = posting });
@@ -45,7 +45,7 @@ public class CalculationLogger(ILogConfiguration logConfiguration) : ICalculatio
             } else {
                 File.AppendAllText(fileName, contents);
             }
-            _ContributionsPerClassification[classification] = new List<ClassificationContribution>();
+            _ContributionsPerClassification[classification] = [];
         }
     }
 }

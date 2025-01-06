@@ -7,6 +7,7 @@ public interface ICacheckApplicationModel : IApplicationModelBase {
     ICollectionViewSource ClassificationSums { get; }
     ICollectionViewSource ClassificationAverages { get; }
     ICollectionViewSource MonthlyDeltas { get; }
+    ICollectionViewSource MonthlyDetails { get; }
     ICollectionViewSource ClassifiedPostings { get; }
     ITextBox Log { get; }
     ISelector SingleClassification { get; }
