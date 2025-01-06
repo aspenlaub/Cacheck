@@ -123,17 +123,17 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Sign" Width="10*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
                             <DataGridTextColumn Header="Classification" Width="60*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                            <DataGridTextColumn Header="January" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="February" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="March" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="April" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="June" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="July" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="August" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="September" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="October" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="November" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="December" Width="20*" Binding="{Binding Sum, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="January" Width="20*" Binding="{Binding January, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="February" Width="20*" Binding="{Binding February, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="March" Width="20*" Binding="{Binding March, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="April" Width="20*" Binding="{Binding April, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="June" Width="20*" Binding="{Binding June, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="July" Width="20*" Binding="{Binding July, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="August" Width="20*" Binding="{Binding August, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="September" Width="20*" Binding="{Binding September, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="October" Width="20*" Binding="{Binding October, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="November" Width="20*" Binding="{Binding November, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="December" Width="20*" Binding="{Binding December, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
