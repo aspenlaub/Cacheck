@@ -45,7 +45,8 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, postingClassificationsMatcher),
             LiquidityPlanSumTextHandler = new CacheckTextHandler(Model, this, m => m.LiquidityPlanSum),
-            ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum)
+            ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum),
+            MinimumAmountHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.MinimumAmount)
         };
         Commands = new CacheckCommands();
 
@@ -78,6 +79,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
     public override async Task OnLoadedAsync() {
         await base.OnLoadedAsync();
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync();
+        await Handlers.MinimumAmountHandler.TextChangedAsync("100");
     }
 
     public void SetDataCollector(IDataCollector dataCollector) {
@@ -86,5 +88,9 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
 
     public string SingleClassification() {
         return Model.SingleClassification.SelectedItem?.Name ?? "";
+    }
+
+    public double MinimumAmount() {
+        return double.TryParse(Model.MinimumAmount.Text, out double minimumAmount) ? minimumAmount : 0;
     }
 }

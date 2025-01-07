@@ -15,7 +15,7 @@ public class SingleClassificationHandler(ICacheckApplicationModel model,
                 IPostingClassificationsMatcher postingClassificationsMatcher)
                     : ISingleClassificationHandler {
 
-    protected IList<IPostingClassification> Classifications = new List<IPostingClassification>();
+    protected IList<IPostingClassification> Classifications = [];
 
     public async Task UpdateSelectableValuesAsync() {
         var selectables = Classifications.GroupBy(c => c.Classification).Select(c => c.Key)

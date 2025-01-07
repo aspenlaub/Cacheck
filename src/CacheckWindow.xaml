@@ -97,46 +97,52 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Monthly Details" Padding="60,5,60,5">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="66*"></ColumnDefinition>
-                        <ColumnDefinition Width="10*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                        <ColumnDefinition Width="7*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
-                              Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Name="MonthlyDetails"
-                              ItemsSource="{Binding Source={StaticResource MonthlyDetails}}" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Sign" Width="10*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                            <DataGridTextColumn Header="Classification" Width="60*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
-                            <DataGridTextColumn Header="January" Width="20*" Binding="{Binding January, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="February" Width="20*" Binding="{Binding February, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="March" Width="20*" Binding="{Binding March, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="April" Width="20*" Binding="{Binding April, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="June" Width="20*" Binding="{Binding June, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="July" Width="20*" Binding="{Binding July, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="August" Width="20*" Binding="{Binding August, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="September" Width="20*" Binding="{Binding September, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="October" Width="20*" Binding="{Binding October, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="November" Width="20*" Binding="{Binding November, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="December" Width="20*" Binding="{Binding December, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <Label Name="MinimumAmountLabel" Margin="5">MinimumAmount</Label>
+                        <TextBox Name="MinimumAmount" Margin="5" Padding="5,3,0,0" MinWidth="120" />
+                    </StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="66*"></ColumnDefinition>
+                            <ColumnDefinition Width="10*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                                  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Name="MonthlyDetails"
+                                  ItemsSource="{Binding Source={StaticResource MonthlyDetails}}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Sign" Width="10*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                                <DataGridTextColumn Header="Classification" Width="60*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                                <DataGridTextColumn Header="January" Width="20*" Binding="{Binding January, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="February" Width="20*" Binding="{Binding February, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="March" Width="20*" Binding="{Binding March, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="April" Width="20*" Binding="{Binding April, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="June" Width="20*" Binding="{Binding June, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="July" Width="20*" Binding="{Binding July, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="August" Width="20*" Binding="{Binding August, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="September" Width="20*" Binding="{Binding September, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="October" Width="20*" Binding="{Binding October, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="November" Width="20*" Binding="{Binding November, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="December" Width="20*" Binding="{Binding December, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </DockPanel>
             </TabItem>
             <TabItem Header="Classifications" Padding="60,5,60,5">
                 <DockPanel>

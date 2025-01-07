@@ -24,6 +24,7 @@ public class FakeCacheckHandlers : ICacheckHandlers {
     public ISingleClassificationHandler SingleClassificationHandler { get; }
     public ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
     public ISimpleTextHandler ReservationsSumTextHandler { get; }
+    public ISimpleTextHandler MinimumAmountHandler { get; }
 
     public FakeCacheckHandlers(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler) {
         OverallSumsHandler = new FakeCacheckHandler<ITypeItemSum>(OverallSums);
@@ -36,5 +37,6 @@ public class FakeCacheckHandlers : ICacheckHandlers {
         SingleClassificationHandler = new FakeCacheckSelectorHandler();
         LiquidityPlanSumTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.LiquidityPlanSum);
         ReservationsSumTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.ReservationsSum);
+        MinimumAmountHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.MinimumAmount);
     }
 }

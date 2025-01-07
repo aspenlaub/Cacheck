@@ -13,4 +13,5 @@ public interface ICacheckApplicationModel : IApplicationModelBase {
     ISelector SingleClassification { get; }
     ITextBox LiquidityPlanSum { get; }
     ITextBox ReservationsSum { get; }
+    ITextBox MinimumAmount { get; }
 }

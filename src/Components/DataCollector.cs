@@ -51,7 +51,7 @@ public class DataCollector : IDataCollector {
     private DateTime _LastCallToCollectAndShow = DateTime.MinValue;
 
     public async Task CollectAndShowAsync() {
-        var now = DateTime.Now;
+        DateTime now = DateTime.Now;
         if (_LastCallToCollectAndShow > now.AddSeconds(-5)) {
             return;
         }
@@ -61,13 +61,13 @@ public class DataCollector : IDataCollector {
 
         _CalculationLogger.ClearLogs();
 
-        var allTimePostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
-        var maxDate = allTimePostings.Max(p => p.Date);
+        IList<IPosting> allTimePostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
+        DateTime maxDate = allTimePostings.Max(p => p.Date);
         var minDate = new DateTime(maxDate.Year - 1, 1, 1);
         var allPostings = allTimePostings.Where(p => p.Date >= minDate).ToList();
         await _DataPresenter.WriteLineAsync($"{allTimePostings.Count(p => p.Date < minDate)} posting/-s removed except for summary tab");
 
-        var postingClassificationsSecret = await _SecretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+        PostingClassifications postingClassificationsSecret = await _SecretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -75,7 +75,7 @@ public class DataCollector : IDataCollector {
 
         var postingClassifications = postingClassificationsSecret.OfType<IPostingClassification>().ToList();
 
-        var individualPostingClassifications = await _IndividualPostingClassificationsSource.GetAsync(errorsAndInfos);
+        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _IndividualPostingClassificationsSource.GetAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -84,7 +84,7 @@ public class DataCollector : IDataCollector {
 
         postingClassifications.AddRange(CreateUnassignedClassifications());
 
-        var inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
+        InverseClassifications inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -99,7 +99,7 @@ public class DataCollector : IDataCollector {
             return;
         }
 
-        var liquidityPlanClassificationsSecret = await _SecretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
+        LiquidityPlanClassifications liquidityPlanClassificationsSecret = await _SecretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -107,7 +107,7 @@ public class DataCollector : IDataCollector {
 
         var liquidityPlanClassifications = liquidityPlanClassificationsSecret.OfType<ILiquidityPlanClassification>().ToList();
 
-        var irregularDebitClassificationsSecret = await _SecretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
+        IrregularDebitClassifications irregularDebitClassificationsSecret = await _SecretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -120,21 +120,21 @@ public class DataCollector : IDataCollector {
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
-        await _MonthlyDetailsCalculator.CalculateAndShowMonthlyDetailsAsync(allPostings, postingClassifications);
+        await _MonthlyDetailsCalculator.CalculateAndShowMonthlyDetailsAsync(allPostings, postingClassifications, _DataPresenter.MinimumAmount());
 
-        var singleClassification = _DataPresenter.SingleClassification();
-        var minAmount = singleClassification == "" ? 70 : 10;
-        var inverseClassification = inverseClassifications.SingleOrDefault(ic
-            => ic.Classification == singleClassification || ic.InverseClassification == singleClassification
+        string singleClassification = _DataPresenter.SingleClassification();
+        int minAmount = singleClassification == "" ? 70 : 10;
+        IInverseClassificationPair inverseClassification = inverseClassifications.SingleOrDefault(ic
+                                                                                                      => ic.Classification == singleClassification || ic.InverseClassification == singleClassification
         );
-        var singleClassificationInverse = inverseClassification == null ? "" :
+        string singleClassificationInverse = inverseClassification == null ? "" :
             inverseClassification.Classification == singleClassification
                 ? inverseClassification.InverseClassification
                 : inverseClassification.Classification;
-        var classifiedPostings = await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications,
-            DateTime.Now.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
-        var eliminationAnalyzerResults = _IndividualPostingEliminationAnalyzer.AnalyzeClassifiedPostings(classifiedPostings);
-        foreach(var eliminationAnalyzerResult in eliminationAnalyzerResults) {
+        IList<IClassifiedPosting> classifiedPostings = await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications,
+                                                                                                                                   DateTime.Now.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
+        IList<string> eliminationAnalyzerResults = _IndividualPostingEliminationAnalyzer.AnalyzeClassifiedPostings(classifiedPostings);
+        foreach(string eliminationAnalyzerResult in eliminationAnalyzerResults) {
             await _DataPresenter.WriteLineAsync(eliminationAnalyzerResult);
         }
 
@@ -142,9 +142,9 @@ public class DataCollector : IDataCollector {
     }
 
     private IEnumerable<PostingClassification> CreateUnassignedClassifications() {
-        return new List<PostingClassification> {
+        return (List<PostingClassification>) [
             new() { IsUnassigned = true, Classification = "UnassignedDebit", Credit = false, Clue = Guid.NewGuid().ToString() },
             new() { IsUnassigned = true, Classification = "UnassignedCredit", Credit = true, Clue = Guid.NewGuid().ToString() }
-        };
+        ];
     }
 }

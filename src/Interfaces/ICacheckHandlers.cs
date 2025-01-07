@@ -13,4 +13,5 @@ public interface ICacheckHandlers {
     ISingleClassificationHandler SingleClassificationHandler { get; }
     ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
     ISimpleTextHandler ReservationsSumTextHandler { get; }
+    ISimpleTextHandler MinimumAmountHandler { get; }
 }

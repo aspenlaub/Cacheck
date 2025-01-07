@@ -27,7 +27,8 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cacheckHandlers, ISimpleLo
         return new Dictionary<string, ISimpleTextHandler> {
             { nameof(status.Model.Log), cacheckHandlers.LogTextHandler },
             { nameof(status.Model.LiquidityPlanSum), cacheckHandlers.LiquidityPlanSumTextHandler},
-            { nameof(status.Model.ReservationsSum), cacheckHandlers.ReservationsSumTextHandler }
+            { nameof(status.Model.ReservationsSum), cacheckHandlers.ReservationsSumTextHandler },
+            { nameof(status.Model.MinimumAmount), cacheckHandlers.MinimumAmountHandler}
         };
     }
 

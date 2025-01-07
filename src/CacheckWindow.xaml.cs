@@ -49,8 +49,8 @@ public partial class CacheckWindow : IAsyncDisposable {
         _CacheckApp = Container.Resolve<CacheckApplication>();
         await _CacheckApp.OnLoadedAsync();
 
-        var guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
-        var handlers = _CacheckApp.Handlers;
+        IGuiToApplicationGate guiToAppGate = Container.Resolve<IGuiToApplicationGate>();
+        ICacheckHandlers handlers = _CacheckApp.Handlers;
         guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, handlers.OverallSumsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, handlers.ClassificationSumsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, handlers.ClassificationAveragesHandler.CollectionChangedAsync);
@@ -61,6 +61,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(LiquidityPlanSum, handlers.LiquidityPlanSumTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(ReservationsSum, handlers.ReservationsSumTextHandler.TextChangedAsync);
+        guiToAppGate.RegisterAsyncTextBoxCallback(MinimumAmount, handlers.MinimumAmountHandler.TextChangedAsync);
 
         _TashTimer = new TashTimer<CacheckApplicationModel>(Container.Resolve<ITashAccessor>(), _CacheckApp.TashHandler, guiToAppGate);
         if (!await _TashTimer.ConnectAndMakeTashRegistrationReturnSuccessAsync(Properties.Resources.CacheckWindowTitle)) {
@@ -69,7 +70,7 @@ public partial class CacheckWindow : IAsyncDisposable {
 
         _TashTimer.CreateAndStartTimer(_CacheckApp.CreateTashTaskHandlingStatus());
 
-        var dataCollector = Container.Resolve<IDataCollector>();
+        IDataCollector dataCollector = Container.Resolve<IDataCollector>();
         await dataCollector.CollectAndShowAsync(); // CacheckApp.IsIntegrationTest
 
         await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(2));
@@ -98,7 +99,7 @@ public partial class CacheckWindow : IAsyncDisposable {
     private async Task BuildContainerIfNecessaryAsync() {
         if (Container != null) { return; }
 
-        var builder = await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(this);
+        ContainerBuilder builder = await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(this);
         Container = builder.Build();
     }
 
@@ -119,20 +120,20 @@ public partial class CacheckWindow : IAsyncDisposable {
         }
 
         var posting = new Posting { Date = postings[0].Date, Amount = postings[0].Amount, Remark = postings[0].Remark };
-        var hasher = Container.Resolve<IPostingHasher>();
-        var hash = hasher.Hash(posting);
+        IPostingHasher hasher = Container.Resolve<IPostingHasher>();
+        string hash = hasher.Hash(posting);
         var changeClassificationWindow = new ChangeClassificationWindow {
             Posting = posting, PostingHash = hash
         };
 
         var errorsAndInfos = new ErrorsAndInfos();
-        var postingClassificationsSecret = await Container.Resolve<ISecretRepository>().GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+        PostingClassifications postingClassificationsSecret = await Container.Resolve<ISecretRepository>().GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             MessageBox.Show("Could find available classifications", Title, MessageBoxButton.OK, MessageBoxImage.Error);
             return;
         }
 
-        var credit = posting.Amount >= 0;
+        bool credit = posting.Amount >= 0;
         var postingClassifications = postingClassificationsSecret
                 .OfType<IPostingClassification>()
                 .Where(c => c.Credit == credit)
@@ -150,7 +151,7 @@ public partial class CacheckWindow : IAsyncDisposable {
             Credit = credit,
             PostingHash = changeClassificationWindow.Hash.Text
         };
-        var source = Container.Resolve<IIndividualPostingClassificationsSource>();
+        IIndividualPostingClassificationsSource source = Container.Resolve<IIndividualPostingClassificationsSource>();
         await source.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             MessageBox.Show($"Could not set classification to {individualPostingClassification.Classification} for posting hash {individualPostingClassification.PostingHash}",

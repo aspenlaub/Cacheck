@@ -20,7 +20,9 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
     public List<ITypeMonthDelta> MonthlyDeltas => _FakeCacheckHandlers.MonthlyDeltas;
     public List<IClassifiedPosting> ClassifiedPostings => _FakeCacheckHandlers.ClassifiedPostings;
 
-    public string GetLogText() => "";
+    public string GetLogText() {
+        return "";
+    }
 
     public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
         await Task.CompletedTask;
@@ -29,7 +31,13 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
     public void SetDataCollector(IDataCollector dataCollector) {
     }
 
-    public string SingleClassification() => "";
+    public string SingleClassification() {
+        return "";
+    }
+
+    public double MinimumAmount() {
+        return 100;
+    }
 
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
                                                   IList<IInverseClassificationPair> inverseClassifications) {

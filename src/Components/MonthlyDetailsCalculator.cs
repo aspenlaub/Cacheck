@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -10,16 +11,19 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggregator postingAggregator,
-                IPostingClassificationsMatcher postingClassificationsMatcher) : IMonthlyDetailsCalculator {
+            IPostingClassificationsMatcher postingClassificationsMatcher) : IMonthlyDetailsCalculator {
 
-    public async Task CalculateAndShowMonthlyDetailsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+    public async Task CalculateAndShowMonthlyDetailsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
+                    double minimumAmount) {
+
         var fairPostings = postingClassificationsMatcher
                            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
+                           .Where(c => Math.Abs(c.Amount) >= minimumAmount)
                            .ToList();
         var monthlyDetailsList = new List<ITypeMonthDetails>();
-        var year = fairPostings.Max(p => p.Date.Year);
-        var month = fairPostings.Where(p => p.Date.Year == year).Max(p => p.Date.Month);
-        for (var i = 0; i < 12; i++) {
+        int year = fairPostings.Max(p => p.Date.Year);
+        int month = fairPostings.Where(p => p.Date.Year == year).Max(p => p.Date.Month);
+        for (int i = 0; i < 12; i++) {
             var postings = fairPostings.Where(p => p.Date.Year == year && p.Date.Month == month).ToList();
 
             var errorsAndInfos = new ErrorsAndInfos();
@@ -29,8 +33,8 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
                 return;
             }
 
-            foreach (var monthDetail in monthDetails) {
-                var listedMonthlyDetail = monthlyDetailsList.FirstOrDefault(
+            foreach (KeyValuePair<IFormattedClassification, double> monthDetail in monthDetails) {
+                ITypeMonthDetails listedMonthlyDetail = monthlyDetailsList.FirstOrDefault(
                     m => m.Type == monthDetail.Key.Sign && m.Item == monthDetail.Key.Classification
                 );
 
@@ -49,37 +53,37 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
                     break;
                     case 2:
                         listedMonthlyDetail.February = monthDetail.Value;
-                        break;
+                    break;
                     case 3:
                         listedMonthlyDetail.March = monthDetail.Value;
-                        break;
+                    break;
                     case 4:
                         listedMonthlyDetail.April = monthDetail.Value;
-                        break;
+                    break;
                     case 5:
                         listedMonthlyDetail.May = monthDetail.Value;
-                        break;
+                    break;
                     case 6:
                         listedMonthlyDetail.June = monthDetail.Value;
-                        break;
+                    break;
                     case 7:
                         listedMonthlyDetail.July = monthDetail.Value;
-                        break;
+                    break;
                     case 8:
                         listedMonthlyDetail.August = monthDetail.Value;
-                        break;
+                    break;
                     case 9:
                         listedMonthlyDetail.September = monthDetail.Value;
-                        break;
+                    break;
                     case 10:
                         listedMonthlyDetail.October = monthDetail.Value;
-                        break;
+                    break;
                     case 11:
                         listedMonthlyDetail.November = monthDetail.Value;
-                        break;
-                    case 12:
+                    break;
+                    default:
                         listedMonthlyDetail.December = monthDetail.Value;
-                        break;
+                    break;
                 }
             }
 

@@ -16,4 +16,5 @@ public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplication
     public ISelector SingleClassification { get; } = new ComboBox();
     public ITextBox LiquidityPlanSum { get; } = new TextBox();
     public ITextBox ReservationsSum { get; } = new TextBox();
+    public ITextBox MinimumAmount { get; } = new TextBox();
 }
