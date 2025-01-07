@@ -12,7 +12,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 IPostingClassificationsMatcher postingClassificationsMatcher) : IClassifiedPostingsCalculator {
 
     public async Task<IList<IClassifiedPosting>> CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                                                                                              DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+                DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
 
         var classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
             singleClassification, singleClassificationInverse);
@@ -21,7 +21,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
     }
 
     public IList<IClassifiedPosting> CalculateClassifiedPostings(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                                                                 DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+                DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
 
         var classifiedPostings = new List<IClassifiedPosting>();
 

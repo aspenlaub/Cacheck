@@ -15,4 +15,6 @@ public class CacheckHandlers : ICacheckHandlers {
     public ISimpleTextHandler LiquidityPlanSumTextHandler { get; init; }
     public ISimpleTextHandler ReservationsSumTextHandler { get; init; }
     public ISimpleTextHandler MinimumAmountHandler { get; init; }
+    public ISimpleTextHandler FromDayHandler { get; init; }
+    public ISimpleTextHandler ToDayHandler { get; init; }
 }

@@ -88,7 +88,8 @@
             </TabItem>
             <TabItem Header="Monthly Delta" Padding="60,5,60,5">
                 <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
-                          Name="MonthlyDeltas" ItemsSource="{Binding Source={StaticResource MonthlyDeltas}}" AutoGenerateColumns="False">
+                          Name="MonthlyDeltas" ItemsSource="{Binding Source={StaticResource MonthlyDeltas}}"
+                          AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Sign" Width="20*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
                         <DataGridTextColumn Header="Month" Width="20*" Binding="{Binding Month}" ElementStyle="{StaticResource CellLeftAlign}"/>
@@ -99,8 +100,12 @@
             <TabItem Header="Monthly Details" Padding="60,5,60,5">
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <Label Name="MinimumAmountLabel" Margin="5">MinimumAmount</Label>
+                        <Label Name="MinimumAmountLabel" Margin="5">Minimum Amount</Label>
                         <TextBox Name="MinimumAmount" Margin="5" Padding="5,3,0,0" MinWidth="120" />
+                        <Label Name="FromDayLabel" Margin="5">From Day</Label>
+                        <TextBox Name="FromDay" Margin="5" Padding="5,3,0,0" MinWidth="40" />
+                        <Label Name="ToDayLabel" Margin="5">To Day</Label>
+                        <TextBox Name="ToDay" Margin="5" Padding="5,3,0,0" MinWidth="40" />
                     </StackPanel>
                     <Grid>
                         <Grid.RowDefinitions>

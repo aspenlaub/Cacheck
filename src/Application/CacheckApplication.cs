@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Commands;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -46,7 +47,9 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, postingClassificationsMatcher),
             LiquidityPlanSumTextHandler = new CacheckTextHandler(Model, this, m => m.LiquidityPlanSum),
             ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum),
-            MinimumAmountHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.MinimumAmount)
+            MinimumAmountHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.MinimumAmount),
+            FromDayHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.FromDay),
+            ToDayHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.ToDay)
         };
         Commands = new CacheckCommands();
 
@@ -59,7 +62,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
     }
 
     public ITashTaskHandlingStatus<CacheckApplicationModel> CreateTashTaskHandlingStatus() {
-        return new TashTaskHandlingStatus<CacheckApplicationModel>(Model, System.Environment.ProcessId);
+        return new TashTaskHandlingStatus<CacheckApplicationModel>(Model, Environment.ProcessId);
     }
 
     public string GetLogText() {
@@ -80,6 +83,10 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
         await base.OnLoadedAsync();
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync();
         await Handlers.MinimumAmountHandler.TextChangedAsync("100");
+        int day = DateTime.Today.Day;
+        await Handlers.FromDayHandler.TextChangedAsync(day.ToString());
+        day = Math.Min(27, Math.Max(day + 5, 31));
+        await Handlers.ToDayHandler.TextChangedAsync(day.ToString());
     }
 
     public void SetDataCollector(IDataCollector dataCollector) {
@@ -92,5 +99,13 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
 
     public double MinimumAmount() {
         return double.TryParse(Model.MinimumAmount.Text, out double minimumAmount) ? minimumAmount : 0;
+    }
+
+    public int FromDay() {
+        return int.TryParse(Model.FromDay.Text, out int fromDay) ? fromDay : 1;
+    }
+
+    public int ToDay() {
+        return int.TryParse(Model.ToDay.Text, out int toDay) ? toDay : 31;
     }
 }

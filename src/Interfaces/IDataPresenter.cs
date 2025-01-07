@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
@@ -16,4 +15,6 @@ public interface IDataPresenter {
     void SetDataCollector(IDataCollector dataCollector);
     string SingleClassification();
     double MinimumAmount();
+    int FromDay();
+    int ToDay();
 }

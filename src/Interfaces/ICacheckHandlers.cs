@@ -14,4 +14,6 @@ public interface ICacheckHandlers {
     ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
     ISimpleTextHandler ReservationsSumTextHandler { get; }
     ISimpleTextHandler MinimumAmountHandler { get; }
+    ISimpleTextHandler FromDayHandler { get; }
+    ISimpleTextHandler ToDayHandler { get; }
 }

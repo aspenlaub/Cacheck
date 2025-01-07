@@ -120,19 +120,20 @@ public class DataCollector : IDataCollector {
 
         await _MonthlyDeltaCalculator.CalculateAndShowMonthlyDeltaAsync(allPostings, postingClassifications);
 
-        await _MonthlyDetailsCalculator.CalculateAndShowMonthlyDetailsAsync(allPostings, postingClassifications, _DataPresenter.MinimumAmount());
+        await _MonthlyDetailsCalculator.CalculateAndShowMonthlyDetailsAsync(allPostings, postingClassifications,
+            _DataPresenter.MinimumAmount(), _DataPresenter.FromDay(), _DataPresenter.ToDay());
 
         string singleClassification = _DataPresenter.SingleClassification();
         int minAmount = singleClassification == "" ? 70 : 10;
         IInverseClassificationPair inverseClassification = inverseClassifications.SingleOrDefault(ic
-                                                                                                      => ic.Classification == singleClassification || ic.InverseClassification == singleClassification
+            => ic.Classification == singleClassification || ic.InverseClassification == singleClassification
         );
         string singleClassificationInverse = inverseClassification == null ? "" :
             inverseClassification.Classification == singleClassification
                 ? inverseClassification.InverseClassification
                 : inverseClassification.Classification;
         IList<IClassifiedPosting> classifiedPostings = await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications,
-                                                                                                                                   DateTime.Now.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
+            DateTime.Now.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
         IList<string> eliminationAnalyzerResults = _IndividualPostingEliminationAnalyzer.AnalyzeClassifiedPostings(classifiedPostings);
         foreach(string eliminationAnalyzerResult in eliminationAnalyzerResults) {
             await _DataPresenter.WriteLineAsync(eliminationAnalyzerResult);

@@ -14,7 +14,7 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
             IPostingClassificationsMatcher postingClassificationsMatcher) : IMonthlyDetailsCalculator {
 
     public async Task CalculateAndShowMonthlyDetailsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                    double minimumAmount) {
+                    double minimumAmount, int fromDay, int toDay) {
 
         var fairPostings = postingClassificationsMatcher
                            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
@@ -24,7 +24,8 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
         int year = fairPostings.Max(p => p.Date.Year);
         int month = fairPostings.Where(p => p.Date.Year == year).Max(p => p.Date.Month);
         for (int i = 0; i < 12; i++) {
-            var postings = fairPostings.Where(p => p.Date.Year == year && p.Date.Month == month).ToList();
+            var postings = fairPostings.Where(p => p.Date.Year == year
+                && p.Date.Month == month && p.Date.Day >= fromDay && p.Date.Day <= toDay).ToList();
 
             var errorsAndInfos = new ErrorsAndInfos();
             var monthDetails = postingAggregator.AggregatePostings(postings, postingClassifications, errorsAndInfos).OrderByDescending(result => result.Key.CombinedClassification).ToList();

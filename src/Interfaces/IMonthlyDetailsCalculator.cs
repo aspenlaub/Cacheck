@@ -5,5 +5,5 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 public interface IMonthlyDetailsCalculator {
     Task CalculateAndShowMonthlyDetailsAsync(IList<IPosting> allPostings,
-        IList<IPostingClassification> postingClassifications, double minimumAmount);
+        IList<IPostingClassification> postingClassifications, double minimumAmount, int fromDay, int toDay);
 }

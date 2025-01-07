@@ -28,7 +28,9 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cacheckHandlers, ISimpleLo
             { nameof(status.Model.Log), cacheckHandlers.LogTextHandler },
             { nameof(status.Model.LiquidityPlanSum), cacheckHandlers.LiquidityPlanSumTextHandler},
             { nameof(status.Model.ReservationsSum), cacheckHandlers.ReservationsSumTextHandler },
-            { nameof(status.Model.MinimumAmount), cacheckHandlers.MinimumAmountHandler}
+            { nameof(status.Model.MinimumAmount), cacheckHandlers.MinimumAmountHandler},
+            { nameof(status.Model.FromDay), cacheckHandlers.FromDayHandler},
+            { nameof(status.Model.ToDay), cacheckHandlers.ToDayHandler}
         };
     }
 

@@ -39,6 +39,14 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
         return 100;
     }
 
+    public int FromDay() {
+        return 5;
+    }
+
+    public int ToDay() {
+        return 25;
+    }
+
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
                                                   IList<IInverseClassificationPair> inverseClassifications) {
         await Task.CompletedTask;
