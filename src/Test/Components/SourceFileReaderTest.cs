@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,7 +18,7 @@ public class SourceFileReaderTest {
     protected const double AmountOne = 2470.19, AmountTwo = -1970.24;
     protected const string RemarkOne = "This Is Not A Remark", RemarkTwo = "This Is Not Remarkable";
 
-    private static string SampleSourceFileName;
+    private static string _sampleSourceFileName;
 
     [ClassInitialize]
     public static void Initialize(TestContext context) {
@@ -25,10 +27,10 @@ public class SourceFileReaderTest {
 
     [TestMethod]
     public async Task CanReadPostings() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var sut = container.Resolve<ISourceFileReader>();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISourceFileReader sut = container.Resolve<ISourceFileReader>();
         var errorsAndInfos = new ErrorsAndInfos();
-        var postings = sut.ReadPostings(SampleSourceFileName, errorsAndInfos);
+        IList<IPosting> postings = sut.ReadPostings(_sampleSourceFileName, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.AreEqual(2, postings.Count);
         Assert.AreEqual(DateOne, postings[0].Date);
@@ -40,14 +42,14 @@ public class SourceFileReaderTest {
     }
 
     protected static void CreateSampleSourceFile() {
-        var folder = new Folder(Path.GetTempPath()).SubFolder(nameof(SourceFileReaderTest));
+        IFolder folder = new Folder(Path.GetTempPath()).SubFolder(nameof(SourceFileReaderTest));
         folder.CreateIfNecessary();
-        var contents = new[] {
+        string[] contents = [
             CreatePostingText(DateOne, AmountOne, RemarkOne),
             CreatePostingText(DateTwo, AmountTwo, RemarkTwo)
-        };
-        SampleSourceFileName = folder.FullName + "\\Sample.txt";
-        File.WriteAllLines(SampleSourceFileName, contents);
+        ];
+        _sampleSourceFileName = folder.FullName + "\\Sample.txt";
+        File.WriteAllLines(_sampleSourceFileName, contents);
     }
 
     protected static string CreatePostingText(DateTime date, double amount, string remark) {

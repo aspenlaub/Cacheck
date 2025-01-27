@@ -13,14 +13,14 @@ public class ClassificationAveragesHandler(ICacheckApplicationModel model,
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
         model.ClassificationAverages.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == model.ClassificationAverages.EntityType)) {
+        foreach (ICollectionViewSourceEntity item in items.Where(item => item.GetType() == model.ClassificationAverages.EntityType)) {
             model.ClassificationAverages.Items.Add(item);
         }
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
-        var list = JsonSerializer.Deserialize<List<TypeItemSum>>(json);
+        List<TypeItemSum> list = JsonSerializer.Deserialize<List<TypeItemSum>>(json);
         return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

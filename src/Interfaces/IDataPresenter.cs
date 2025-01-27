@@ -9,7 +9,7 @@ public interface IDataPresenter {
 
     string GetLogText();
     Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-        IList<IInverseClassificationPair> inverseClassifications);
+        IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting);
     Task OnSumsChanged(double liquidityPlanSum, double reservationsSum);
 
     void SetDataCollector(IDataCollector dataCollector);

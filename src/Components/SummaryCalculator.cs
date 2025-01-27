@@ -19,7 +19,7 @@ public class SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var fairPostings = postingClassificationsMatcher
             .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
             .ToList();
-        var pureDebitCreditAggregation = postingAggregator.AggregatePostings(fairPostings, new List<IPostingClassification> {
+        IDictionary<IFormattedClassification, double> pureDebitCreditAggregation = postingAggregator.AggregatePostings(fairPostings, new List<IPostingClassification> {
             new PostingClassification { Credit = false, Clue = "", Classification = "Debit" },
             new PostingClassification { Credit = true, Clue = "", Classification = "Credit" }
         }, errorsAndInfos);
@@ -34,7 +34,7 @@ public class SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         await dataPresenter.Handlers.OverallSumsHandler.CollectionChangedAsync(overallSumList);
 
         errorsAndInfos = new ErrorsAndInfos();
-        var detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, double> detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return false;

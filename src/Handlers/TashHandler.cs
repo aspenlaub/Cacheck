@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
@@ -25,8 +26,8 @@ public class TashHandler(ITashAccessor tashAccessor, ISimpleLogger simpleLogger,
 
     protected override async Task ProcessSingleTaskAsync(ITashTaskHandlingStatus<CacheckApplicationModel> status) {
         using (SimpleLogger.BeginScope(SimpleLoggingScopeId.Create(nameof(TashAccessor)))) {
-            var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
-            var s = string.IsNullOrEmpty(status.TaskBeingProcessed.ControlName)
+            IList<string> methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
+            string s = string.IsNullOrEmpty(status.TaskBeingProcessed.ControlName)
                 ? $"Processing a task of type {status.TaskBeingProcessed.Type} in {nameof(TashHandler)}"
                 : $"Processing a task of type {status.TaskBeingProcessed.Type} on {status.TaskBeingProcessed.ControlName} in {nameof(TashHandler)}";
             SimpleLogger.LogInformationWithCallStack(s, methodNamesFromStack);

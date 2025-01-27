@@ -48,7 +48,7 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
     }
 
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-                                                  IList<IInverseClassificationPair> inverseClassifications) {
+            IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
         await Task.CompletedTask;
     }
 }

@@ -16,26 +16,26 @@ public class TashSelectorHandler(ISimpleLogger simpleLogger,
                 methodNamesFromStackFramesExtractor) {
 
     public override async Task ProcessSelectComboOrResetTaskAsync(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
-        var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
-        var controlName = status.TaskBeingProcessed.ControlName;
+        IList<string> methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
+        string controlName = status.TaskBeingProcessed.ControlName;
         SimpleLogger.LogInformationWithCallStack($"{controlName} is a valid selector", methodNamesFromStack);
-        var selector = Selectors[controlName];
+        ISelector selector = Selectors[controlName];
 
         await SelectedIndexChangedAsync(status, controlName, -1, false);
         if (status.TaskBeingProcessed.Status == ControllableProcessTaskStatus.BadRequest) { return; }
 
-        var itemToSelect = status.TaskBeingProcessed.Text;
+        string itemToSelect = status.TaskBeingProcessed.Text;
         await SelectItemAsync(status, selector, itemToSelect, controlName);
     }
 
     protected override async Task SelectedIndexChangedAsync(ITashTaskHandlingStatus<ICacheckApplicationModel> status, string controlName, int selectedIndex, bool selectablesChanged) {
         if (selectedIndex < 0) { return; }
 
-        var methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
+        IList<string> methodNamesFromStack = MethodNamesFromStackFramesExtractor.ExtractMethodNamesFromStackFrames();
         SimpleLogger.LogInformationWithCallStack($"Changing selected index for {controlName} to {selectedIndex}", methodNamesFromStack);
         switch (controlName) {
             default:
-                var errorMessage = $"Do not know how to select for {status.TaskBeingProcessed.ControlName}";
+                string errorMessage = $"Do not know how to select for {status.TaskBeingProcessed.ControlName}";
                 SimpleLogger.LogInformationWithCallStack($"Communicating 'BadRequest' to remote controlling process ({errorMessage})", methodNamesFromStack);
                 await TashCommunicator.ChangeCommunicateAndShowProcessTaskStatusAsync(status, ControllableProcessTaskStatus.BadRequest, false, "", errorMessage);
                 break;

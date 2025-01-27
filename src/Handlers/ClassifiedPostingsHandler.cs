@@ -13,14 +13,14 @@ public class ClassifiedPostingsHandler(ICacheckApplicationModel model,
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
         model.ClassifiedPostings.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == model.ClassifiedPostings.EntityType)) {
+        foreach (ICollectionViewSourceEntity item in items.Where(item => item.GetType() == model.ClassifiedPostings.EntityType)) {
             model.ClassifiedPostings.Items.Add(item);
         }
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
-        var list = JsonSerializer.Deserialize<List<ClassifiedPosting>>(json);
+        List<ClassifiedPosting> list = JsonSerializer.Deserialize<List<ClassifiedPosting>>(json);
         return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

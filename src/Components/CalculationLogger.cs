@@ -16,7 +16,7 @@ public class CalculationLogger(ILogConfiguration logConfiguration) : ICalculatio
 
     public void ClearLogs() {
         _CalculationLogFolder.CreateIfNecessary();
-        foreach (var fileName in Directory.GetFiles(_CalculationLogFolder.FullName, "*.log")) {
+        foreach (string fileName in Directory.GetFiles(_CalculationLogFolder.FullName, "*.log")) {
             File.Delete(fileName);
         }
     }
@@ -30,16 +30,16 @@ public class CalculationLogger(ILogConfiguration logConfiguration) : ICalculatio
     }
 
     public void Flush() {
-        foreach (var classification in _ContributionsPerClassification.Keys) {
+        foreach (string classification in _ContributionsPerClassification.Keys) {
             var contributions = _ContributionsPerClassification[classification].OrderByDescending(c => Math.Abs(c.Amount)).ToList();
             double sum = 0;
-            var contents = "";
-            foreach (var contribution in contributions) {
+            string contents = "";
+            foreach (ClassificationContribution contribution in contributions) {
                 sum = sum + contribution.Amount;
                 contents = contents + "\r\n" + contribution.Amount + " (" + contribution.Posting + "; new balance " + Math.Ceiling(sum) + ")";
             }
 
-            var fileName = _CalculationLogFolder.FullName + @"\" + classification + ".log";
+            string fileName = _CalculationLogFolder.FullName + @"\" + classification + ".log";
             if (!File.Exists(fileName)) {
                 File.WriteAllText(fileName, contents);
             } else {

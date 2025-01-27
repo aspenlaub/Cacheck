@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
@@ -15,21 +16,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 
 [TestClass]
 public class FundamentalTransactionsReaderTest {
-    private const string TransactionsJsonFileName = "Transactions.json";
+    private const string _transactionsJsonFileName = "Transactions.json";
 
     [TestMethod]
     public async Task CanLoadTransactionsIfAvailable() {
-        var container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
-        var resolver = container.Resolve<IFolderResolver>();
+        IContainer container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
+        IFolderResolver resolver = container.Resolve<IFolderResolver>();
 
         IFundamentalTransactionsReader sut = new FundamentalTransactionsReader(resolver);
         var errorsAndInfos = new ErrorsAndInfos();
-        var folder = await sut.FundamentalDumpFolderAsync(errorsAndInfos);
+        IFolder folder = await sut.FundamentalDumpFolderAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         if (!folder.Exists()) { return; }
-        if (!File.Exists(folder.FullName + @"\" + TransactionsJsonFileName)) { return; }
+        if (!File.Exists(folder.FullName + @"\" + _transactionsJsonFileName)) { return; }
 
-        var transactions = await sut.LoadTransactionsIfAvailableAsync(errorsAndInfos);
+        IList<Transaction> transactions = await sut.LoadTransactionsIfAvailableAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.AreNotEqual(0, transactions.Count);
 

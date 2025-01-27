@@ -17,12 +17,12 @@ public class MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggreg
         var fairPostings = postingClassificationsMatcher
             .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
             .ToList();
-        var minYear = fairPostings.Min(p => p.Date.Year);
-        var years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
+        int minYear = fairPostings.Min(p => p.Date.Year);
+        IEnumerable<int> years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
         var monthsClassifications = new List<IPostingClassification>();
-        foreach (var year in years) {
-            for (var month = 1; month <= 12; month++) {
-                var classification = postingClassifications.FirstOrDefault(c => c.Month == month && c.Year == year);
+        foreach (int year in years) {
+            for (int month = 1; month <= 12; month++) {
+                IPostingClassification classification = postingClassifications.FirstOrDefault(c => c.Month == month && c.Year == year);
                 if (classification != null) {
                     monthsClassifications.Add(classification);
                 } else {

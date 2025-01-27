@@ -9,9 +9,9 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 
 [TestClass]
 public class LiquidityPlanCalculatorTest {
-    private const string NotMatching = "NotMatching", Fix = "Fix", ALittleMore = "ALittleMore", Target = "Target";
-    private const string Negative = "-", Positive = "+";
-    private const double Sum = 4711, TheTarget = 1147;
+    private const string _notMatching = "NotMatching", _fix = "Fix", _aLittleMore = "ALittleMore", _target = "Target";
+    private const string _negative = "-", _positive = "+";
+    private const double _sum = 4711, _theTarget = 1147;
 
     private readonly List<ILiquidityPlanClassification> _LiquidityPlanClassifications;
 
@@ -19,9 +19,9 @@ public class LiquidityPlanCalculatorTest {
 
     public LiquidityPlanCalculatorTest() {
         _LiquidityPlanClassifications = [
-            CreateLiquidityPlanClassification(Fix, 100, 0),
-            CreateLiquidityPlanClassification(ALittleMore, 120, 0),
-            CreateLiquidityPlanClassification(Target, 0, TheTarget)
+            CreateLiquidityPlanClassification(_fix, 100, 0),
+            CreateLiquidityPlanClassification(_aLittleMore, 120, 0),
+            CreateLiquidityPlanClassification(_target, 0, _theTarget)
         ];
     }
 
@@ -32,60 +32,60 @@ public class LiquidityPlanCalculatorTest {
 
     [TestMethod]
     public void LiquidityPlanCalculator_WithEmptyClassifications_Returns0() {
-        var classification = CreateClassification(Negative, "");
-        var result = _Sut.Calculate(classification, Sum, new List<ILiquidityPlanClassification>());
+        IFormattedClassification classification = CreateClassification(_negative, "");
+        double result = _Sut.Calculate(classification, _sum, new List<ILiquidityPlanClassification>());
         Assert.AreEqual(0, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithoutMatchingClassifications_Returns0() {
-        var classification = CreateClassification(Negative, NotMatching);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
+        IFormattedClassification classification = CreateClassification(_negative, _notMatching);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
         Assert.AreEqual(0, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithFixClassificationsAndPositiveSum_ReturnsSum() {
-        var classification = CreateClassification(Positive, Fix);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
-        Assert.AreEqual(Sum, result);
+        IFormattedClassification classification = CreateClassification(_positive, _fix);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
+        Assert.AreEqual(_sum, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithFixClassificationsAndNegativeSum_ReturnsSum() {
-        var classification = CreateClassification(Negative, Fix);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
-        Assert.AreEqual(-Sum, result);
+        IFormattedClassification classification = CreateClassification(_negative, _fix);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
+        Assert.AreEqual(-_sum, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithALittleMoreClassificationsAndPositiveSum_ReturnsALittleMore() {
-        var classification = CreateClassification(Positive, ALittleMore);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
-        var expectedResult = Math.Ceiling(Sum * 120 / 100);
+        IFormattedClassification classification = CreateClassification(_positive, _aLittleMore);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
+        double expectedResult = Math.Ceiling(_sum * 120 / 100);
         Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithALittleMoreClassificationsAndNegativeSum_ReturnsALittleMore() {
-        var classification = CreateClassification(Negative, ALittleMore);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
-        var expectedResult = -Math.Ceiling(Sum * 120 / 100);
+        IFormattedClassification classification = CreateClassification(_negative, _aLittleMore);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
+        double expectedResult = -Math.Ceiling(_sum * 120 / 100);
         Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithTargetClassificationsAndPositiveSum_ReturnsTarget() {
-        var classification = CreateClassification(Positive, Target);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
-        Assert.AreEqual(TheTarget, result);
+        IFormattedClassification classification = CreateClassification(_positive, _target);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
+        Assert.AreEqual(_theTarget, result);
     }
 
     [TestMethod]
     public void LiquidityPlanCalculatorCalculator_WithTargetClassificationsAndNegativeSum_ReturnsNegativeTarget() {
-        var classification = CreateClassification(Negative, Target);
-        var result = _Sut.Calculate(classification, Sum, _LiquidityPlanClassifications);
-        Assert.AreEqual(-TheTarget, result);
+        IFormattedClassification classification = CreateClassification(_negative, _target);
+        double result = _Sut.Calculate(classification, _sum, _LiquidityPlanClassifications);
+        Assert.AreEqual(-_theTarget, result);
     }
 
     private static IFormattedClassification CreateClassification(string sign, string classification) {

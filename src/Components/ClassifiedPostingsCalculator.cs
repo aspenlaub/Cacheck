@@ -14,8 +14,8 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
     public async Task<IList<IClassifiedPosting>> CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
                 DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
 
-        var classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
-            singleClassification, singleClassificationInverse);
+        IList<IClassifiedPosting> classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
+                                                                                   singleClassification, singleClassificationInverse);
         await dataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
         return classifiedPostings;
     }
@@ -25,9 +25,9 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
 
         var classifiedPostings = new List<IClassifiedPosting>();
 
-        foreach (var posting in allPostings) {
+        foreach (IPosting posting in allPostings) {
             if (!IsPostingRelevantHere(posting, postingClassifications, minDate, minAmount,
-                                       singleClassification, singleClassificationInverse, out var classification)) { continue; }
+                                       singleClassification, singleClassificationInverse, out IPostingClassification classification)) { continue; }
 
             var classifiedPosting = new ClassifiedPosting {
                 Date = posting.Date,
@@ -53,7 +53,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
         if (Math.Abs(posting.Amount) < minAmount) { return false; }
         if (posting.Date < minDate) { return false; }
 
-        var classifications = postingClassificationsMatcher.MatchingClassifications(posting, postingClassifications);
+        IList<IPostingClassification> classifications = postingClassificationsMatcher.MatchingClassifications(posting, postingClassifications);
         if (!AreClassificationsEquivalent(classifications)) { return false; }
 
         classification = classifications[0];
@@ -68,7 +68,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
         if (!classifications.Any()) { return false; }
         if (classifications.Count == 1) { return true;  }
 
-        for (var i = 1; i < classifications.Count; i++) {
+        for (int i = 1; i < classifications.Count; i++) {
             if (classifications[0].Classification != classifications[i].Classification) { return false; }
             if (classifications[0].Credit != classifications[i].Credit) { return false; }
         }

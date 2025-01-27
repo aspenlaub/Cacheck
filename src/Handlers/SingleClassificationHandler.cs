@@ -18,6 +18,10 @@ public class SingleClassificationHandler(ICacheckApplicationModel model,
     protected IList<IPostingClassification> Classifications = [];
 
     public async Task UpdateSelectableValuesAsync() {
+        await UpdateSelectableValuesAsync(false);
+    }
+
+    public async Task UpdateSelectableValuesAsync(bool areWeCollecting) {
         var selectables = Classifications.GroupBy(c => c.Classification).Select(c => c.Key)
             .OrderBy(c => c)
             .Select(c => new Selectable { Guid = c, Name = c })
@@ -28,15 +32,17 @@ public class SingleClassificationHandler(ICacheckApplicationModel model,
         model.SingleClassification.UpdateSelectables(selectables);
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
+        if (areWeCollecting) { return; }
+
         await dataCollectorGetter().CollectAndShowAsync();
     }
 
     public async Task UpdateSelectableValuesAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-            IList<IInverseClassificationPair> inverseClassifications) {
+            IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
         var usedClassifications = postingClassificationsMatcher.MatchingClassifications(postings, classifications)
             .Where(c => !IsInverseClassification(c, inverseClassifications)).ToList();
         Classifications = new List<IPostingClassification>(usedClassifications);
-        await UpdateSelectableValuesAsync();
+        await UpdateSelectableValuesAsync(areWeCollecting);
     }
 
     private bool IsInverseClassification(IPostingClassification c, IEnumerable<IInverseClassificationPair> inverseClassifications) {

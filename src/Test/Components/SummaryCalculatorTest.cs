@@ -18,12 +18,12 @@ public class SummaryCalculatorTest : CalculatorTestBase {
 
     [TestMethod]
     public async Task CanCalculateSummary() {
-        var success = await Sut.CalculateAndShowSummaryAsync(new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
-            new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 },
-            new List<IInverseClassificationPair>());
+        bool success = await Sut.CalculateAndShowSummaryAsync(new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
+                                                              new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 },
+                                                              new List<IInverseClassificationPair>());
 
         Assert.IsTrue(success);
-        var items = FakeDataPresenter.OverallSums;
+        List<ITypeItemSum> items = FakeDataPresenter.OverallSums;
         Assert.AreEqual(2, items.Count);
         Assert.AreEqual("+", items[0].Type);
         Assert.AreEqual("Credit", items[0].Item);

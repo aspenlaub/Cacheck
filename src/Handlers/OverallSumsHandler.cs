@@ -13,14 +13,14 @@ public class OverallSumsHandler(ICacheckApplicationModel model,
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
         model.OverallSums.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == model.OverallSums.EntityType)) {
+        foreach (ICollectionViewSourceEntity item in items.Where(item => item.GetType() == model.OverallSums.EntityType)) {
             model.OverallSums.Items.Add(item);
         }
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
-        var list = JsonSerializer.Deserialize<List<TypeItemSum>>(json);
+        List<TypeItemSum> list = JsonSerializer.Deserialize<List<TypeItemSum>>(json);
         return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

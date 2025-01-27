@@ -13,14 +13,14 @@ public class MonthlyDetailsHandler(ICacheckApplicationModel model,
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
         model.MonthlyDetails.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == model.MonthlyDetails.EntityType)) {
+        foreach (ICollectionViewSourceEntity item in items.Where(item => item.GetType() == model.MonthlyDetails.EntityType)) {
             model.MonthlyDetails.Items.Add(item);
         }
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
-        var list = JsonSerializer.Deserialize<List<TypeMonthDetails>>(json);
+        List<TypeMonthDetails> list = JsonSerializer.Deserialize<List<TypeMonthDetails>>(json);
         return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

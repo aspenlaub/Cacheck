@@ -11,7 +11,7 @@ public class ReservationsCalculator : IReservationsCalculator {
         sumPastTwelveMonths = classification.Sign == "-" ? sumPastTwelveMonths : -sumPastTwelveMonths;
         if (sumPastTwelveMonths <= 0) { return 0; }
 
-        var irregularDebitClassification = FindIrregularDebitClassification(classification, irregularDebitClassifications);
+        IIrregularDebitClassification irregularDebitClassification = FindIrregularDebitClassification(classification, irregularDebitClassifications);
         if (irregularDebitClassification == null) { return 0; }
 
         return Math.Ceiling(sumPastTwelveMonths * irregularDebitClassification.Percentage / 100);

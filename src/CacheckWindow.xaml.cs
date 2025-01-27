@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Input;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
@@ -73,7 +74,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         _TashTimer.CreateAndStartTimer(_CacheckApp.CreateTashTaskHandlingStatus());
 
         IDataCollector dataCollector = Container.Resolve<IDataCollector>();
-        await dataCollector.CollectAndShowAsync(); // CacheckApp.IsIntegrationTest
+        await dataCollector.CollectAndShowAsync();
 
         await ExceptionHandler.RunAsync(WindowsApplication.Current, TimeSpan.FromSeconds(2));
     }
@@ -161,6 +162,22 @@ public partial class CacheckWindow : IAsyncDisposable {
         } else {
             MessageBox.Show($"Classification set to {individualPostingClassification.Classification}, please reload Cacheck",
                 Title, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+    }
+
+    // ReSharper disable once AsyncVoidMethod
+    private async void OnRefreshButtonClick(object sender, RoutedEventArgs e) {
+        await OnRefreshButtonClick();
+    }
+
+    private async Task OnRefreshButtonClick() {
+        Cursor oldCursor = Cursor;
+        Cursor = Cursors.Wait;
+        try {
+            IDataCollector dataCollector = Container.Resolve<IDataCollector>();
+            await dataCollector.CollectAndShowAsync();
+        } finally {
+            Cursor = oldCursor;
         }
     }
 }

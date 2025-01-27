@@ -20,14 +20,14 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
                                                    IList<IIrregularDebitClassification> irregularDebitClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
 
-        var thisYear = allPostings.Max(p => p.Date.Year);
-        var halfAYearAgo = allPostings.Max(p => p.Date).AddMonths(-6);
+        int thisYear = allPostings.Max(p => p.Date.Year);
+        DateTime halfAYearAgo = allPostings.Max(p => p.Date).AddMonths(-6);
         halfAYearAgo = new DateTime(halfAYearAgo.Year, halfAYearAgo.Month, 1);
-        var aYearAgo = allPostings.Max(p => p.Date).AddMonths(-12);
+        DateTime aYearAgo = allPostings.Max(p => p.Date).AddMonths(-12);
         aYearAgo = new DateTime(aYearAgo.Year, aYearAgo.Month, 1);
 
         var lastYearsPostings = allPostings.Where(p => p.Date.Year < thisYear).ToList();
-        var lastYearsDetailedAggregation = postingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, double> lastYearsDetailedAggregation = postingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -36,7 +36,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var lastYearsDetailedAggregationList = aggregatedPostingsNetter.Net(lastYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var thisYearsPostings = allPostings.Where(p => p.Date.Year == thisYear).ToList();
-        var thisYearsDetailedAggregation = postingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, double> thisYearsDetailedAggregation = postingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -45,7 +45,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var thisYearsDetailedAggregationList = aggregatedPostingsNetter.Net(thisYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var pastHalfYearsPostings = allPostings.Where(p => p.Date > halfAYearAgo).ToList();
-        var pastHalfYearsDetailedAggregation = postingAggregator.AggregatePostings(pastHalfYearsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, double> pastHalfYearsDetailedAggregation = postingAggregator.AggregatePostings(pastHalfYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -54,7 +54,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var pastHalfYearsDetailedAggregationList = aggregatedPostingsNetter.Net(pastHalfYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var pastTwelveMonthsPostings = allPostings.Where(p => p.Date > aYearAgo).ToList();
-        var pastTwelveMonthsDetailedAggregation = postingAggregator.AggregatePostings(pastTwelveMonthsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, double> pastTwelveMonthsDetailedAggregation = postingAggregator.AggregatePostings(pastTwelveMonthsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -62,7 +62,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
 
         var pastTwelveMonthsDetailedAggregationList = aggregatedPostingsNetter.Net(pastTwelveMonthsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
-        var detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, double> detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -75,11 +75,11 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
                 .ToList();
         detailedAggregation = aggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, classificationsToKeepEvenIfZero);
 
-        var numberOfDistinctMonths = allPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count();
-        var numberOfDistinctMonthsLastYear = lastYearsPostings.Any() ? lastYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
-        var numberOfDistinctMonthsThisYear = thisYearsPostings.Any() ? thisYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
-        var numberOfDistinctMonthsPastHalfYear = pastHalfYearsPostings.Any() ? pastHalfYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
-        var numberOfDistinctMonthsPastTwelveMonths = pastTwelveMonthsPostings.Any() ? pastTwelveMonthsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
+        int numberOfDistinctMonths = allPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count();
+        int numberOfDistinctMonthsLastYear = lastYearsPostings.Any() ? lastYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
+        int numberOfDistinctMonthsThisYear = thisYearsPostings.Any() ? thisYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
+        int numberOfDistinctMonthsPastHalfYear = pastHalfYearsPostings.Any() ? pastHalfYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
+        int numberOfDistinctMonthsPastTwelveMonths = pastTwelveMonthsPostings.Any() ? pastTwelveMonthsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
 
         double liquidityPlanSum = 0, reservationsSum = 0;
         var classificationAverageList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).ToList().Select(
@@ -102,10 +102,10 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
             int numberOfDistinctMonthsLastYear, IList<ILiquidityPlanClassification> liquidityPlanClassifications,
             IList<IIrregularDebitClassification> irregularDebitClassifications,
             ref double liquidityPlanSum, ref double reservationsSum) {
-        var sumPastTwelveMonths = GetOtherSum(classification, pastTwelveMonthsDetailedAggregationList) / numberOfDistinctMonthsPastTwelveMonths;
-        var liquidityPlanContribution = liquidityPlanCalculator.Calculate(classification, sumPastTwelveMonths, liquidityPlanClassifications);
+        double sumPastTwelveMonths = GetOtherSum(classification, pastTwelveMonthsDetailedAggregationList) / numberOfDistinctMonthsPastTwelveMonths;
+        double liquidityPlanContribution = liquidityPlanCalculator.Calculate(classification, sumPastTwelveMonths, liquidityPlanClassifications);
         liquidityPlanSum += liquidityPlanContribution;
-        var reservationsContribution = reservationsCalculator.Calculate(classification, sumPastTwelveMonths, irregularDebitClassifications);
+        double reservationsContribution = reservationsCalculator.Calculate(classification, sumPastTwelveMonths, irregularDebitClassifications);
         reservationsSum += reservationsContribution;
         return new TypeItemSum { Type = classification.Sign, Item = classification.Classification, Sum = sum / numberOfDistinctMonths,
             SumPastHalfYear = GetOtherSum(classification, pastHalfYearsDetailedAggregationList) / numberOfDistinctMonthsPastHalfYear,

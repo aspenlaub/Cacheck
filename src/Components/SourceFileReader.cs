@@ -17,8 +17,8 @@ public class SourceFileReader : ISourceFileReader {
         }
 
         var lines = File.ReadAllLines(fileName).ToList();
-        for(var i = 0; i < lines.Count; i ++) {
-            if (!TryReadPostings(lines[i], out var posting)) { continue; }
+        for(int i = 0; i < lines.Count; i ++) {
+            if (!TryReadPostings(lines[i], out IPosting posting)) { continue; }
 
             var unreadableLines = new List<string>();
             int j;
@@ -26,7 +26,7 @@ public class SourceFileReader : ISourceFileReader {
                 unreadableLines.Add(lines[j].Trim());
             }
 
-            var numberOfDigits = string.Join("", unreadableLines).ToCharArray().Count(char.IsDigit);
+            int numberOfDigits = string.Join("", unreadableLines).ToCharArray().Count(char.IsDigit);
             if (numberOfDigits < 10) {
                 for (; j < lines.Count && j < i + 4 && !TryReadPostings(lines[j], out _); j++) {
                     unreadableLines.Add(lines[j].Trim());
@@ -54,9 +54,9 @@ public class SourceFileReader : ISourceFileReader {
 
         var dates = new List<DateTime>();
         var datePositions = new List<int>();
-        for (var i = 0; i < line.Length - 10; i++) {
-            var dateString = line.Substring(i, 10);
-            if (!DateTime.TryParse(dateString, out var date)) {
+        for (int i = 0; i < line.Length - 10; i++) {
+            string dateString = line.Substring(i, 10);
+            if (!DateTime.TryParse(dateString, out DateTime date)) {
                 continue;
             }
 
@@ -72,7 +72,7 @@ public class SourceFileReader : ISourceFileReader {
             return false;
         }
 
-        if (!double.TryParse(line[(datePositions[dates.Count - 1] + 10)..], out var amount)) {
+        if (!double.TryParse(line[(datePositions[dates.Count - 1] + 10)..], out double amount)) {
             return false;
         }
 

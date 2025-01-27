@@ -16,11 +16,11 @@ public class CacheckIntegrationTestBase {
     }
 
     protected async Task<CacheckWindowUnderTest> CreateCacheckWindowUnderTestAsync() {
-        var sut = Container.Resolve<CacheckWindowUnderTest>();
+        CacheckWindowUnderTest sut = Container.Resolve<CacheckWindowUnderTest>();
         await sut.InitializeAsync();
         await EnsureControllableProcessAsync(sut);
 
-        var process = ControllableProcess;
+        ControllableProcess process = ControllableProcess;
         var tasks = new List<ControllableProcessTask> {
             sut.CreateResetTask(process)
         };

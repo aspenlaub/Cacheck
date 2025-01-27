@@ -39,7 +39,7 @@ public class PotentialCueExtractorTest {
 
     private void ExtractPotentialCues(string postingRemark, ICollection<string> expectedCues,
             string prefix, string postfix) {
-        var actualCues = _Sut.ExtractPotentialCues(prefix + postingRemark + postfix);
+        HashSet<string> actualCues = _Sut.ExtractPotentialCues(prefix + postingRemark + postfix);
         Assert.AreEqual(expectedCues.Count, actualCues.Count);
         Assert.IsTrue(expectedCues.All(actualCues.Contains));
     }

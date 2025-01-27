@@ -22,7 +22,7 @@ public class AverageCalculatorTest : CalculatorTestBase {
             new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 },
             new List<IInverseClassificationPair>(), new List<ILiquidityPlanClassification>(), new List<IIrregularDebitClassification>());
 
-        var items = FakeDataPresenter.ClassificationAverages;
+        List<ITypeItemSum> items = FakeDataPresenter.ClassificationAverages;
         VerifyResult(items[0], "-", "1510", 10, 0);
         VerifyResult(items[1], "-", "1989", 20, 0);
         VerifyResult(items[2], "+", "2407", 5, 0);

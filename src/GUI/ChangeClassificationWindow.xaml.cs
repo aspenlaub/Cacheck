@@ -10,7 +10,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 public partial class ChangeClassificationWindow {
     private IPosting _Posting;
     public IPosting Posting {
-        get => _Posting;
+        get { return _Posting; }
         set {
             _Posting = value;
             Date.Text = _Posting.Date.ToShortDateString();
@@ -21,7 +21,7 @@ public partial class ChangeClassificationWindow {
 
     private string _PostingHash;
     public string PostingHash {
-        get => _PostingHash;
+        get { return _PostingHash; }
         set {
             _PostingHash = value;
             Hash.Text = _PostingHash;

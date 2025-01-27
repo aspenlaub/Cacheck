@@ -9,12 +9,16 @@ public class FakeCacheckSelectorHandler : ISingleClassificationHandler {
         await Task.CompletedTask;
     }
 
-    public async Task SelectedIndexChangedAsync(int selectedIndex) {
+    public async Task UpdateSelectableValuesAsync(bool areWeCollecting) {
         await Task.CompletedTask;
     }
 
     public async Task UpdateSelectableValuesAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-            IList<IInverseClassificationPair> inverseClassifications) {
+            IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
+        await Task.CompletedTask;
+    }
+
+    public async Task SelectedIndexChangedAsync(int selectedIndex) {
         await Task.CompletedTask;
     }
 }

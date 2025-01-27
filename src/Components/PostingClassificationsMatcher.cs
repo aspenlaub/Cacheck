@@ -34,8 +34,9 @@ public class PostingClassificationsMatcher(IPostingClassificationMatcher posting
 
     public IList<IPostingClassification> MatchingClassifications(IList<IPosting> postings,
             IList<IPostingClassification> postingClassifications) {
+        var matchingClassifications = postings.ToDictionary(p => p, p => MatchingClassifications(p, postingClassifications));
         return postingClassifications
-            .Where(c => postings.Any(p => MatchingClassifications(p, postingClassifications).Contains(c)))
+            .Where(c => postings.Any(p => matchingClassifications[p].Contains(c)))
             .ToList();
     }
 }

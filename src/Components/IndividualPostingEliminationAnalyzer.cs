@@ -7,7 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 public class IndividualPostingEliminationAnalyzer(IPotentialCueExtractor potentialCueExtractor) : IIndividualPostingEliminationAnalyzer {
     public IList<string> AnalyzeClassifiedPostings(IList<IClassifiedPosting> classifiedPostings) {
         var result = new List<string>();
-        foreach (var classifiedPosting in classifiedPostings) {
+        foreach (IClassifiedPosting classifiedPosting in classifiedPostings) {
             if (classifiedPosting.Ineliminable || !classifiedPosting.IsIndividual) { continue; }
 
             var potentialCues = potentialCueExtractor
@@ -19,7 +19,7 @@ public class IndividualPostingEliminationAnalyzer(IPotentialCueExtractor potenti
             var classicCues = potentialCues.Where(cue => 1 == classifiedPostings.Count(cp => cp.Remark.Contains(cue))).ToList();
             if (!classicCues.Any()) { continue; }
 
-            var debitCredit = classifiedPosting.Amount < 0 ? "Debit" : "Credit";
+            string debitCredit = classifiedPosting.Amount < 0 ? "Debit" : "Credit";
             result.Add($"Found individual posting with hash '{classifiedPosting.PostingHash}' and classification '{classifiedPosting.Classification}' {debitCredit} which could use one of these classic cue/-s:");
             result.AddRange(classicCues.Select(classicCue => $"'{classicCue}'"));
         }

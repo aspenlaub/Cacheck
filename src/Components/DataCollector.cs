@@ -92,7 +92,7 @@ public class DataCollector : IDataCollector {
 
         var inverseClassifications = inverseClassificationsSecret.OfType<IInverseClassificationPair>().ToList();
 
-        await _DataPresenter.OnClassificationsFoundAsync(postingClassifications, allPostings, inverseClassifications);
+        await _DataPresenter.OnClassificationsFoundAsync(postingClassifications, allPostings, inverseClassifications, true);
 
         if (!await _SummaryCalculator.CalculateAndShowSummaryAsync(allTimePostings, postingClassifications, inverseClassifications)) {
             _CalculationLogger.Flush();

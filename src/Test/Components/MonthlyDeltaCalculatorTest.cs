@@ -21,7 +21,7 @@ public class MonthlyDeltaCalculatorTest : CalculatorTestBase {
         await Sut.CalculateAndShowMonthlyDeltaAsync(new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 },
             new List<IPostingClassification> { TestData.PostingClassificationJuly, TestData.PostingClassificationAugust, TestData.PostingClassificationSeptember });
 
-        var items = FakeDataPresenter.MonthlyDeltas;
+        List<ITypeMonthDelta> items = FakeDataPresenter.MonthlyDeltas;
         Assert.AreEqual(2, items.Count);
         Assert.AreEqual("Δ", items[0].Type);
         Assert.AreEqual("2021-08", items[0].Month);

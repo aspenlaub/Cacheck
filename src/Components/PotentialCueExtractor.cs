@@ -4,19 +4,19 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class PotentialCueExtractor : IPotentialCueExtractor {
-    private const int MinimumExtractedCueLength = 12;
+    private const int _minimumExtractedCueLength = 12;
 
     public HashSet<string> ExtractPotentialCues(string postingRemark) {
         var parts = new HashSet<string>();
-        var maxStartPos = postingRemark.Length - MinimumExtractedCueLength;
-        for (var startPos = 0; startPos <= maxStartPos;) {
+        int maxStartPos = postingRemark.Length - _minimumExtractedCueLength;
+        for (int startPos = 0; startPos <= maxStartPos;) {
             startPos = FindLetter(postingRemark, startPos, maxStartPos);
             if (startPos > maxStartPos) { break; }
 
-            var endPos = FindEndPosition(postingRemark, startPos);
+            int endPos = FindEndPosition(postingRemark, startPos);
 
-            var part = postingRemark.Substring(startPos, endPos - startPos + 1);
-            if (part.Length >= MinimumExtractedCueLength) {
+            string part = postingRemark.Substring(startPos, endPos - startPos + 1);
+            if (part.Length >= _minimumExtractedCueLength) {
                 parts.UnionWith(FindSubParts(part));
             }
 
@@ -48,10 +48,10 @@ public class PotentialCueExtractor : IPotentialCueExtractor {
     }
 
     private HashSet<string> FindSubParts(string part) {
-        if (part.Length < MinimumExtractedCueLength) { return []; }
+        if (part.Length < _minimumExtractedCueLength) { return []; }
 
         var parts = new HashSet<string> { part };
-        for (var startPos = 2; startPos < part.Length; startPos++) {
+        for (int startPos = 2; startPos < part.Length; startPos++) {
             if (part[startPos - 1] != ' ' || part[startPos] == ' ') { continue; }
 
             parts.UnionWith(FindSubParts(part.Substring(0, startPos - 1).TrimEnd()));

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
@@ -17,7 +18,7 @@ public class IndividualPostingClassificationsSourceTest {
 
     [TestInitialize]
     public async Task Initialize() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
         _Sut = container.Resolve<IIndividualPostingClassificationsSource>();
         _PostingCollector = container.Resolve<IPostingCollector>();
         _PostingHasher = container.Resolve<IPostingHasher>();
@@ -26,7 +27,7 @@ public class IndividualPostingClassificationsSourceTest {
     [TestMethod]
     public async Task CanGetIndividualPostingClassifications() {
         var errorsAndInfos = new ErrorsAndInfos();
-        var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
+        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         individualPostingClassifications = individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists)).ToList();
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
@@ -39,16 +40,16 @@ public class IndividualPostingClassificationsSourceTest {
     [TestMethod]
     public async Task PostingExistsForEachIndividualPostingClassification() {
         var errorsAndInfos = new ErrorsAndInfos();
-        var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
+        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         individualPostingClassifications = individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists)).ToList();
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
-        var postings = await _PostingCollector.CollectPostingsAsync(false);
+        IList<IPosting> postings = await _PostingCollector.CollectPostingsAsync(false);
         if (postings.Count < 24) {
             Assert.Inconclusive("Not enough production postings");
         }
         var postingHashes = postings.Select(_PostingHasher.Hash).ToList();
-        foreach (var individualPostingClassification in individualPostingClassifications) {
+        foreach (IIndividualPostingClassification individualPostingClassification in individualPostingClassifications) {
             Assert.IsTrue(postingHashes.Contains(individualPostingClassification.PostingHash),
                 $"Hash {individualPostingClassification.PostingHash} does not correspond to a posting");
         }
@@ -62,7 +63,7 @@ public class IndividualPostingClassificationsSourceTest {
             Credit = false
         };
         var errorsAndInfos = new ErrorsAndInfos();
-        var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
+        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         if (individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash)) { return; }
 
@@ -83,7 +84,7 @@ public class IndividualPostingClassificationsSourceTest {
             Ineliminable = false
         };
         var errorsAndInfos = new ErrorsAndInfos();
-        var individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
+        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         if (individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash)) {
             await _Sut.RemoveAsync(individualPostingClassification);

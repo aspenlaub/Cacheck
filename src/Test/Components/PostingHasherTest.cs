@@ -13,17 +13,17 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 public class PostingHasherTest {
     [TestMethod]
     public async Task NoHashesAreEqualForProductionPostings() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
-        var postingCollector = container.Resolve<IPostingCollector>();
-        var postings = await postingCollector.CollectPostingsAsync(false);
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
+        IPostingCollector postingCollector = container.Resolve<IPostingCollector>();
+        IList<IPosting> postings = await postingCollector.CollectPostingsAsync(false);
         if (postings.Count < 24) {
             Assert.Inconclusive("Not enough production postings");
         }
         var hashToPosting = new Dictionary<string, IPosting>();
         var sut = new PostingHasher();
-        foreach (var posting in postings) {
-            var hash = sut.Hash(posting);
-            if (!hashToPosting.TryGetValue(hash, out var otherPosting)) {
+        foreach (IPosting posting in postings) {
+            string hash = sut.Hash(posting);
+            if (!hashToPosting.TryGetValue(hash, out IPosting otherPosting)) {
                 hashToPosting[hash] = posting;
                 continue;
             }
@@ -38,7 +38,7 @@ public class PostingHasherTest {
         var sut = new PostingHasher();
         const string expectedHash = "20241018904711014104120229990";
         const string remark = "ARAL AG14.04.2022-99,90";
-        var actualHash = sut.Hash(new Posting { Amount = 4711, Date = new DateTime(2024, 10, 18), Remark = remark });
+        string actualHash = sut.Hash(new Posting { Amount = 4711, Date = new DateTime(2024, 10, 18), Remark = remark });
         Assert.AreEqual(expectedHash, actualHash);
     }
 }

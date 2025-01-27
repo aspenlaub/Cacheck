@@ -7,7 +7,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class SecretRepositoryFactory : ISecretRepositoryFactory {
     public ISecretRepository Create() {
-        var container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
+        IContainer container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
         return container.Resolve<ISecretRepository>();
     }
 }

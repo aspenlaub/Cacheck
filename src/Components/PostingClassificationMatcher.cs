@@ -24,9 +24,8 @@ public class PostingClassificationMatcher(IPostingHasher postingHasher) : IPosti
     }
 
     private static bool DoesPostingMatchYearAndMonth(IPosting posting, IPostingClassification classification) {
-        if (classification.Month == 0 && classification.Year == 0) { return true; }
-
-        return classification.Month == posting.Date.Month && classification.Year == posting.Date.Year;
+        return classification.Month == 0 && classification.Year == 0
+            || classification.Month == posting.Date.Month && classification.Year == posting.Date.Year;
     }
 
     private bool DoesPostingMatchIndividualClassification(IPosting posting, IPostingClassification classification) {

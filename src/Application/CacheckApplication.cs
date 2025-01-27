@@ -47,9 +47,9 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, postingClassificationsMatcher),
             LiquidityPlanSumTextHandler = new CacheckTextHandler(Model, this, m => m.LiquidityPlanSum),
             ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum),
-            MinimumAmountHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.MinimumAmount),
-            FromDayHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.FromDay),
-            ToDayHandler = new MinimumAmountHandler(Model, this, () => _DataCollector, m => m.ToDay)
+            MinimumAmountHandler = new CacheckTextHandler(Model, this, m => m.MinimumAmount),
+            FromDayHandler = new CacheckTextHandler(Model, this, m => m.FromDay),
+            ToDayHandler = new CacheckTextHandler(Model, this, m => m.ToDay)
         };
         Commands = new CacheckCommands();
 
@@ -70,8 +70,8 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
     }
 
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-            IList<IInverseClassificationPair> inverseClassifications) {
-        await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(classifications, postings, inverseClassifications);
+            IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
+        await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(classifications, postings, inverseClassifications, areWeCollecting);
     }
 
     public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
@@ -81,7 +81,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
 
     public override async Task OnLoadedAsync() {
         await base.OnLoadedAsync();
-        await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync();
+        await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(false);
         await Handlers.MinimumAmountHandler.TextChangedAsync("100");
         int day = DateTime.Today.Day;
         await Handlers.FromDayHandler.TextChangedAsync(day.ToString());

@@ -12,22 +12,22 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class FundamentalTransactionsReader(IFolderResolver folderResolver) : IFundamentalTransactionsReader {
 
-    private const string TransactionsJsonFileName = "Transactions.json";
+    private const string _transactionsJsonFileName = "Transactions.json";
 
     public async Task<IFolder> FundamentalDumpFolderAsync(IErrorsAndInfos errorsAndInfos) {
-        var folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Fundamental\Production\Dump", errorsAndInfos);
+        IFolder folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Fundamental\Production\Dump", errorsAndInfos);
         return folder;
     }
 
     public async Task<IList<Transaction>> LoadTransactionsIfAvailableAsync(IErrorsAndInfos errorsAndInfos) {
-        var folder = await FundamentalDumpFolderAsync(errorsAndInfos);
+        IFolder folder = await FundamentalDumpFolderAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors() || !folder.Exists()) { return new List<Transaction>(); }
 
-        var fileName = folder.FullName + @"\" + TransactionsJsonFileName;
+        string fileName = folder.FullName + @"\" + _transactionsJsonFileName;
         if (!File.Exists(fileName)) { return new List<Transaction>(); }
 
         await using var stream = new FileStream(fileName, FileMode.Open);
-        var transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(stream) ?? [];
+        List<Transaction> transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(stream) ?? [];
         transactions = transactions.Where(t => t.TransactionType != TransactionType.Buy && t.TransactionType != TransactionType.Sell).ToList();
         return transactions;
     }

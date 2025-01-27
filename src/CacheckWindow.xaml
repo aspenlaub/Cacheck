@@ -106,6 +106,7 @@
                         <TextBox Name="FromDay" Margin="5" Padding="5,3,0,0" MinWidth="40" />
                         <Label Name="ToDayLabel" Margin="5">To Day</Label>
                         <TextBox Name="ToDay" Margin="5" Padding="5,3,0,0" MinWidth="40" />
+                        <Button Name="Refresh" Margin="50,5,5,5" Padding="10,3,10,0" MinWidth="80" Click="OnRefreshButtonClick">_Refresh</Button>
                     </StackPanel>
                     <Grid>
                         <Grid.RowDefinitions>

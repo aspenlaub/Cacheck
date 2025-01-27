@@ -6,6 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data;
 
@@ -34,9 +35,9 @@ public static class TestDataGenerator {
 
     public static void CreateTestFiles() {
         var years = TestPostings.Select(p => p.Date.Year).Distinct().OrderBy(y => y).ToList();
-        foreach (var year in years) {
+        foreach (int year in years) {
             var months = TestPostings.Where(p => p.Date.Year == year).Select(p => p.Date.Month).Distinct().OrderBy(y => y).ToList();
-            foreach (var month in months) {
+            foreach (int month in months) {
                 CreateTestFile(year, month);
             }
         }
@@ -46,7 +47,7 @@ public static class TestDataGenerator {
         var postings = TestPostings.Where(p => p.Date.Year == year && p.Date.Month == month).OrderBy(p => p.Date).ToList();
         if (!postings.Any()) { return; }
 
-        var fileName = Folders.IntegrationTestFolder.FullName + @"\Postings_" + year + "_" + month + ".txt";
+        string fileName = Folders.IntegrationTestFolder.FullName + @"\Postings_" + year + "_" + month + ".txt";
         var contents = postings.Select(posting => posting.Date.ToShortDateString() + posting.Remark + posting.Date.ToShortDateString() + posting.Amount).ToList();
         File.WriteAllLines(fileName, contents);
     }
@@ -54,13 +55,13 @@ public static class TestDataGenerator {
     public static void ResetTestFolder() {
         RemoveTestFolder();
 
-        var folder = Folders.IntegrationTestFolder;
+        IFolder folder = Folders.IntegrationTestFolder;
         folder.CreateIfNecessary();
         CreateTestFiles();
     }
 
     public static void RemoveTestFolder() {
-        var folder = Folders.IntegrationTestFolder;
+        IFolder folder = Folders.IntegrationTestFolder;
         if (!folder.Exists()) { return; }
 
         var deleter = new FolderDeleter();

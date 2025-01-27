@@ -18,10 +18,10 @@ public class IndividualPostingClassificationsSource(ISecretRepositoryFactory sec
 
     public async Task RemoveAsync(IndividualPostingClassification individualPostingClassification) {
         var secret = new IndividualPostingClassificationsSecret();
-        var fileName = _SecretRepository.FileName(secret, false);
+        string fileName = _SecretRepository.FileName(secret, false);
         if (!File.Exists(fileName)) { return; }
 
-        var lines = await File.ReadAllLinesAsync(fileName);
+        string[] lines = await File.ReadAllLinesAsync(fileName);
         var newLines = lines.Where(l => !l.Contains(individualPostingClassification.PostingHash)).ToList();
         if (lines.Length == newLines.Count) { return; }
 
@@ -31,10 +31,10 @@ public class IndividualPostingClassificationsSource(ISecretRepositoryFactory sec
 
     public async Task AddOrUpdateAsync(IndividualPostingClassification individualPostingClassification, IErrorsAndInfos errorsAndInfos) {
         var secret = new IndividualPostingClassificationsSecret();
-        var fileName = _SecretRepository.FileName(secret, false);
+        string fileName = _SecretRepository.FileName(secret, false);
         if (!File.Exists(fileName)) { return; }
 
-        var lines = (await File.ReadAllLinesAsync(fileName)).Where(l => !string.IsNullOrEmpty(l));
+        IEnumerable<string> lines = (await File.ReadAllLinesAsync(fileName)).Where(l => !string.IsNullOrEmpty(l));
         var newLines = lines.Where(l => !l.Contains(individualPostingClassification.PostingHash)).ToList();
         newLines.Add(newLines[^1]);
         newLines[^2] = "  <IndividualPostingClassification credit=\""

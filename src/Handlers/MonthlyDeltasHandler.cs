@@ -13,14 +13,14 @@ public class MonthlyDeltasHandler(ICacheckApplicationModel model,
 
     public async Task CollectionChangedAsync(IList<ICollectionViewSourceEntity> items) {
         model.MonthlyDeltas.Items.Clear();
-        foreach (var item in items.Where(item => item.GetType() == model.MonthlyDeltas.EntityType)) {
+        foreach (ICollectionViewSourceEntity item in items.Where(item => item.GetType() == model.MonthlyDeltas.EntityType)) {
             model.MonthlyDeltas.Items.Add(item);
         }
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
     }
 
     public IList<ICollectionViewSourceEntity> DeserializeJson(string json) {
-        var list = JsonSerializer.Deserialize<List<TypeMonthDelta>>(json);
+        List<TypeMonthDelta> list = JsonSerializer.Deserialize<List<TypeMonthDelta>>(json);
         return list?.OfType<ICollectionViewSourceEntity>().ToList() ?? [];
     }
 }

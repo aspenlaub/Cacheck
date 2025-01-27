@@ -13,24 +13,24 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Entities;
 public class CacheckConfigurationTest {
     [TestMethod]
     public async Task CanGetCacheckConfiguration() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var secretRepository = container.Resolve<ISecretRepository>();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
-        var secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
+        CacheckConfiguration secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsFalse(string.IsNullOrEmpty(secret.SourceFolder), "Source folder is empty");
-        var resolver = container.Resolve<IFolderResolver>();
-        var sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
+        IFolderResolver resolver = container.Resolve<IFolderResolver>();
+        IFolder sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(sourceFolder.Exists(), $"Source folder \"{secret.SourceFolder}\" does not exist");
     }
 
     [TestMethod]
     public async Task CanGetPostingClassifications() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var secretRepository = container.Resolve<ISecretRepository>();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
-        var secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
+        PostingClassifications secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(secret.Count >= 5, "At least five classifications expected");
         Assert.IsTrue(secret.Any(s => s.Credit));
@@ -39,10 +39,10 @@ public class CacheckConfigurationTest {
 
     [TestMethod]
     public async Task CanGetInverseClassifications() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var secretRepository = container.Resolve<ISecretRepository>();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
-        var secret = await secretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
+        InverseClassifications secret = await secretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(secret.Count >= 5, "At least five inverse classifications expected");
         Assert.IsTrue(secret.Any(s => s.Classification == "Savings" && s.InverseClassification == "SacrificedSavings"));
@@ -50,10 +50,10 @@ public class CacheckConfigurationTest {
 
     [TestMethod]
     public async Task CanGetIrregularDebitClassifications() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var secretRepository = container.Resolve<ISecretRepository>();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
-        var secret = await secretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
+        IrregularDebitClassifications secret = await secretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(secret.Count >= 5, "At least five irregular debit classifications expected");
         Assert.IsTrue(secret.Any(s => s.Classification == "Holiday" && s.Percentage == 100));
@@ -61,10 +61,10 @@ public class CacheckConfigurationTest {
 
     [TestMethod]
     public async Task CanGetLiquidityPlanClassifications() {
-        var container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var secretRepository = container.Resolve<ISecretRepository>();
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
-        var secret = await secretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
+        LiquidityPlanClassifications secret = await secretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(secret.Count >= 5, "At least five irregular debit classifications expected");
         Assert.IsTrue(secret.Any(s => s.Classification == "Holiday" && s.LiquidityClassification == "Fix" && s.Percentage == 100));
