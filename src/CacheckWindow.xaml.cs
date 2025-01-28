@@ -166,16 +166,16 @@ public partial class CacheckWindow : IAsyncDisposable {
     }
 
     // ReSharper disable once AsyncVoidMethod
-    private async void OnRefreshButtonClick(object sender, RoutedEventArgs e) {
-        await OnRefreshButtonClick();
+    private async void OnRefreshMonthlyDetailsButtonClick(object sender, RoutedEventArgs e) {
+        await OnRefreshMonthlyDetailsButtonClick();
     }
 
-    private async Task OnRefreshButtonClick() {
+    private async Task OnRefreshMonthlyDetailsButtonClick() {
         Cursor oldCursor = Cursor;
         Cursor = Cursors.Wait;
         try {
             IDataCollector dataCollector = Container.Resolve<IDataCollector>();
-            await dataCollector.CollectAndShowAsync();
+            await dataCollector.CollectAndShowMonthlyDetailsAsync();
         } finally {
             Cursor = oldCursor;
         }

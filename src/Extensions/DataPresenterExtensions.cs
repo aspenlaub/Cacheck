@@ -24,4 +24,12 @@ public static class DataPresenterExtensions {
         s = logText + (string.IsNullOrEmpty(logText) ? "" : "\r\n") + s;
         await textHandler.TextChangedAsync(s);
     }
+
+    public static async Task ClearLines(this IDataPresenter dataPresenter) {
+        if (!dataPresenter.Enabled) { return; }
+
+        ISimpleTextHandler textHandler = dataPresenter.Handlers.LogTextHandler;
+        await textHandler.TextChangedAsync("");
+    }
+
 }
