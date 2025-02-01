@@ -4,7 +4,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 
-public class FakeCacheckSelectorHandler : ISingleClassificationHandler {
+public class FakeCacheckSingleClassificationHandler : ISingleClassificationHandler {
     public async Task UpdateSelectableValuesAsync() {
         await Task.CompletedTask;
     }

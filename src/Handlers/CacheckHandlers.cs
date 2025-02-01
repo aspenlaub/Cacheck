@@ -10,8 +10,10 @@ public class CacheckHandlers : ICacheckHandlers {
     public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; init; }
     public ISimpleCollectionViewSourceHandler MonthlyDetailsHandler { get; init; }
     public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; init; }
+    public ISimpleCollectionViewSourceHandler SingleMonthDeltasHandler { get; init; }
     public ISimpleTextHandler LogTextHandler { get; init; }
     public ISingleClassificationHandler SingleClassificationHandler { get; init; }
+    public ISimpleSelectorHandler SingleMonthHandler { get; init; }
     public ISimpleTextHandler LiquidityPlanSumTextHandler { get; init; }
     public ISimpleTextHandler ReservationsSumTextHandler { get; init; }
     public ISimpleTextHandler MinimumAmountHandler { get; init; }

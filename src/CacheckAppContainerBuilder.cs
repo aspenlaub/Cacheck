@@ -46,6 +46,7 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<PotentialCueExtractor>().As<IPotentialCueExtractor>();
         builder.RegisterType<ReservationsCalculator>().As<IReservationsCalculator>();
         builder.RegisterType<SecretRepositoryFactory>().As<ISecretRepositoryFactory>();
+        builder.RegisterType<SingleMonthDeltasCalculator>().As<ISingleMonthDeltasCalculator>();
         builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();
         builder.RegisterType<SummaryCalculator>().As<ISummaryCalculator>();
         builder.RegisterType<TransactionIntoPostingsConverter>().As<ITransactionIntoPostingsConverter>();

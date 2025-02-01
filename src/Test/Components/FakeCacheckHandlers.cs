@@ -13,6 +13,7 @@ public class FakeCacheckHandlers : ICacheckHandlers {
     public List<ITypeMonthDelta> MonthlyDeltas { get; } = [];
     public List<ITypeMonthDetails> MonthlyDetails { get; } = [];
     public List<IClassifiedPosting> ClassifiedPostings { get; } = [];
+    public List<ITypeSingleMonthDelta> SingleMonthDeltas { get; } = [];
 
     public ISimpleCollectionViewSourceHandler OverallSumsHandler { get; }
     public ISimpleCollectionViewSourceHandler ClassificationSumsHandler { get; }
@@ -20,8 +21,10 @@ public class FakeCacheckHandlers : ICacheckHandlers {
     public ISimpleCollectionViewSourceHandler MonthlyDeltasHandler { get; }
     public ISimpleCollectionViewSourceHandler MonthlyDetailsHandler { get; }
     public ISimpleCollectionViewSourceHandler ClassifiedPostingsHandler { get; }
+    public ISimpleCollectionViewSourceHandler SingleMonthDeltasHandler { get; }
     public ISimpleTextHandler LogTextHandler { get; }
     public ISingleClassificationHandler SingleClassificationHandler { get; }
+    public ISimpleSelectorHandler SingleMonthHandler { get; }
     public ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
     public ISimpleTextHandler ReservationsSumTextHandler { get; }
     public ISimpleTextHandler MinimumAmountHandler { get; }
@@ -35,8 +38,10 @@ public class FakeCacheckHandlers : ICacheckHandlers {
         MonthlyDeltasHandler = new FakeCacheckHandler<ITypeMonthDelta>(MonthlyDeltas);
         MonthlyDetailsHandler = new FakeCacheckHandler<ITypeMonthDetails>(MonthlyDetails);
         ClassifiedPostingsHandler = new FakeCacheckHandler<IClassifiedPosting>(ClassifiedPostings);
+        SingleMonthDeltasHandler = new FakeCacheckHandler<ITypeSingleMonthDelta>(SingleMonthDeltas);
         LogTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.Log);
-        SingleClassificationHandler = new FakeCacheckSelectorHandler();
+        SingleClassificationHandler = new FakeCacheckSingleClassificationHandler();
+        SingleMonthHandler = new FakeCacheckSingleMonthHandler();
         LiquidityPlanSumTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.LiquidityPlanSum);
         ReservationsSumTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.ReservationsSum);
         MinimumAmountHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.MinimumAmount);

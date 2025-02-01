@@ -58,8 +58,10 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, handlers.MonthlyDeltasHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDetails, handlers.MonthlyDetailsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, handlers.ClassifiedPostingsHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(SingleMonthDeltas, handlers.SingleMonthDeltasHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(Log, handlers.LogTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
+        guiToAppGate.RegisterAsyncSelectorCallback(SingleMonth, handlers.SingleMonthHandler.SelectedIndexChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(LiquidityPlanSum, handlers.LiquidityPlanSumTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(ReservationsSum, handlers.ReservationsSumTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(MinimumAmount, handlers.MinimumAmountHandler.TextChangedAsync);
@@ -179,5 +181,14 @@ public partial class CacheckWindow : IAsyncDisposable {
         } finally {
             Cursor = oldCursor;
         }
+    }
+
+    // ReSharper disable once AsyncVoidMethod
+    private async void OnChangeMonthClickAsync(object sender, RoutedEventArgs e) {
+        await OnChangeMonthClickAsync();
+    }
+
+    private async Task OnChangeMonthClickAsync() {
+        await Task.Delay(TimeSpan.FromSeconds(1));
     }
 }

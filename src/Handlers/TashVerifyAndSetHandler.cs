@@ -42,6 +42,7 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cacheckHandlers, ISimpleLo
             { nameof(status.Model.MonthlyDeltas), cacheckHandlers.MonthlyDeltasHandler},
             { nameof(status.Model.MonthlyDetails), cacheckHandlers.MonthlyDetailsHandler},
             { nameof(status.Model.ClassifiedPostings), cacheckHandlers.ClassifiedPostingsHandler},
+            { nameof(status.Model.SingleMonthDeltas), cacheckHandlers.SingleMonthDeltasHandler},
         };
     }
 
@@ -53,6 +54,7 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cacheckHandlers, ISimpleLo
             { nameof(status.Model.MonthlyDeltas), status.Model.MonthlyDeltas },
             { nameof(status.Model.MonthlyDetails), status.Model.MonthlyDetails },
             { nameof(status.Model.ClassifiedPostings), status.Model.ClassifiedPostings },
+            { nameof(status.Model.SingleMonthDeltas), status.Model.SingleMonthDeltas },
         };
     }
 }

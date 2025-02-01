@@ -43,8 +43,10 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             MonthlyDeltasHandler = new MonthlyDeltasHandler(Model, this),
             MonthlyDetailsHandler = new MonthlyDetailsHandler(Model, this),
             ClassifiedPostingsHandler = new ClassifiedPostingsHandler(Model, this),
+            SingleMonthDeltasHandler = new SingleMonthDeltasHandler(Model, this),
             LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, postingClassificationsMatcher),
+            SingleMonthHandler = new SingleMonthHandler(Model, this, () => _DataCollector),
             LiquidityPlanSumTextHandler = new CacheckTextHandler(Model, this, m => m.LiquidityPlanSum),
             ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum),
             MinimumAmountHandler = new CacheckTextHandler(Model, this, m => m.MinimumAmount),
@@ -82,6 +84,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
     public override async Task OnLoadedAsync() {
         await base.OnLoadedAsync();
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(false);
+        await Handlers.SingleMonthHandler.UpdateSelectableValuesAsync();
         await Handlers.MinimumAmountHandler.TextChangedAsync("100");
         int day = DateTime.Today.Day;
         await Handlers.FromDayHandler.TextChangedAsync(day.ToString());
@@ -107,5 +110,9 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
 
     public int ToDay() {
         return int.TryParse(Model.ToDay.Text, out int toDay) ? toDay : 31;
+    }
+
+    public int SingleMonthNumber() {
+        return int.TryParse(Model.SingleMonth.SelectedItem?.Guid, out int monthNumber) ? monthNumber : 0;
     }
 }

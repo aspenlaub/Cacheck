@@ -15,6 +15,7 @@
         <CollectionViewSource x:Key="MonthlyDeltas" d:DesignSource="{d:DesignInstance {x:Type entities:TypeMonthDelta}, CreateList=True}"/>
         <CollectionViewSource x:Key="MonthlyDetails" d:DesignSource="{d:DesignInstance {x:Type entities:TypeMonthDetails}, CreateList=True}"/>
         <CollectionViewSource x:Key="ClassifiedPostings" d:DesignSource="{d:DesignInstance {x:Type entities:ClassifiedPosting}, CreateList=True}"/>
+        <CollectionViewSource x:Key="SingleMonthDeltas" d:DesignSource="{d:DesignInstance {x:Type entities:TypeSingleMonthDeltas}, CreateList=True}"/>
         <Style x:Key="CellLeftAlign">
             <Setter Property="Control.HorizontalAlignment" Value="Left" />
             <Setter Property="Control.VerticalAlignment" Value="Center" />
@@ -169,6 +170,29 @@
                             <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Classification}" ElementStyle="{StaticResource CellLeftAlign}"/>
                             <DataGridTextColumn Header="Clue" Width="20*" Binding="{Binding Clue}" ElementStyle="{StaticResource CellLeftAlign}"/>
                             <DataGridTextColumn Header="Remark" Width="60*" Binding="{Binding Remark}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Months" Padding="60,5,60,5">
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <Label Name="SingleMonthLabel" Margin="5">Single Month</Label>
+                        <ComboBox Name="SingleMonth" Margin="5" MinWidth="240"/>
+                    </StackPanel>
+                    <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
+                              Name="SingleMonthDeltas" ItemsSource="{Binding Source={StaticResource SingleMonthDeltas}}" AutoGenerateColumns="False">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Change classification" Click="OnChangeMonthClickAsync"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sign" Width="10*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Classification" Width="40*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
+                            <DataGridTextColumn Header="Current" Width="40*" Binding="{Binding CurrentYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="Year Before" Width="40*" Binding="{Binding YearBefore, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="Two Years Before" Width="40*" Binding="{Binding TwoYearsBefore, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

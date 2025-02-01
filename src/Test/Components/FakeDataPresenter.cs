@@ -47,8 +47,12 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
         return 25;
     }
 
+    public int SingleMonthNumber() {
+        return 12;
+    }
+
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-            IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
+                                                  IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
         await Task.CompletedTask;
     }
 }

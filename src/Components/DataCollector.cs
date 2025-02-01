@@ -18,6 +18,7 @@ public class DataCollector : IDataCollector {
     private readonly IMonthlyDeltaCalculator _MonthlyDeltaCalculator;
     private readonly IMonthlyDetailsCalculator _MonthlyDetailsCalculator;
     private readonly IClassifiedPostingsCalculator _ClassifiedPostingsCalculator;
+    private readonly ISingleMonthDeltasCalculator _SingleMonthDeltasCalculator;
     private readonly ICalculationLogger _CalculationLogger;
     private readonly ISecretRepository _SecretRepository;
     private readonly IIndividualPostingClassificationsSource _IndividualPostingClassificationsSource;
@@ -28,6 +29,7 @@ public class DataCollector : IDataCollector {
     public DataCollector(IDataPresenter dataPresenter, IPostingCollector postingCollector, ISummaryCalculator summaryCalculator,
             IAverageCalculator averageCalculator, IMonthlyDeltaCalculator monthlyDeltaCalculator,
             IMonthlyDetailsCalculator monthlyDetailsCalculator, IClassifiedPostingsCalculator classifiedPostingsCalculator,
+            ISingleMonthDeltasCalculator singleMonthDeltasCalculator,
             ICalculationLogger calculationLogger, ISecretRepository secretRepository, bool isIntegrationTest,
             IIndividualPostingClassificationsSource individualPostingClassificationsSource,
             IIndividualPostingClassificationConverter individualPostingClassificationConverter,
@@ -40,6 +42,7 @@ public class DataCollector : IDataCollector {
         _MonthlyDeltaCalculator = monthlyDeltaCalculator;
         _MonthlyDetailsCalculator = monthlyDetailsCalculator;
         _ClassifiedPostingsCalculator = classifiedPostingsCalculator;
+        _SingleMonthDeltasCalculator = singleMonthDeltasCalculator;
         _CalculationLogger = calculationLogger;
         _SecretRepository = secretRepository;
         _IsIntegrationTest = isIntegrationTest;
@@ -91,6 +94,8 @@ public class DataCollector : IDataCollector {
 
         await DoEliminationAnalysis(inverseClassifications, allPostings, postingClassifications);
 
+        await DoSingleMonthAnalysis(allPostings, postingClassifications);
+
         _CalculationLogger.Flush();
     }
 
@@ -118,7 +123,7 @@ public class DataCollector : IDataCollector {
         InverseClassifications inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
-            return new List<IInverseClassificationPair>();
+            return [];
         }
 
         var inverseClassifications = inverseClassificationsSecret.OfType<IInverseClassificationPair>().ToList();
@@ -143,7 +148,7 @@ public class DataCollector : IDataCollector {
 
     private async Task<List<IPostingClassification>> CollectPostingClassifications(IErrorsAndInfos errorsAndInfos) {
         PostingClassifications postingClassificationsSecret = await _SecretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
-        if (errorsAndInfos.AnyErrors()) { return new List<IPostingClassification>(); }
+        if (errorsAndInfos.AnyErrors()) { return []; }
 
         var postingClassifications = postingClassificationsSecret.OfType<IPostingClassification>().ToList();
 
@@ -205,5 +210,12 @@ public class DataCollector : IDataCollector {
         await _DataPresenter.ClearLines();
 
         return false;
+    }
+
+    private async Task DoSingleMonthAnalysis(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+        int singleMonthNumber = _DataPresenter.SingleMonthNumber();
+        await _SingleMonthDeltasCalculator.CalculateAndShowSingleMonthDeltasAsync(allPostings,
+            postingClassifications,
+            singleMonthNumber);
     }
 }

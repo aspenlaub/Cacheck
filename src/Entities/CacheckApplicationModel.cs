@@ -12,8 +12,10 @@ public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplication
     public ICollectionViewSource MonthlyDeltas { get; } = new CollectionViewSource { EntityType = typeof(TypeMonthDelta) };
     public ICollectionViewSource MonthlyDetails { get; } = new CollectionViewSource { EntityType = typeof(TypeMonthDetails) };
     public ICollectionViewSource ClassifiedPostings { get; } = new CollectionViewSource { EntityType = typeof(ClassifiedPosting) };
+    public ICollectionViewSource SingleMonthDeltas { get; } = new CollectionViewSource { EntityType = typeof(TypeSingleMonthDelta) };
     public ITextBox Log { get; } = new TextBox();
     public ISelector SingleClassification { get; } = new ComboBox();
+    public ISelector SingleMonth { get; } = new ComboBox();
     public ITextBox LiquidityPlanSum { get; } = new TextBox();
     public ITextBox ReservationsSum { get; } = new TextBox();
     public ITextBox MinimumAmount { get; } = new TextBox();
