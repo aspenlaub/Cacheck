@@ -24,7 +24,7 @@ public class FakeCacheckHandlers : ICacheckHandlers {
     public ISimpleCollectionViewSourceHandler SingleMonthDeltasHandler { get; }
     public ISimpleTextHandler LogTextHandler { get; }
     public ISingleClassificationHandler SingleClassificationHandler { get; }
-    public ISimpleSelectorHandler SingleMonthHandler { get; }
+    public ISingleMonthHandler SingleMonthHandler { get; }
     public ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
     public ISimpleTextHandler ReservationsSumTextHandler { get; }
     public ISimpleTextHandler MinimumAmountHandler { get; }

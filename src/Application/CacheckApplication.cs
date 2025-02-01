@@ -74,6 +74,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
             IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(classifications, postings, inverseClassifications, areWeCollecting);
+        await Handlers.SingleMonthHandler.UpdateSelectableValuesAsync(postings);
     }
 
     public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
@@ -112,7 +113,7 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
         return int.TryParse(Model.ToDay.Text, out int toDay) ? toDay : 31;
     }
 
-    public int SingleMonthNumber() {
-        return int.TryParse(Model.SingleMonth.SelectedItem?.Guid, out int monthNumber) ? monthNumber : 0;
+    public (int, int) SingleMonthNumberAndYear() {
+        return int.TryParse(Model.SingleMonth.SelectedItem?.Guid, out int number) ? (number % 100, number / 100) : (0, 0);
     }
 }

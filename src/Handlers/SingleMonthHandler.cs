@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
@@ -8,26 +9,49 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Handlers;
 public class SingleMonthHandler(ICacheckApplicationModel model, IGuiAndAppHandler<CacheckApplicationModel> guiAndAppHandler,
-        Func<IDataCollector> dataCollectorGetter) : ISimpleSelectorHandler {
+        Func<IDataCollector> dataCollectorGetter) : ISingleMonthHandler {
+
+    public async Task UpdateSelectableValuesAsync(IList<IPosting> postings) {
+        DateTime posting = postings.Max(p => p.Date);
+        await UpdateSelectableValuesAsync(posting.Month, posting.Year);
+    }
 
     public async Task UpdateSelectableValuesAsync() {
+        int year = DateTime.Today.Year;
+        int month = DateTime.Today.Month;
+        if (month <= 2) {
+            month = 10 + month;
+            year --;
+        } else {
+            month -= 2;
+        }
+        await UpdateSelectableValuesAsync(month, year);
+    }
+
+    private async Task UpdateSelectableValuesAsync(int lastPostingsMonth, int lastPostingsYear) {
+        int previousYear = lastPostingsYear - 1;
         var selectables = new List<Selectable> {
             new() { Guid = "0", Name = "" },
-            new() { Guid = "1", Name = "January" },
-            new() { Guid = "2", Name = "February" },
-            new() { Guid = "3", Name = "March" },
-            new() { Guid = "4", Name = "April" },
-            new() { Guid = "5", Name = "May" },
-            new() { Guid = "6", Name = "June" },
-            new() { Guid = "7", Name = "July" },
-            new() { Guid = "8", Name = "August" },
-            new() { Guid = "9", Name = "September" },
-            new() { Guid = "10", Name = "October" },
-            new() { Guid = "11", Name = "November" },
-            new() { Guid = "12", Name = "December" },
+            CreateSelectable(1, "January", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(2, "February", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(3, "March", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(4, "April", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(5, "May", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(6, "June", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(7, "July", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(8, "August", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(9, "September", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(10, "October", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(11, "November", lastPostingsMonth, lastPostingsYear, previousYear),
+            CreateSelectable(12, "December", lastPostingsMonth, lastPostingsYear, previousYear),
         };
         model.SingleMonth.UpdateSelectables(selectables);
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
+    }
+
+    private Selectable CreateSelectable(int monthNo, string monthName, int lastPostingsMonth, int lastPostingsYear, int previousYear) {
+        int year = monthNo <= lastPostingsMonth ? lastPostingsYear : previousYear;
+        return new Selectable { Guid = (year * 100 + monthNo).ToString(), Name = monthName + " " + year };
     }
 
     public async Task SelectedIndexChangedAsync(int selectedIndex) {

@@ -47,8 +47,8 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
         return 25;
     }
 
-    public int SingleMonthNumber() {
-        return 12;
+    public (int, int) SingleMonthNumberAndYear() {
+        return (12, 2024);
     }
 
     public async Task OnClassificationsFoundAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,

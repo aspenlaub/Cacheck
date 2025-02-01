@@ -94,7 +94,7 @@ public class DataCollector : IDataCollector {
 
         await DoEliminationAnalysis(inverseClassifications, allPostings, postingClassifications);
 
-        await DoSingleMonthAnalysis(allPostings, postingClassifications);
+        await DoSingleMonthAnalysis(allTimePostings, postingClassifications);
 
         _CalculationLogger.Flush();
     }
@@ -183,7 +183,7 @@ public class DataCollector : IDataCollector {
                 ? inverseClassification.InverseClassification
                 : inverseClassification.Classification;
         IList<IClassifiedPosting> classifiedPostings = await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications,
-            DateTime.Now.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
+            DateTime.Today.AddYears(-1), minAmount, singleClassification, singleClassificationInverse);
         IList<string> eliminationAnalyzerResults = _IndividualPostingEliminationAnalyzer.AnalyzeClassifiedPostings(classifiedPostings);
         foreach(string eliminationAnalyzerResult in eliminationAnalyzerResults) {
             await _DataPresenter.WriteLineAsync(eliminationAnalyzerResult);
@@ -212,10 +212,9 @@ public class DataCollector : IDataCollector {
         return false;
     }
 
-    private async Task DoSingleMonthAnalysis(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
-        int singleMonthNumber = _DataPresenter.SingleMonthNumber();
-        await _SingleMonthDeltasCalculator.CalculateAndShowSingleMonthDeltasAsync(allPostings,
-            postingClassifications,
-            singleMonthNumber);
+    private async Task DoSingleMonthAnalysis(IList<IPosting> allTimePostings, IList<IPostingClassification> postingClassifications) {
+        (int singleMonthNumber, int currentYear) = _DataPresenter.SingleMonthNumberAndYear();
+        await _SingleMonthDeltasCalculator.CalculateAndShowSingleMonthDeltasAsync(allTimePostings,
+          postingClassifications, singleMonthNumber, currentYear);
     }
 }

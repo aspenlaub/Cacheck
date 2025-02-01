@@ -17,5 +17,5 @@ public interface IDataPresenter {
     double MinimumAmount();
     int FromDay();
     int ToDay();
-    int SingleMonthNumber();
+    (int, int) SingleMonthNumberAndYear();
 }

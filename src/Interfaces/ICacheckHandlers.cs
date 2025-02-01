@@ -12,7 +12,7 @@ public interface ICacheckHandlers {
     ISimpleCollectionViewSourceHandler SingleMonthDeltasHandler { get; }
     ISimpleTextHandler LogTextHandler { get; }
     ISingleClassificationHandler SingleClassificationHandler { get; }
-    ISimpleSelectorHandler SingleMonthHandler { get; }
+    ISingleMonthHandler SingleMonthHandler { get; }
     ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
     ISimpleTextHandler ReservationsSumTextHandler { get; }
     ISimpleTextHandler MinimumAmountHandler { get; }
