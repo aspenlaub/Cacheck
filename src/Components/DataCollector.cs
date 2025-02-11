@@ -164,7 +164,7 @@ public class DataCollector : IDataCollector {
     private async Task<(IList<IPosting> allTimePostings, List<IPosting> allPostings)> CollectPostingsAsync() {
         IList <IPosting> allTimePostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
         DateTime maxDate = allTimePostings.Max(p => p.Date);
-        var minDate = new DateTime(maxDate.Year - 1, 1, 1);
+        DateTime minDate = (maxDate.Month >= 7) ? new DateTime(maxDate.Year - 1, 1, 1) : new DateTime(maxDate.Year - 2, 7, 1);
         var allPostings = allTimePostings.Where(p => p.Date >= minDate).ToList();
         await _DataPresenter.WriteLineAsync($"{allTimePostings.Count(p => p.Date < minDate)} posting/-s removed except for summary tab");
         return (allTimePostings, allPostings);
