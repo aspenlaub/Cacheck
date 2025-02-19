@@ -44,7 +44,7 @@ public class MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggreg
         }
 
         var monthlyDeltasList = monthlyDeltas.Select(
-            result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value }
+            result => new TypeMonthDelta { Type = "Δ", Month = result.Key.Classification.Replace("Δ", "").Trim(), Delta = result.Value.Sum }
         ).OfType<ICollectionViewSourceEntity>().ToList();
         await dataPresenter.Handlers.MonthlyDeltasHandler.CollectionChangedAsync(monthlyDeltasList);
     }

@@ -35,7 +35,7 @@ public class SingleMonthDeltasCalculator(IDataPresenter dataPresenter, IPostingA
                 return;
             }
 
-            foreach (KeyValuePair<IFormattedClassification, double> monthDelta in monthDeltas) {
+            foreach (KeyValuePair<IFormattedClassification, IAggregatedPosting> monthDelta in monthDeltas) {
                 ITypeSingleMonthDelta listedSingleMonthDelta = singleMonthDeltasList.FirstOrDefault(
                     m => m.Type == monthDelta.Key.Sign && m.Item == monthDelta.Key.Classification
                 );
@@ -47,9 +47,9 @@ public class SingleMonthDeltasCalculator(IDataPresenter dataPresenter, IPostingA
                 }
 
                 switch (yearOffset) {
-                    case 0: listedSingleMonthDelta.CurrentYear = monthDelta.Value; break;
-                    case 1: listedSingleMonthDelta.YearBefore = monthDelta.Value; break;
-                    case 2: listedSingleMonthDelta.TwoYearsBefore = monthDelta.Value; break;
+                    case 0: listedSingleMonthDelta.CurrentYear = monthDelta.Value.Sum; break;
+                    case 1: listedSingleMonthDelta.YearBefore = monthDelta.Value.Sum; break;
+                    case 2: listedSingleMonthDelta.TwoYearsBefore = monthDelta.Value.Sum; break;
                     default: throw new NotImplementedException();
                 }
             }

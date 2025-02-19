@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 
@@ -11,11 +12,10 @@ public class PostingAggregator(IPostingClassificationFormatter postingClassifica
                 IFormattedClassificationComparer formattedClassificationComparer,
                 ICalculationLogger calculationLogger) : IPostingAggregator {
 
-    public IDictionary<IFormattedClassification, double> AggregatePostings(IEnumerable<IPosting> postings,
-                IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
+    public IDictionary<IFormattedClassification, IAggregatedPosting> AggregatePostings(IEnumerable<IPosting> postings,
+            IList<IPostingClassification> postingClassifications, IErrorsAndInfos errorsAndInfos) {
 
-        var result = new Dictionary<IFormattedClassification, double>(formattedClassificationComparer);
-        var resultDrillDown = new Dictionary<string, IList<IPosting>>();
+        var result = new Dictionary<IFormattedClassification, IAggregatedPosting>(formattedClassificationComparer);
         foreach (IPosting posting in postings) {
             var classifications = postingClassificationsMatcher.MatchingClassifications(posting, postingClassifications)
                 .ToList();
@@ -34,14 +34,12 @@ public class PostingAggregator(IPostingClassificationFormatter postingClassifica
             IPostingClassification classification = classifications[0];
             IFormattedClassification formattedClassification = postingClassificationFormatter.Format(classification);
             string formattedClassificationToString = formattedClassification.ToString() ?? "";
-            if (result.TryAdd(formattedClassification, 0)) {
-                resultDrillDown[formattedClassificationToString] = new List<IPosting>();
-            }
+            result.TryAdd(formattedClassification, new AggregatedPosting());
 
             double amount = classification.IsMonthClassification ? posting.Amount : Math.Abs(posting.Amount);
             calculationLogger.RegisterContribution(formattedClassificationToString, amount, posting);
-            result[formattedClassification] += amount;
-            resultDrillDown[formattedClassificationToString].Add(posting);
+            result[formattedClassification].Sum += amount;
+            result[formattedClassification].Postings.Add(posting);
         }
         return result;
     }

@@ -34,7 +34,7 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
                 return;
             }
 
-            foreach (KeyValuePair<IFormattedClassification, double> monthDetail in monthDetails) {
+            foreach (KeyValuePair<IFormattedClassification, IAggregatedPosting> monthDetail in monthDetails) {
                 ITypeMonthDetails listedMonthlyDetail = monthlyDetailsList.FirstOrDefault(
                     m => m.Type == monthDetail.Key.Sign && m.Item == monthDetail.Key.Classification
                 );
@@ -50,40 +50,40 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
 
                 switch (month) {
                     case 1:
-                        listedMonthlyDetail.January = monthDetail.Value;
+                        listedMonthlyDetail.January = monthDetail.Value.Sum;
                     break;
                     case 2:
-                        listedMonthlyDetail.February = monthDetail.Value;
+                        listedMonthlyDetail.February = monthDetail.Value.Sum;
                     break;
                     case 3:
-                        listedMonthlyDetail.March = monthDetail.Value;
+                        listedMonthlyDetail.March = monthDetail.Value.Sum;
                     break;
                     case 4:
-                        listedMonthlyDetail.April = monthDetail.Value;
+                        listedMonthlyDetail.April = monthDetail.Value.Sum;
                     break;
                     case 5:
-                        listedMonthlyDetail.May = monthDetail.Value;
+                        listedMonthlyDetail.May = monthDetail.Value.Sum;
                     break;
                     case 6:
-                        listedMonthlyDetail.June = monthDetail.Value;
+                        listedMonthlyDetail.June = monthDetail.Value.Sum;
                     break;
                     case 7:
-                        listedMonthlyDetail.July = monthDetail.Value;
+                        listedMonthlyDetail.July = monthDetail.Value.Sum;
                     break;
                     case 8:
-                        listedMonthlyDetail.August = monthDetail.Value;
+                        listedMonthlyDetail.August = monthDetail.Value.Sum;
                     break;
                     case 9:
-                        listedMonthlyDetail.September = monthDetail.Value;
+                        listedMonthlyDetail.September = monthDetail.Value.Sum;
                     break;
                     case 10:
-                        listedMonthlyDetail.October = monthDetail.Value;
+                        listedMonthlyDetail.October = monthDetail.Value.Sum;
                     break;
                     case 11:
-                        listedMonthlyDetail.November = monthDetail.Value;
+                        listedMonthlyDetail.November = monthDetail.Value.Sum;
                     break;
                     default:
-                        listedMonthlyDetail.December = monthDetail.Value;
+                        listedMonthlyDetail.December = monthDetail.Value.Sum;
                     break;
                 }
             }

@@ -27,7 +27,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         aYearAgo = new DateTime(aYearAgo.Year, aYearAgo.Month, 1);
 
         var lastYearsPostings = allPostings.Where(p => p.Date.Year < thisYear).ToList();
-        IDictionary<IFormattedClassification, double> lastYearsDetailedAggregation = postingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> lastYearsDetailedAggregation = postingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -36,7 +36,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var lastYearsDetailedAggregationList = aggregatedPostingsNetter.Net(lastYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var thisYearsPostings = allPostings.Where(p => p.Date.Year == thisYear).ToList();
-        IDictionary<IFormattedClassification, double> thisYearsDetailedAggregation = postingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> thisYearsDetailedAggregation = postingAggregator.AggregatePostings(thisYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -45,7 +45,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var thisYearsDetailedAggregationList = aggregatedPostingsNetter.Net(thisYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var pastHalfYearsPostings = allPostings.Where(p => p.Date > halfAYearAgo).ToList();
-        IDictionary<IFormattedClassification, double> pastHalfYearsDetailedAggregation = postingAggregator.AggregatePostings(pastHalfYearsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> pastHalfYearsDetailedAggregation = postingAggregator.AggregatePostings(pastHalfYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -54,7 +54,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var pastHalfYearsDetailedAggregationList = aggregatedPostingsNetter.Net(pastHalfYearsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
         var pastTwelveMonthsPostings = allPostings.Where(p => p.Date > aYearAgo).ToList();
-        IDictionary<IFormattedClassification, double> pastTwelveMonthsDetailedAggregation = postingAggregator.AggregatePostings(pastTwelveMonthsPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> pastTwelveMonthsDetailedAggregation = postingAggregator.AggregatePostings(pastTwelveMonthsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -62,7 +62,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
 
         var pastTwelveMonthsDetailedAggregationList = aggregatedPostingsNetter.Net(pastTwelveMonthsDetailedAggregation, inverseClassifications, new List<string>()).ToList();
 
-        IDictionary<IFormattedClassification, double> detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> detailedAggregation = postingAggregator.AggregatePostings(allPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
             return;
@@ -83,7 +83,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
 
         double liquidityPlanSum = 0, reservationsSum = 0;
         var classificationAverageList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).ToList().Select(
-            result => CreateTypeItemSum(result.Key, result.Value, numberOfDistinctMonths, pastHalfYearsDetailedAggregationList,
+            result => CreateTypeItemSum(result.Key, result.Value.Sum, numberOfDistinctMonths, pastHalfYearsDetailedAggregationList,
             numberOfDistinctMonthsPastHalfYear, pastTwelveMonthsDetailedAggregationList, numberOfDistinctMonthsPastTwelveMonths,
             thisYearsDetailedAggregationList, numberOfDistinctMonthsThisYear, lastYearsDetailedAggregationList,
             numberOfDistinctMonthsLastYear, liquidityPlanClassifications, irregularDebitClassifications,
@@ -95,10 +95,10 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
     }
 
     private TypeItemSum CreateTypeItemSum(IFormattedClassification classification, double sum,
-            int numberOfDistinctMonths, IEnumerable<KeyValuePair<IFormattedClassification, double>> pastHalfYearsDetailedAggregationList,
-            int numberOfDistinctMonthsPastHalfYear, IEnumerable<KeyValuePair<IFormattedClassification, double>> pastTwelveMonthsDetailedAggregationList,
-            int numberOfDistinctMonthsPastTwelveMonths, IEnumerable<KeyValuePair<IFormattedClassification, double>> thisYearsDetailedAggregationList,
-            int numberOfDistinctMonthsThisYear, IEnumerable<KeyValuePair<IFormattedClassification, double>> lastYearsDetailedAggregationList,
+            int numberOfDistinctMonths, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> pastHalfYearsDetailedAggregationList,
+            int numberOfDistinctMonthsPastHalfYear, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> pastTwelveMonthsDetailedAggregationList,
+            int numberOfDistinctMonthsPastTwelveMonths, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> thisYearsDetailedAggregationList,
+            int numberOfDistinctMonthsThisYear, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> lastYearsDetailedAggregationList,
             int numberOfDistinctMonthsLastYear, IList<ILiquidityPlanClassification> liquidityPlanClassifications,
             IList<IIrregularDebitClassification> irregularDebitClassifications,
             ref double liquidityPlanSum, ref double reservationsSum) {
@@ -117,10 +117,10 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         };
     }
 
-    private static double GetOtherSum(IFormattedClassification formattedClassification, IEnumerable<KeyValuePair<IFormattedClassification, double>> otherDetailedAggregation) {
+    private static double GetOtherSum(IFormattedClassification formattedClassification, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> otherDetailedAggregation) {
         var results = otherDetailedAggregation.Where(f => f.Key.CombinedClassification == formattedClassification.CombinedClassification).Select(f => f.Value).ToList();
         if (!results.Any()) { return 0; }
 
-        return results.Sum();
+        return results.Select(x => x.Sum).Sum();
     }
 }

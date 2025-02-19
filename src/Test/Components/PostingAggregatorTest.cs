@@ -19,7 +19,7 @@ public class PostingAggregatorTest {
     private static IPostingAggregator _sut;
 
     [ClassInitialize]
-    public static void ClassInitialize(TestContext context) {
+    public static void ClassInitialize(TestContext _) {
         IContainer container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
         var classificationsMatcher = new PostingClassificationsMatcher(
             new PostingClassificationMatcher(new PostingHasher())
@@ -38,37 +38,37 @@ public class PostingAggregatorTest {
     [TestMethod]
     public void CanAggregateSinglePosting() {
         var errorsAndInfos = new ErrorsAndInfos();
-        IDictionary<IFormattedClassification, double> result = _sut.AggregatePostings(new List<IPosting> { _TestData.PostingC1 }, new List<IPostingClassification> { _TestData.PostingClassificationC1 }, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> result = _sut.AggregatePostings(new List<IPosting> { _TestData.PostingC1 }, new List<IPostingClassification> { _TestData.PostingClassificationC1 }, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.AreEqual(1, result.Count);
         IFormattedClassification key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == _TestData.PostingClassificationC1.Classification);
         Assert.IsNotNull(key);
-        Assert.AreEqual(_TestData.PostingC1.Amount, result[key]);
+        Assert.AreEqual(_TestData.PostingC1.Amount, result[key].Sum);
     }
 
     [TestMethod]
     public void DebitCreditIsRespectedWhenAggregatingSinglePosting() {
         var errorsAndInfos = new ErrorsAndInfos();
-        IDictionary<IFormattedClassification, double> result = _sut.AggregatePostings(new List<IPosting> { _TestData.PostingC1 }, new List<IPostingClassification> { _TestData.PostingClassificationC1, _TestData.PostingClassificationD2 }, errorsAndInfos);
+        IDictionary<IFormattedClassification, IAggregatedPosting> result = _sut.AggregatePostings(new List<IPosting> { _TestData.PostingC1 }, new List<IPostingClassification> { _TestData.PostingClassificationC1, _TestData.PostingClassificationD2 }, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.AreEqual(1, result.Count);
         IFormattedClassification key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == _TestData.PostingClassificationC1.Classification);
         Assert.IsNotNull(key);
-        Assert.AreEqual(_TestData.PostingC1.Amount, result[key]);
+        Assert.AreEqual(_TestData.PostingC1.Amount, result[key].Sum);
     }
 
     [TestMethod]
     public void CanDoPureDebitCreditAggregation() {
         var errorsAndInfos = new ErrorsAndInfos();
-        IDictionary<IFormattedClassification, double> result = _sut.AggregatePostings(new List<IPosting> { _TestData.PostingC1, _TestData.PostingD1, _TestData.PostingC2, _TestData.PostingD2 },
+        IDictionary<IFormattedClassification, IAggregatedPosting> result = _sut.AggregatePostings(new List<IPosting> { _TestData.PostingC1, _TestData.PostingD1, _TestData.PostingC2, _TestData.PostingD2 },
                                                                                      new List<IPostingClassification> { _TestData.PostingClassificationD, _TestData.PostingClassificationC }, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.AreEqual(2, result.Count);
         IFormattedClassification key = result.Keys.FirstOrDefault(x => x.Sign == "-" && x.Classification == _TestData.PostingClassificationD.Classification);
         Assert.IsNotNull(key);
-        Assert.AreEqual(-(_TestData.PostingD1.Amount + _TestData.PostingD2.Amount), result[key]);
+        Assert.AreEqual(-(_TestData.PostingD1.Amount + _TestData.PostingD2.Amount), result[key].Sum);
         key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == _TestData.PostingClassificationC.Classification);
         Assert.IsNotNull(key);
-        Assert.AreEqual(_TestData.PostingC1.Amount + _TestData.PostingC2.Amount, result[key]);
+        Assert.AreEqual(_TestData.PostingC1.Amount + _TestData.PostingC2.Amount, result[key].Sum);
     }
 }

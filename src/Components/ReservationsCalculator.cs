@@ -12,9 +12,9 @@ public class ReservationsCalculator : IReservationsCalculator {
         if (sumPastTwelveMonths <= 0) { return 0; }
 
         IIrregularDebitClassification irregularDebitClassification = FindIrregularDebitClassification(classification, irregularDebitClassifications);
-        if (irregularDebitClassification == null) { return 0; }
-
-        return Math.Ceiling(sumPastTwelveMonths * irregularDebitClassification.Percentage / 100);
+        return irregularDebitClassification == null
+            ? 0
+            : Math.Ceiling(sumPastTwelveMonths * irregularDebitClassification.Percentage / 100);
     }
 
     private IIrregularDebitClassification FindIrregularDebitClassification(IFormattedClassification classification,
