@@ -18,13 +18,13 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
                 ITransactionIntoPostingsConverter transactionIntoPostingConverter) : IPostingCollector {
 
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
-        var allPostings = new List<IPosting>();
+        List<IPosting> allPostings = [];
 
         IFolder sourceFolder = await GetSourceFolderAsync(isIntegrationTest);
         if (sourceFolder == null) { return allPostings; }
 
-        var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
-        var errorsAndInfos = new ErrorsAndInfos();
+        List<string> files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
+        ErrorsAndInfos errorsAndInfos = new ErrorsAndInfos();
         foreach (string file in files) {
             await dataPresenter.WriteLineAsync($"File: {file}");
             IList<IPosting> postings = sourceFileReader.ReadPostings(file, errorsAndInfos);
@@ -56,7 +56,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
 
     private async Task<IFolder> GetSourceFolderAsync(bool isIntegrationTest) {
         IFolder sourceFolder;
-        var errorsAndInfos = new ErrorsAndInfos();
+        ErrorsAndInfos errorsAndInfos = new ErrorsAndInfos();
 
         if (isIntegrationTest) {
             sourceFolder = Folders.IntegrationTestFolder;

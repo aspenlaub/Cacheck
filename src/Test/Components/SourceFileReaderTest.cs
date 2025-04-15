@@ -20,13 +20,10 @@ public class SourceFileReaderTest {
 
     private static string _sampleSourceFileName;
 
-    [ClassInitialize]
-    public static void Initialize(TestContext context) {
-        CreateSampleSourceFile();
-    }
-
     [TestMethod]
     public async Task CanReadPostings() {
+        CreateSampleSourceFile(CreatePostingText);
+
         IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
         ISourceFileReader sut = container.Resolve<ISourceFileReader>();
         var errorsAndInfos = new ErrorsAndInfos();
@@ -41,18 +38,42 @@ public class SourceFileReaderTest {
         Assert.AreEqual(RemarkTwo, postings[1].Remark);
     }
 
-    protected static void CreateSampleSourceFile() {
+    [TestMethod]
+    public async Task CanReadBefore2025Postings() {
+        CreateSampleSourceFile(CreateBefore2025PostingText);
+
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
+        ISourceFileReader sut = container.Resolve<ISourceFileReader>();
+        var errorsAndInfos = new ErrorsAndInfos();
+        IList<IPosting> postings = sut.ReadPostings(_sampleSourceFileName, errorsAndInfos);
+        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.AreEqual(2, postings.Count);
+        Assert.AreEqual(DateOne, postings[0].Date);
+        Assert.AreEqual(AmountOne, postings[0].Amount);
+        Assert.AreEqual(RemarkOne, postings[0].Remark);
+        Assert.AreEqual(DateTwo, postings[1].Date);
+        Assert.AreEqual(AmountTwo, postings[1].Amount);
+        Assert.AreEqual(RemarkTwo, postings[1].Remark);
+    }
+
+    protected static void CreateSampleSourceFile(Func<DateTime, double, string, string> createPostingText) {
         IFolder folder = new Folder(Path.GetTempPath()).SubFolder(nameof(SourceFileReaderTest));
         folder.CreateIfNecessary();
         string[] contents = [
-            CreatePostingText(DateOne, AmountOne, RemarkOne),
-            CreatePostingText(DateTwo, AmountTwo, RemarkTwo)
+            "vom " + DateOne.ToShortDateString(),
+            createPostingText(DateOne, AmountOne, RemarkOne),
+            createPostingText(DateTwo, AmountTwo, RemarkTwo)
         ];
         _sampleSourceFileName = folder.FullName + "\\Sample.txt";
         File.WriteAllLines(_sampleSourceFileName, contents);
     }
 
-    protected static string CreatePostingText(DateTime date, double amount, string remark) {
+    protected static string CreateBefore2025PostingText(DateTime date, double amount, string remark) {
         return "  " + date.ToShortDateString() + remark + date.ToShortDateString() + amount;
+    }
+
+    protected static string CreatePostingText(DateTime date, double amount, string remark) {
+        return "    " + date.ToString("dd.MM.") + "  " + date.ToString("dd.MM.") + "   " + remark
+               + "    " + Math.Abs(amount).ToString("F") + " " + (amount >= 0 ? "H" : "S");
     }
 }
