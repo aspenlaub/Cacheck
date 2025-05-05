@@ -130,7 +130,7 @@
                             <ColumnDefinition Width="7*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
-                                  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Name="MonthlyDetails"
+                                  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="14" Name="MonthlyDetails"
                                   ItemsSource="{Binding Source={StaticResource MonthlyDetails}}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Sign" Width="10*" Binding="{Binding Type}" ElementStyle="{StaticResource CellLeftAlign}"/>
@@ -139,6 +139,7 @@
                                 <DataGridTextColumn Header="February" Width="20*" Binding="{Binding February, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                                 <DataGridTextColumn Header="March" Width="20*" Binding="{Binding March, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                                 <DataGridTextColumn Header="April" Width="20*" Binding="{Binding April, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                                <DataGridTextColumn Header="May" Width="20*" Binding="{Binding May, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                                 <DataGridTextColumn Header="June" Width="20*" Binding="{Binding June, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                                 <DataGridTextColumn Header="July" Width="20*" Binding="{Binding July, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                                 <DataGridTextColumn Header="August" Width="20*" Binding="{Binding August, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
