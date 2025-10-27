@@ -34,7 +34,6 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<IndividualPostingClassificationConverter>().As<IIndividualPostingClassificationConverter>();
         builder.RegisterType<IndividualPostingClassificationsSource>().As<IIndividualPostingClassificationsSource>();
         builder.RegisterType<IndividualPostingEliminationAnalyzer>().As<IIndividualPostingEliminationAnalyzer>();
-        builder.RegisterType<LiquidityPlanCalculator>().As<ILiquidityPlanCalculator>();
         builder.RegisterType<MonthlyDeltaCalculator>().As<IMonthlyDeltaCalculator>();
         builder.RegisterType<MonthlyDetailsCalculator>().As<IMonthlyDetailsCalculator>();
         builder.RegisterType<PostingAggregator>().As<IPostingAggregator>();
@@ -44,7 +43,6 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<PostingCollector>().As<IPostingCollector>();
         builder.RegisterType<PostingHasher>().As<IPostingHasher>();
         builder.RegisterType<PotentialCueExtractor>().As<IPotentialCueExtractor>();
-        builder.RegisterType<ReservationsCalculator>().As<IReservationsCalculator>();
         builder.RegisterType<SecretRepositoryFactory>().As<ISecretRepositoryFactory>();
         builder.RegisterType<SingleMonthDeltasCalculator>().As<ISingleMonthDeltasCalculator>();
         builder.RegisterType<SourceFileReader>().As<ISourceFileReader>();

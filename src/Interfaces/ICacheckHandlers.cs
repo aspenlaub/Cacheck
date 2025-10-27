@@ -13,8 +13,6 @@ public interface ICacheckHandlers {
     ISimpleTextHandler LogTextHandler { get; }
     ISingleClassificationHandler SingleClassificationHandler { get; }
     ISingleMonthHandler SingleMonthHandler { get; }
-    ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
-    ISimpleTextHandler ReservationsSumTextHandler { get; }
     ISimpleTextHandler MinimumAmountHandler { get; }
     ISimpleTextHandler FromDayHandler { get; }
     ISimpleTextHandler ToDayHandler { get; }

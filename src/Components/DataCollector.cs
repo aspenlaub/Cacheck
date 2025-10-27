@@ -80,7 +80,7 @@ public class DataCollector : IDataCollector {
             return;
         }
 
-        await CalculateAndShowAverageAsync(errorsAndInfos, allPostings, postingClassifications, inverseClassifications);
+        await CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             _CalculationLogger.Flush();
@@ -130,20 +130,9 @@ public class DataCollector : IDataCollector {
         return inverseClassifications;
     }
 
-    private async Task CalculateAndShowAverageAsync(IErrorsAndInfos errorsAndInfos, IList<IPosting> allPostings,
-                                                          IList<IPostingClassification> postingClassifications, IList<IInverseClassificationPair> inverseClassifications) {
-        LiquidityPlanClassifications liquidityPlanClassificationsSecret = await _SecretRepository.GetAsync(new LiquidityPlanClassificationsSecret(), errorsAndInfos);
-        if (errorsAndInfos.AnyErrors()) { return; }
-
-        var liquidityPlanClassifications = liquidityPlanClassificationsSecret.OfType<ILiquidityPlanClassification>().ToList();
-
-        IrregularDebitClassifications irregularDebitClassificationsSecret = await _SecretRepository.GetAsync(new IrregularDebitClassificationsSecret(), errorsAndInfos);
-        if (errorsAndInfos.AnyErrors()) { return; }
-
-        var irregularDebitClassifications = irregularDebitClassificationsSecret.OfType<IIrregularDebitClassification>().ToList();
-
-        await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications,
-                    liquidityPlanClassifications, irregularDebitClassifications);
+    private async Task CalculateAndShowAverageAsync(IList<IPosting> allPostings,
+            IList<IPostingClassification> postingClassifications, IList<IInverseClassificationPair> inverseClassifications) {
+        await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
     }
 
     private async Task<List<IPostingClassification>> CollectPostingClassifications(IErrorsAndInfos errorsAndInfos) {

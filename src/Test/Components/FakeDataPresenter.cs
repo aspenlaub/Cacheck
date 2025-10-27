@@ -24,10 +24,6 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
         return "";
     }
 
-    public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
-        await Task.CompletedTask;
-    }
-
     public void SetDataCollector(IDataCollector dataCollector) {
     }
 

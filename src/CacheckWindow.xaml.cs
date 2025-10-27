@@ -62,8 +62,6 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncTextBoxCallback(Log, handlers.LogTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleMonth, handlers.SingleMonthHandler.SelectedIndexChangedAsync);
-        guiToAppGate.RegisterAsyncTextBoxCallback(LiquidityPlanSum, handlers.LiquidityPlanSumTextHandler.TextChangedAsync);
-        guiToAppGate.RegisterAsyncTextBoxCallback(ReservationsSum, handlers.ReservationsSumTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(MinimumAmount, handlers.MinimumAmountHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(FromDay, handlers.FromDayHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(ToDay, handlers.ToDayHandler.TextChangedAsync);

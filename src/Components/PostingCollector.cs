@@ -23,8 +23,8 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
         IFolder sourceFolder = await GetSourceFolderAsync(isIntegrationTest);
         if (sourceFolder == null) { return allPostings; }
 
-        List<string> files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
-        ErrorsAndInfos errorsAndInfos = new ErrorsAndInfos();
+        var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
+        var errorsAndInfos = new ErrorsAndInfos();
         foreach (string file in files) {
             await dataPresenter.WriteLineAsync($"File: {file}");
             IList<IPosting> postings = sourceFileReader.ReadPostings(file, errorsAndInfos);
@@ -56,7 +56,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
 
     private async Task<IFolder> GetSourceFolderAsync(bool isIntegrationTest) {
         IFolder sourceFolder;
-        ErrorsAndInfos errorsAndInfos = new ErrorsAndInfos();
+        var errorsAndInfos = new ErrorsAndInfos();
 
         if (isIntegrationTest) {
             sourceFolder = Folders.IntegrationTestFolder;

@@ -13,8 +13,6 @@ public interface ICacheckApplicationModel : IApplicationModelBase {
     ITextBox Log { get; }
     ISelector SingleClassification { get; }
     ISelector SingleMonth { get; }
-    ITextBox LiquidityPlanSum { get; }
-    ITextBox ReservationsSum { get; }
     ITextBox MinimumAmount { get; }
     ITextBox FromDay { get; }
     ITextBox ToDay { get; }

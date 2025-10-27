@@ -1,5 +1,4 @@
-﻿using System;
-using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+﻿using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 // ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -11,9 +10,6 @@ public class TypeItemSum : ITypeItemSum {
     public double Sum { get; set; }
     public double SumPastHalfYear { get; set; }
     public double SumPastTwelveMonths { get; set; }
-    public double LiquidityPlan { get; set; }
-    public double LiquidityPlanAbsolute => Math.Abs(LiquidityPlan);
-    public double Reservation { get; set; }
     public double SumThisYear { get; set; }
     public double SumLastYear { get; set; }
 }

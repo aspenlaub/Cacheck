@@ -47,8 +47,6 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             LogTextHandler = new CacheckTextHandler(Model, this, m => m.Log),
             SingleClassificationHandler = new SingleClassificationHandler(Model, this, () => _DataCollector, postingClassificationsMatcher),
             SingleMonthHandler = new SingleMonthHandler(Model, this, () => _DataCollector),
-            LiquidityPlanSumTextHandler = new CacheckTextHandler(Model, this, m => m.LiquidityPlanSum),
-            ReservationsSumTextHandler = new CacheckTextHandler(Model, this, m => m.ReservationsSum),
             MinimumAmountHandler = new CacheckTextHandler(Model, this, m => m.MinimumAmount),
             FromDayHandler = new CacheckTextHandler(Model, this, m => m.FromDay),
             ToDayHandler = new CacheckTextHandler(Model, this, m => m.ToDay)
@@ -75,11 +73,6 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
             IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
         await Handlers.SingleClassificationHandler.UpdateSelectableValuesAsync(classifications, postings, inverseClassifications, areWeCollecting);
         await Handlers.SingleMonthHandler.UpdateSelectableValuesAsync(postings);
-    }
-
-    public async Task OnSumsChanged(double liquidityPlanSum, double reservationsSum) {
-        await Handlers.LiquidityPlanSumTextHandler.TextChangedAsync(liquidityPlanSum.ToString("F2"));
-        await Handlers.ReservationsSumTextHandler.TextChangedAsync(reservationsSum.ToString("F2"));
     }
 
     public override async Task OnLoadedAsync() {

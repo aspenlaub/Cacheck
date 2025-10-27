@@ -11,7 +11,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class SourceFileReader : ISourceFileReader {
     public IList<IPosting> ReadPostings(string fileName, IErrorsAndInfos errorsAndInfos) {
-        ErrorsAndInfos readingErrorsAndInfos = new ErrorsAndInfos();
+        var readingErrorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> postings = ReadPostings(fileName, readingErrorsAndInfos,
             (x, _) => ReadBefore2025Posting(x), _ => null);
         if (postings.Count != 0) {
@@ -36,10 +36,10 @@ public class SourceFileReader : ISourceFileReader {
             return postings;
         }
 
-        List<string> lines = File.ReadAllLines(fileName).ToList();
+        var lines = File.ReadAllLines(fileName).ToList();
 
         DateTime? fromDate = null;
-        foreach (var line in lines) {
+        foreach (string line in lines) {
             fromDate = readFromDate(line);
             if (fromDate != null) {
                 break;
@@ -112,7 +112,7 @@ public class SourceFileReader : ISourceFileReader {
     }
 
     private DateTime? ReadFromDate(string line) {
-        var pos = line.IndexOf("vom ", StringComparison.InvariantCultureIgnoreCase);
+        int pos = line.IndexOf("vom ", StringComparison.InvariantCultureIgnoreCase);
         if (pos < 0) { return null; }
 
         line = line.Substring(pos + 4).Trim() + " ";
@@ -171,7 +171,7 @@ public class SourceFileReader : ISourceFileReader {
             throw new NotImplementedException();
         }
 
-        var pos = line.LastIndexOf(' ');
+        int pos = line.LastIndexOf(' ');
         if (pos < 0) {
             throw new NotImplementedException();
         }
@@ -180,7 +180,7 @@ public class SourceFileReader : ISourceFileReader {
             throw new NotImplementedException();
         }
 
-        var remark = line.Substring(0, pos).Trim();
+        string remark = line.Substring(0, pos).Trim();
 
         return new Posting {
             Date = date,

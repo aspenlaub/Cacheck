@@ -16,8 +16,6 @@ public class CacheckApplicationModel : ApplicationModelBase, ICacheckApplication
     public ITextBox Log { get; } = new TextBox();
     public ISelector SingleClassification { get; } = new ComboBox();
     public ISelector SingleMonth { get; } = new ComboBox();
-    public ITextBox LiquidityPlanSum { get; } = new TextBox();
-    public ITextBox ReservationsSum { get; } = new TextBox();
     public ITextBox MinimumAmount { get; } = new TextBox();
     public ITextBox FromDay { get; } = new TextBox();
     public ITextBox ToDay { get; } = new TextBox();

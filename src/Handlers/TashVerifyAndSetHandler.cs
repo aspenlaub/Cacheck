@@ -26,8 +26,6 @@ public class TashVerifyAndSetHandler(ICacheckHandlers cacheckHandlers, ISimpleLo
     protected override Dictionary<string, ISimpleTextHandler> TextBoxNamesToTextHandlerDictionary(ITashTaskHandlingStatus<ICacheckApplicationModel> status) {
         return new Dictionary<string, ISimpleTextHandler> {
             { nameof(status.Model.Log), cacheckHandlers.LogTextHandler },
-            { nameof(status.Model.LiquidityPlanSum), cacheckHandlers.LiquidityPlanSumTextHandler},
-            { nameof(status.Model.ReservationsSum), cacheckHandlers.ReservationsSumTextHandler },
             { nameof(status.Model.MinimumAmount), cacheckHandlers.MinimumAmountHandler},
             { nameof(status.Model.FromDay), cacheckHandlers.FromDayHandler},
             { nameof(status.Model.ToDay), cacheckHandlers.ToDayHandler}

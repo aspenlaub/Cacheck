@@ -14,8 +14,6 @@ public class CacheckHandlers : ICacheckHandlers {
     public ISimpleTextHandler LogTextHandler { get; init; }
     public ISingleClassificationHandler SingleClassificationHandler { get; init; }
     public ISingleMonthHandler SingleMonthHandler { get; init; }
-    public ISimpleTextHandler LiquidityPlanSumTextHandler { get; init; }
-    public ISimpleTextHandler ReservationsSumTextHandler { get; init; }
     public ISimpleTextHandler MinimumAmountHandler { get; init; }
     public ISimpleTextHandler FromDayHandler { get; init; }
     public ISimpleTextHandler ToDayHandler { get; init; }

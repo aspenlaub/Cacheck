@@ -25,8 +25,6 @@ public class FakeCacheckHandlers : ICacheckHandlers {
     public ISimpleTextHandler LogTextHandler { get; }
     public ISingleClassificationHandler SingleClassificationHandler { get; }
     public ISingleMonthHandler SingleMonthHandler { get; }
-    public ISimpleTextHandler LiquidityPlanSumTextHandler { get; }
-    public ISimpleTextHandler ReservationsSumTextHandler { get; }
     public ISimpleTextHandler MinimumAmountHandler { get; }
     public ISimpleTextHandler FromDayHandler { get; }
     public ISimpleTextHandler ToDayHandler { get; }
@@ -42,8 +40,6 @@ public class FakeCacheckHandlers : ICacheckHandlers {
         LogTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.Log);
         SingleClassificationHandler = new FakeCacheckSingleClassificationHandler();
         SingleMonthHandler = new FakeCacheckSingleMonthHandler();
-        LiquidityPlanSumTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.LiquidityPlanSum);
-        ReservationsSumTextHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.ReservationsSum);
         MinimumAmountHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.MinimumAmount);
         FromDayHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.FromDay);
         ToDayHandler = new CacheckTextHandler(model, guiAndAppHandler, m => m.ToDay);
