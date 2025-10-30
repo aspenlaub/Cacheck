@@ -23,7 +23,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         DateTime aYearAgo = allPostings.Max(p => p.Date).AddMonths(-12);
         aYearAgo = new DateTime(aYearAgo.Year, aYearAgo.Month, 1);
 
-        var lastYearsPostings = allPostings.Where(p => p.Date.Year < thisYear).ToList();
+        var lastYearsPostings = allPostings.Where(p => p.Date.Year == thisYear - 1).ToList();
         IDictionary<IFormattedClassification, IAggregatedPosting> lastYearsDetailedAggregation = postingAggregator.AggregatePostings(lastYearsPostings, postingClassifications, errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await dataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -72,32 +72,30 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
                 .ToList();
         detailedAggregation = aggregatedPostingsNetter.Net(detailedAggregation, inverseClassifications, classificationsToKeepEvenIfZero);
 
-        int numberOfDistinctMonths = allPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count();
         int numberOfDistinctMonthsLastYear = lastYearsPostings.Any() ? lastYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
-        int numberOfDistinctMonthsThisYear = thisYearsPostings.Any() ? thisYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
         int numberOfDistinctMonthsPastHalfYear = pastHalfYearsPostings.Any() ? pastHalfYearsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
         int numberOfDistinctMonthsPastTwelveMonths = pastTwelveMonthsPostings.Any() ? pastTwelveMonthsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
 
         var classificationAverageList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).ToList().Select(
-            result => CreateTypeItemSum(result.Key, result.Value.Sum, numberOfDistinctMonths, pastHalfYearsDetailedAggregationList,
-            numberOfDistinctMonthsPastHalfYear, pastTwelveMonthsDetailedAggregationList, numberOfDistinctMonthsPastTwelveMonths,
-            thisYearsDetailedAggregationList, numberOfDistinctMonthsThisYear, lastYearsDetailedAggregationList,
-            numberOfDistinctMonthsLastYear)
+            result => CreateTypeItemSum(result.Key,
+                pastHalfYearsDetailedAggregationList, numberOfDistinctMonthsPastHalfYear,
+                pastTwelveMonthsDetailedAggregationList, numberOfDistinctMonthsPastTwelveMonths,
+                lastYearsDetailedAggregationList, numberOfDistinctMonthsLastYear)
         ).OfType<ICollectionViewSourceEntity>().ToList();
         await dataPresenter.Handlers.ClassificationAveragesHandler.CollectionChangedAsync(classificationAverageList);
     }
 
-    private TypeItemSum CreateTypeItemSum(IFormattedClassification classification, double sum,
-            int numberOfDistinctMonths, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> pastHalfYearsDetailedAggregationList,
-            int numberOfDistinctMonthsPastHalfYear, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> pastTwelveMonthsDetailedAggregationList,
-            int numberOfDistinctMonthsPastTwelveMonths, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> thisYearsDetailedAggregationList,
-            int numberOfDistinctMonthsThisYear, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> lastYearsDetailedAggregationList,
+    private TypeItemSum CreateTypeItemSum(IFormattedClassification classification,
+            IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> pastHalfYearsDetailedAggregationList,
+            int numberOfDistinctMonthsPastHalfYear,
+            IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> pastTwelveMonthsDetailedAggregationList,
+            int numberOfDistinctMonthsPastTwelveMonths,
+            IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> lastYearsDetailedAggregationList,
             int numberOfDistinctMonthsLastYear) {
         double sumPastTwelveMonths = GetOtherSum(classification, pastTwelveMonthsDetailedAggregationList) / numberOfDistinctMonthsPastTwelveMonths;
-        return new TypeItemSum { Type = classification.Sign, Item = classification.Classification, Sum = sum / numberOfDistinctMonths,
+        return new TypeItemSum { Type = classification.Sign, Item = classification.Classification,
             SumPastHalfYear = GetOtherSum(classification, pastHalfYearsDetailedAggregationList) / numberOfDistinctMonthsPastHalfYear,
             SumPastTwelveMonths = sumPastTwelveMonths,
-            SumThisYear = GetOtherSum(classification, thisYearsDetailedAggregationList) / numberOfDistinctMonthsThisYear,
             SumLastYear = GetOtherSum(classification, lastYearsDetailedAggregationList) / numberOfDistinctMonthsLastYear
         };
     }

@@ -27,17 +27,18 @@ public class AverageCalculatorTest : CalculatorTestBase {
            []);
 
         List<ITypeItemSum> items = FakeDataPresenter.ClassificationAverages;
-        VerifyResult(items[0], "-", "1510", 10, 0);
-        VerifyResult(items[1], "-", "1989", 20, 0);
-        VerifyResult(items[2], "+", "2407", 5, 0);
-        VerifyResult(items[3], "+", "4711", 15, 0);
+        VerifyResult(items[0], "-", "1510", 10, 10, 0);
+        VerifyResult(items[1], "-", "1989", 20, 20, 0);
+        VerifyResult(items[2], "+", "2407", 5, 5, 0);
+        VerifyResult(items[3], "+", "4711", 15, 15, 0);
     }
 
-    protected static void VerifyResult(ITypeItemSum item, string expectedType, string expectedItem, double expectedSum, double expectedSumAsOfLastYear) {
+    protected static void VerifyResult(ITypeItemSum item, string expectedType, string expectedItem,
+            double expectedSumPastHalfYear, double expectedSumPastTwelveMonths, double expectedSumAsOfLastYear) {
         Assert.AreEqual(expectedType, item.Type);
         Assert.AreEqual(expectedItem, item.Item);
-        Assert.AreEqual(expectedSum, item.Sum);
-        Assert.AreEqual(expectedSum, item.SumThisYear);
+        Assert.AreEqual(expectedSumPastHalfYear, item.SumPastHalfYear);
+        Assert.AreEqual(expectedSumPastTwelveMonths, item.SumPastTwelveMonths);
         Assert.AreEqual(expectedSumAsOfLastYear, item.SumLastYear);
     }
 }
