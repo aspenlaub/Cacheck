@@ -73,7 +73,9 @@
                             <DataGridTextColumn Header="Classification" Width="20*" Binding="{Binding Item}" ElementStyle="{StaticResource CellLeftAlign}"/>
                             <DataGridTextColumn Header="Average Past Half Year" Width="20*" Binding="{Binding SumPastHalfYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                             <DataGridTextColumn Header="Average Past 12 Months" Width="20*" Binding="{Binding SumPastTwelveMonths, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
-                            <DataGridTextColumn Header="Average End Of Last Year" Width="20*" Binding="{Binding SumLastYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="Average Last Year" Width="20*" Binding="{Binding SumLastYear, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="Average Year Before Last" Width="20*" Binding="{Binding SumYearBeforeLast, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
+                            <DataGridTextColumn Header="Average 2 Years Before Last" Width="20*" Binding="{Binding SumTwoYearsBeforeLast, StringFormat=F2}" ElementStyle="{StaticResource CellRightAlign}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

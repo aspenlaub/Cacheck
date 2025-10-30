@@ -11,8 +11,10 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 IPostingClassificationsMatcher postingClassificationsMatcher) : IClassifiedPostingsCalculator {
 
-    public async Task<IList<IClassifiedPosting>> CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+    public async Task<IList<IClassifiedPosting>> CalculateAndShowClassifiedPostingsAsync(IList<IPosting> allPostings,
+                IList<IPostingClassification> postingClassifications,
+                DateTime minDate, double minAmount,
+                string singleClassification, string singleClassificationInverse) {
 
         IList<IClassifiedPosting> classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
                                                                                    singleClassification, singleClassificationInverse);
