@@ -32,7 +32,7 @@ public class CacheckConfigurationTest {
         var errorsAndInfos = new ErrorsAndInfos();
         PostingClassifications secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-        Assert.IsTrue(secret.Count >= 5, "At least five classifications expected");
+        Assert.IsGreaterThanOrEqualTo(5, secret.Count, "At least five classifications expected");
         Assert.IsTrue(secret.Any(s => s.Credit));
         Assert.IsTrue(secret.Any(s => !s.Credit));
     }
@@ -44,7 +44,7 @@ public class CacheckConfigurationTest {
         var errorsAndInfos = new ErrorsAndInfos();
         InverseClassifications secret = await secretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-        Assert.IsTrue(secret.Count >= 5, "At least five inverse classifications expected");
+        Assert.IsGreaterThanOrEqualTo(5, secret.Count, "At least five inverse classifications expected");
         Assert.IsTrue(secret.Any(s => s.Classification == "Savings" && s.InverseClassification == "SacrificedSavings"));
     }
 }

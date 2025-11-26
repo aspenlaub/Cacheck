@@ -4,6 +4,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+[assembly: DoNotParallelize]
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
 
 [TestClass]
@@ -18,13 +19,20 @@ public class SummaryCalculatorTest : CalculatorTestBase {
 
     [TestMethod]
     public async Task CanCalculateSummary() {
-        bool success = await Sut.CalculateAndShowSummaryAsync(new List<IPosting> { TestData.PostingC2, TestData.PostingD2, TestData.PostingC3, TestData.PostingD3 },
-                                                              new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1, TestData.PostingClassificationD2 },
-                                                              new List<IInverseClassificationPair>());
+        bool success = await Sut.CalculateAndShowSummaryAsync(
+            [
+                TestData.PostingC2, TestData.PostingD2, TestData.PostingC3,
+                TestData.PostingD3
+            ],
+            [
+                TestData.PostingClassificationC1, TestData.PostingClassificationC2, TestData.PostingClassificationD1,
+                TestData.PostingClassificationD2
+            ],
+            []);
 
         Assert.IsTrue(success);
         List<ITypeItemSum> items = FakeDataPresenter.OverallSums;
-        Assert.AreEqual(2, items.Count);
+        Assert.HasCount(2, items);
         Assert.AreEqual("+", items[0].Type);
         Assert.AreEqual("Credit", items[0].Item);
         Assert.AreEqual(40, items[0].Sum);
@@ -33,7 +41,7 @@ public class SummaryCalculatorTest : CalculatorTestBase {
         Assert.AreEqual(60, items[1].Sum);
 
         items = FakeDataPresenter.ClassificationSums;
-        Assert.AreEqual(4, items.Count);
+        Assert.HasCount(4, items);
         Assert.AreEqual("-", items[0].Type);
         Assert.AreEqual("1510", items[0].Item);
         Assert.AreEqual(20, items[0].Sum);

@@ -18,11 +18,16 @@ public class MonthlyDeltaCalculatorTest : CalculatorTestBase {
 
     [TestMethod]
     public async Task CanCalculateMonthlyDelta() {
-        await Sut.CalculateAndShowMonthlyDeltaAsync(new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 },
-            new List<IPostingClassification> { TestData.PostingClassificationJuly, TestData.PostingClassificationAugust, TestData.PostingClassificationSeptember });
+        await Sut.CalculateAndShowMonthlyDeltaAsync(
+            [
+                TestData.PostingC1, TestData.PostingD1, TestData.PostingC2,
+                TestData.PostingD2
+            ],
+            [ TestData.PostingClassificationJuly, TestData.PostingClassificationAugust, TestData.PostingClassificationSeptember ]
+        );
 
         List<ITypeMonthDelta> items = FakeDataPresenter.MonthlyDeltas;
-        Assert.AreEqual(2, items.Count);
+        Assert.HasCount(2, items);
         Assert.AreEqual("Δ", items[0].Type);
         Assert.AreEqual("2021-08", items[0].Month);
         Assert.AreEqual(-40, items[0].Delta);

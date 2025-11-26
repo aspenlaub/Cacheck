@@ -27,21 +27,21 @@ public class IndividualPostingClassificationsSourceTest {
     [TestMethod]
     public async Task CanGetIndividualPostingClassifications() {
         var errorsAndInfos = new ErrorsAndInfos();
-        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
+        IList<IIndividualPostingClassification> individualPostingClassifications = [.. await _Sut.GetAsync(errorsAndInfos)];
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-        individualPostingClassifications = individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists)).ToList();
+        individualPostingClassifications = [.. individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists))];
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
         Assert.IsTrue(individualPostingClassifications.Any(i
             => i.PostingHash == "202305039976900011102000280653886462435000"
-            && i.Credit == false
+            && !i.Credit
             && i.Classification == "ElectronicsAndSoftware"));
     }
 
     [TestMethod]
     public async Task PostingExistsForEachIndividualPostingClassification() {
         var errorsAndInfos = new ErrorsAndInfos();
-        IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-        individualPostingClassifications = individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists)).ToList();
+        IList<IIndividualPostingClassification> individualPostingClassifications = [.. await _Sut.GetAsync(errorsAndInfos)];
+        individualPostingClassifications = [.. individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists))];
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
         IList<IPosting> postings = await _PostingCollector.CollectPostingsAsync(false);
@@ -50,7 +50,7 @@ public class IndividualPostingClassificationsSourceTest {
         }
         var postingHashes = postings.Select(_PostingHasher.Hash).ToList();
         foreach (IIndividualPostingClassification individualPostingClassification in individualPostingClassifications) {
-            Assert.IsTrue(postingHashes.Contains(individualPostingClassification.PostingHash),
+            Assert.Contains(individualPostingClassification.PostingHash, postingHashes,
                 $"Hash {individualPostingClassification.PostingHash} does not correspond to a posting");
         }
     }

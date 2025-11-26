@@ -26,7 +26,7 @@ public class TestDataGeneratorTest {
     [TestMethod]
     public async Task CanReadPostingsFromTestFolder() {
         IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghAsync(null)).Build();
-        var files = Directory.GetFiles(Folders.IntegrationTestFolder.FullName, "*.txt").ToList();
+        List<string> files = [.. Directory.GetFiles(Folders.IntegrationTestFolder.FullName, "*.txt")];
         ISourceFileReader reader = container.Resolve<ISourceFileReader>();
         IList<IPosting> expectedPostings = TestDataGenerator.TestPostings;
         var actualPostings = new List<IPosting>();
@@ -36,7 +36,7 @@ public class TestDataGeneratorTest {
             actualPostings.AddRange(postings);
         }
 
-        Assert.AreEqual(expectedPostings.Count, actualPostings.Count);
+        Assert.HasCount(expectedPostings.Count, actualPostings);
         for (int i = 0; i < expectedPostings.Count; i++) {
             Assert.AreEqual(expectedPostings[i].Date, actualPostings[i].Date);
             Assert.AreEqual(expectedPostings[i].Amount, actualPostings[i].Amount);

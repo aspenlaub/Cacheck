@@ -22,12 +22,12 @@ public class ClassifiedPostingsCalculatorTest : CalculatorTestBase {
     [TestMethod]
     public async Task CanCalculateClassifiedPostings() {
         var postings = new List<IPosting> { TestData.PostingC1, TestData.PostingD1, TestData.PostingC2, TestData.PostingD2 };
-        postings = postings.Select(IncreasePostingAmount).ToList();
+        postings = [.. postings.Select(IncreasePostingAmount)];
         var postingClassifications = new List<IPostingClassification> { TestData.PostingClassificationC1, TestData.PostingClassificationD1 };
         await Sut.CalculateAndShowClassifiedPostingsAsync(postings, postingClassifications, new DateTime(2020, 12, 31), 250, "", "");
 
         List<IClassifiedPosting> items = FakeDataPresenter.ClassifiedPostings;
-        Assert.AreEqual(2, items.Count);
+        Assert.HasCount(2, items);
         Assert.AreEqual(postings[2].Date, items[0].Date);
         Assert.AreEqual(postings[2].Amount, items[0].Amount);
         Assert.AreEqual(postings[2].Remark, items[0].Remark);

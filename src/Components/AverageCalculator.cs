@@ -45,7 +45,7 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         var detailedYearAggregationListYearBeforeLast = aggregatedPostingsNetter.Net(detailedYearAggregationYearBeforeLast,
             inverseClassifications, []).ToList();
 
-        IList<IPosting> twoYearsPostingsLastYear = yearPostingsLastYear.Union(yearPostingsYearBeforeLast).ToList();
+        IList<IPosting> twoYearsPostingsLastYear = [.. yearPostingsLastYear.Union(yearPostingsYearBeforeLast)];
 
         var yearPostingsTwoYearsBeforeLast = allPostings.Where(p => p.Date.Year == thisYear - 3).ToList();
         IDictionary<IFormattedClassification, IAggregatedPosting> detailedYearAggregationTwoYearsBeforeLast
@@ -55,11 +55,11 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
             return;
         }
 
-        IList<IPosting> twoYearsPostingsYearBeforeLast = yearPostingsYearBeforeLast.Union(yearPostingsTwoYearsBeforeLast).ToList();
+        IList<IPosting> twoYearsPostingsYearBeforeLast = [.. yearPostingsYearBeforeLast.Union(yearPostingsTwoYearsBeforeLast)];
 
         var yearPostingsThreeYearsBeforeLast = allPostings.Where(p => p.Date.Year == thisYear - 4).ToList();
 
-        IList<IPosting> twoYearsPostingsTwoYearsBeforeLast = yearPostingsTwoYearsBeforeLast.Union(yearPostingsThreeYearsBeforeLast).ToList();
+        IList<IPosting> twoYearsPostingsTwoYearsBeforeLast = [.. yearPostingsTwoYearsBeforeLast.Union(yearPostingsThreeYearsBeforeLast)];
 
         var detailedYearAggregationListTwoYearsBeforeLast = aggregatedPostingsNetter.Net(detailedYearAggregationTwoYearsBeforeLast,
             inverseClassifications, []).ToList();
@@ -211,6 +211,6 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
 
     private static double GetOtherSum(IFormattedClassification formattedClassification, IEnumerable<KeyValuePair<IFormattedClassification, IAggregatedPosting>> otherDetailedAggregation) {
         var results = otherDetailedAggregation.Where(f => f.Key.CombinedClassification == formattedClassification.CombinedClassification).Select(f => f.Value).ToList();
-        return results.Select(x => x.Sum).Sum();
+        return results.Sum(x => x.Sum);
     }
 }

@@ -29,7 +29,7 @@ public class SourceFileReaderTest {
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> postings = sut.ReadPostings(_sampleSourceFileName, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-        Assert.AreEqual(2, postings.Count);
+        Assert.HasCount(2, postings);
         Assert.AreEqual(DateOne, postings[0].Date);
         Assert.AreEqual(AmountOne, postings[0].Amount);
         Assert.AreEqual(RemarkOne, postings[0].Remark);
@@ -47,7 +47,7 @@ public class SourceFileReaderTest {
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> postings = sut.ReadPostings(_sampleSourceFileName, errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
-        Assert.AreEqual(2, postings.Count);
+        Assert.HasCount(2, postings);
         Assert.AreEqual(DateOne, postings[0].Date);
         Assert.AreEqual(AmountOne, postings[0].Amount);
         Assert.AreEqual(RemarkOne, postings[0].Remark);

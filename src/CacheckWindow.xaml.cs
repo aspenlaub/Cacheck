@@ -55,6 +55,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncDataGridCallback(OverallSums, handlers.OverallSumsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassificationSums, handlers.ClassificationSumsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassificationAverages, handlers.ClassificationAveragesHandler.CollectionChangedAsync);
+        guiToAppGate.RegisterAsyncDataGridCallback(ClassificationTwoYearAverages, handlers.ClassificationAveragesHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDeltas, handlers.MonthlyDeltasHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(MonthlyDetails, handlers.MonthlyDetailsHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncDataGridCallback(ClassifiedPostings, handlers.ClassifiedPostingsHandler.CollectionChangedAsync);

@@ -17,16 +17,13 @@ public class PotentialCueExtractorTest {
 
     [TestMethod]
     public void CanExtractPotentialCues() {
-        ExtractPotentialCues("This is not so short", new List<string> {
-            "This is not so short", "This is not so", "is not so short", "not so short"
-        });
-        ExtractPotentialCues("This is short", new List<string> {
-            "This is short"
-        });
-        ExtractPotentialCues("Dis is short", new List<string> {
-            "Dis is short"
-        });
-        ExtractPotentialCues("Dis is shot", new List<string>());
+        ExtractPotentialCues("This is not so short", [
+                "This is not so short", "This is not so", "is not so short",
+                "not so short"
+            ]);
+        ExtractPotentialCues("This is short", [ "This is short" ]);
+        ExtractPotentialCues("Dis is short", [ "Dis is short" ]);
+        ExtractPotentialCues("Dis is shot", []);
     }
 
     private void ExtractPotentialCues(string postingRemark, ICollection<string> expectedCues) {
@@ -40,7 +37,7 @@ public class PotentialCueExtractorTest {
     private void ExtractPotentialCues(string postingRemark, ICollection<string> expectedCues,
             string prefix, string postfix) {
         HashSet<string> actualCues = _Sut.ExtractPotentialCues(prefix + postingRemark + postfix);
-        Assert.AreEqual(expectedCues.Count, actualCues.Count);
+        Assert.HasCount(expectedCues.Count, actualCues);
         Assert.IsTrue(expectedCues.All(actualCues.Contains));
     }
 }
