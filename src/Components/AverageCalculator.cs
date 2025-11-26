@@ -128,7 +128,10 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
             SumPastTwelveMonths = sumPastTwelveMonths,
             SumLastYear = GetOtherSum(classification, lastYearsDetailedAggregationList) / numberOfDistinctMonthsLastYear,
             SumYearBeforeLast = GetOtherSum(classification, yearBeforeLastsDetailedAggregationList) / numberOfDistinctMonthsYearBeforeLast,
-            SumTwoYearsBeforeLast = GetOtherSum(classification, twoYearsBeforeLastsDetailedAggregationList) / numberOfDistinctMonthsTwoYearsBeforeLast
+            SumTwoYearsBeforeLast = GetOtherSum(classification, twoYearsBeforeLastsDetailedAggregationList) / numberOfDistinctMonthsTwoYearsBeforeLast,
+            SumLastTwoYears = 0,
+            TwoYearSumBeforeLastYear = 0,
+            TwoYearSumTwoYearsBeforeLastYear = 0
         };
     }
 

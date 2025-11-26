@@ -13,4 +13,7 @@ public interface ITypeItemSum : ICollectionViewSourceEntity {
     double SumLastYear { get; set; }
     double SumYearBeforeLast { get; set; }
     double SumTwoYearsBeforeLast { get; set; }
+    double SumLastTwoYears { get; set; }
+    double TwoYearSumBeforeLastYear { get; set; }
+    double TwoYearSumTwoYearsBeforeLastYear { get; set; }
 }

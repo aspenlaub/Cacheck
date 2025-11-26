@@ -13,4 +13,7 @@ public class TypeItemSum : ITypeItemSum {
     public double SumLastYear { get; set; }
     public double SumYearBeforeLast { get; set; }
     public double SumTwoYearsBeforeLast { get; set; }
+    public double SumLastTwoYears { get; set; }
+    public double TwoYearSumBeforeLastYear { get; set; }
+    public double TwoYearSumTwoYearsBeforeLastYear { get; set; }
 }
