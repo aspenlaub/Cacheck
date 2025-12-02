@@ -64,7 +64,7 @@ public class DataCollector : IDataCollector {
 
         (IList<IPosting> allTimePostings, List<IPosting> allPostings) = await CollectPostingsAsync();
 
-        List<IPostingClassification> postingClassifications = await CollectPostingClassifications(errorsAndInfos);
+        List<IPostingClassification> postingClassifications = await CollectPostingClassificationsAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             _CalculationLogger.Flush();
@@ -106,7 +106,7 @@ public class DataCollector : IDataCollector {
 
         (IList<IPosting> _, List<IPosting> allPostings) = await CollectPostingsAsync();
 
-        List<IPostingClassification> postingClassifications = await CollectPostingClassifications(errorsAndInfos);
+        List<IPostingClassification> postingClassifications = await CollectPostingClassificationsAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
             _CalculationLogger.Flush();
@@ -135,7 +135,7 @@ public class DataCollector : IDataCollector {
         await _AverageCalculator.CalculateAndShowAverageAsync(allPostings, postingClassifications, inverseClassifications);
     }
 
-    private async Task<List<IPostingClassification>> CollectPostingClassifications(IErrorsAndInfos errorsAndInfos) {
+    public async Task<List<IPostingClassification>> CollectPostingClassificationsAsync(IErrorsAndInfos errorsAndInfos) {
         PostingClassifications postingClassificationsSecret = await _SecretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) { return []; }
 

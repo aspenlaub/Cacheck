@@ -6,6 +6,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Autofac;
+using Microsoft.Testing.Platform.OutputDevice;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
@@ -49,9 +50,29 @@ public class IndividualPostingClassificationsSourceTest {
             Assert.Inconclusive("Not enough production postings");
         }
         var postingHashes = postings.Select(_PostingHasher.Hash).ToList();
-        foreach (IIndividualPostingClassification individualPostingClassification in individualPostingClassifications) {
-            Assert.Contains(individualPostingClassification.PostingHash, postingHashes,
-                $"Hash {individualPostingClassification.PostingHash} does not correspond to a posting");
+        bool foundContained = false;
+        int notContainedIndex = -1;
+        for (int i = 0; i < individualPostingClassifications.Count; i ++) {
+            IIndividualPostingClassification individualPostingClassification = individualPostingClassifications[i];
+            if (notContainedIndex >= 0) {
+                if (!postingHashes.Contains(individualPostingClassification.PostingHash)) {
+                    continue;
+                }
+
+                individualPostingClassification = individualPostingClassifications[notContainedIndex];
+                Assert.Contains(individualPostingClassification.PostingHash, postingHashes,
+                    $"Hash {individualPostingClassification.PostingHash} does not correspond to a posting");
+            } else if (foundContained) {
+                if (postingHashes.Contains(individualPostingClassification.PostingHash)) {
+                    continue;
+                }
+
+                notContainedIndex = i;
+            } else {
+                Assert.Contains(individualPostingClassification.PostingHash, postingHashes,
+                    $"Hash {individualPostingClassification.PostingHash} does not correspond to a posting");
+            }
+            foundContained = true;
         }
     }
 
