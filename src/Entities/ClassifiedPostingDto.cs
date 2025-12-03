@@ -9,10 +9,10 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
     public double Amount { get; set; }
     public string Classification { get; set; }
     public bool IsIndividual { get; set; }
-    public string PostingHash { get; set; }
     public bool Ineliminable { get; set; }
 
     public string Remark => "";
+    public static string PostingHash => "";
 
     public ClassifiedPostingDto() {
     }
@@ -24,6 +24,5 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
         Date = posting.Date;
         Ineliminable = posting.Ineliminable;
         IsIndividual = posting.IsIndividual;
-        PostingHash = posting.PostingHash;
     }
 }

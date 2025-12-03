@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
@@ -18,17 +17,29 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 string singleClassification, string singleClassificationInverse) {
 
         if (allPostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+            return [.. allPostings.Cast<IPreClassifiedPosting>().Select(FromDto)];
         }
 
         IList<IClassifiedPosting> classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
                                                                                    singleClassification, singleClassificationInverse);
-        await dataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
+        await dataPresenter.Handlers.ClassifiedPostingsHandler
+            .CollectionChangedAsync([.. classifiedPostings]);
         return classifiedPostings;
     }
 
+    private static IClassifiedPosting FromDto(IPreClassifiedPosting preClassifiedPosting) {
+        return new ClassifiedPosting {
+            Amount = preClassifiedPosting.Amount,
+            Classification = preClassifiedPosting.Classification,
+            Date = preClassifiedPosting.Date,
+            Guid = preClassifiedPosting.Guid,
+            Ineliminable = preClassifiedPosting.Ineliminable,
+            IsIndividual = preClassifiedPosting.IsIndividual
+        };
+    }
+
     public IList<IClassifiedPosting> CalculateClassifiedPostings(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
-                DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+                                                                 DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
 
         if (allPostings.AreAllPostingsPreClassified()) {
             throw new NotImplementedException("Pre-classified postings cannot yet be used here");
@@ -53,7 +64,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
             classifiedPostings.Add(classifiedPosting);
         }
 
-        classifiedPostings = classifiedPostings.OrderByDescending(cp => cp.Date).ToList();
+        classifiedPostings = [.. classifiedPostings.OrderByDescending(cp => cp.Date)];
 
         return classifiedPostings;
     }
@@ -73,7 +84,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                || classification.Classification == singleClassificationInverse;
     }
 
-    private bool AreClassificationsEquivalent(IList<IPostingClassification> classifications) {
+    private static bool AreClassificationsEquivalent(IList<IPostingClassification> classifications) {
         if (!classifications.Any()) { return false; }
         if (classifications.Count == 1) { return true;  }
 
