@@ -14,6 +14,10 @@ public class SingleMonthDeltasCalculator(IDataPresenter dataPresenter, IPostingA
         IPostingClassificationsMatcher postingClassificationsMatcher) : ISingleMonthDeltasCalculator {
     public async Task CalculateAndShowSingleMonthDeltasAsync(IList<IPosting> allTimePostings,
             IList<IPostingClassification> postingClassifications, int month, int currentYear) {
+        if (allTimePostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         var singleMonthDeltasList = new List<ITypeSingleMonthDelta>();
         if (month <= 0 || currentYear <= 0) {
             await dataPresenter.Handlers.SingleMonthDeltasHandler.CollectionChangedAsync(

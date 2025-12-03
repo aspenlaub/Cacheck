@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Entities;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
@@ -12,6 +13,10 @@ public class SingleMonthHandler(ICacheckApplicationModel model, IGuiAndAppHandle
         Func<IDataCollector> dataCollectorGetter) : ISingleMonthHandler {
 
     public async Task UpdateSelectableValuesAsync(IList<IPosting> postings) {
+        if (postings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         DateTime posting = postings.Max(p => p.Date);
         await UpdateSelectableValuesAsync(posting.Month, posting.Year);
     }

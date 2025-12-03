@@ -3,7 +3,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 
-public class ClassifiedPostingDto : IPosting {
+public class ClassifiedPostingDto : IPreClassifiedPosting {
     public string Guid { get; set; } = System.Guid.NewGuid().ToString();
     public DateTime Date { get; set; }
     public double Amount { get; set; }

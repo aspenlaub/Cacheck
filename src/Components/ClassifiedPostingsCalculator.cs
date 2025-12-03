@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 
@@ -16,6 +17,10 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 DateTime minDate, double minAmount,
                 string singleClassification, string singleClassificationInverse) {
 
+        if (allPostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         IList<IClassifiedPosting> classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
                                                                                    singleClassification, singleClassificationInverse);
         await dataPresenter.Handlers.ClassifiedPostingsHandler.CollectionChangedAsync(classifiedPostings.OfType<ICollectionViewSourceEntity>().ToList());
@@ -24,6 +29,10 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
 
     public IList<IClassifiedPosting> CalculateClassifiedPostings(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
                 DateTime minDate, double minAmount, string singleClassification, string singleClassificationInverse) {
+
+        if (allPostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
 
         var classifiedPostings = new List<IClassifiedPosting>();
 
@@ -59,11 +68,9 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
         if (!AreClassificationsEquivalent(classifications)) { return false; }
 
         classification = classifications[0];
-        if (singleClassification != "" || singleClassificationInverse != "") {
-            return classification.Classification == singleClassification || classification.Classification == singleClassificationInverse;
-        }
-
-        return true;
+        return singleClassification == "" && singleClassificationInverse == ""
+               || classification.Classification == singleClassification
+               || classification.Classification == singleClassificationInverse;
     }
 
     private bool AreClassificationsEquivalent(IList<IPostingClassification> classifications) {

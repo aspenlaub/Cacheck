@@ -14,9 +14,13 @@ public class MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggreg
                 IPostingClassificationsMatcher postingClassificationsMatcher) : IMonthlyDeltaCalculator {
 
     public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
+        if (allPostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         var fairPostings = postingClassificationsMatcher
-            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
-            .ToList();
+                           .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
+                           .ToList();
         int minYear = fairPostings.Min(p => p.Date.Year);
         IEnumerable<int> years = Enumerable.Range(minYear, DateTime.Today.Year - minYear + 1);
         var monthsClassifications = new List<IPostingClassification>();

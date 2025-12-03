@@ -64,6 +64,10 @@ public class DataCollector : IDataCollector {
 
         (IList<IPosting> allTimePostings, List<IPosting> allPostings) = await CollectPostingsAsync();
 
+        if (allPostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         List<IPostingClassification> postingClassifications = await CollectPostingClassificationsAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -152,6 +156,11 @@ public class DataCollector : IDataCollector {
 
     private async Task<(IList<IPosting> allTimePostings, List<IPosting> allPostings)> CollectPostingsAsync() {
         IList <IPosting> allTimePostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
+
+        if (allTimePostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         DateTime maxDate = allTimePostings.Max(p => p.Date);
         DateTime minDate = maxDate.Month >= 7 ? new DateTime(maxDate.Year - 4, 1, 1) : new DateTime(maxDate.Year - 5, 7, 1);
         var allPostings = allTimePostings.Where(p => p.Date >= minDate).ToList();
@@ -204,6 +213,10 @@ public class DataCollector : IDataCollector {
     }
 
     private async Task DoSingleMonthAnalysis(IList<IPosting> allTimePostings, IList<IPostingClassification> postingClassifications) {
+        if (allTimePostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         (int singleMonthNumber, int currentYear) = _DataPresenter.SingleMonthNumberAndYear();
         await _SingleMonthDeltasCalculator.CalculateAndShowSingleMonthDeltasAsync(allTimePostings,
           postingClassifications, singleMonthNumber, currentYear);

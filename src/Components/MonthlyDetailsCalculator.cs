@@ -16,6 +16,10 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
     public async Task CalculateAndShowMonthlyDetailsAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
                     double minimumAmount, int fromDay, int toDay) {
 
+        if (allPostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+
         var fairPostings = postingClassificationsMatcher
                            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
                            .Where(c => Math.Abs(c.Amount) >= minimumAmount)
