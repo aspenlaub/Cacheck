@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
@@ -41,6 +43,7 @@ public partial class CacheckWindow : IAsyncDisposable {
     }
 
     // ReSharper disable once AsyncVoidMethod
+    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnLoadedAsync(object sender, RoutedEventArgs e) {
         await OnLoadedAsync();
     }
@@ -87,6 +90,7 @@ public partial class CacheckWindow : IAsyncDisposable {
     }
 
     // ReSharper disable once AsyncVoidMethod
+    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnClosingAsync(object sender, CancelEventArgs e) {
         await OnClosingAsync(e);
     }
@@ -97,7 +101,33 @@ public partial class CacheckWindow : IAsyncDisposable {
         if (_TashTimer == null) { return; }
 
         await _TashTimer.StopTimerAndConfirmDeadAsync(false);
+
+        await SaveClassifiedPostingsAsync();
+
         WindowsApplication.Current.Shutdown();
+    }
+
+    private static async Task SaveClassifiedPostingsAsync() {
+        IDataCollector dataCollector = Container.Resolve<IDataCollector>();
+        IPostingCollector postingCollector = Container.Resolve<IPostingCollector>();
+        IClassifiedPostingsCalculator calculator = Container.Resolve<IClassifiedPostingsCalculator>();
+        IList<IPosting> allTimePostings = await postingCollector.CollectPostingsAsync(false);
+        var errorsAndInfos = new ErrorsAndInfos();
+        List<IPostingClassification> postingClassifications = await dataCollector.CollectPostingClassificationsAsync(errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) { return; }
+
+        IList<IClassifiedPosting> classifiedPostings = await calculator.CalculateAndShowClassifiedPostingsAsync(allTimePostings,
+            postingClassifications, DateTime.MinValue, 0, "", "");
+        IClassifiedPostingsExporter exporter = Container.Resolve<IClassifiedPostingsExporter>();
+        IFolderResolver folderResolver = Container.Resolve<IFolderResolver>();
+#if DEBUG
+        IFolder folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\Qualification\Dump", errorsAndInfos);
+#else
+        IFolder folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\Production\Dump", errorsAndInfos);
+#endif
+        folder.CreateIfNecessary();
+        string exportFileFullName = folder.FullName + @"\postings.json";
+        exporter.ExportClassifiedPostings(exportFileFullName, classifiedPostings);
     }
 
     private async Task BuildContainerIfNecessaryAsync() {

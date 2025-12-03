@@ -12,10 +12,15 @@ public class ClassifiedPostingsExporter : IClassifiedPostingsExporter {
         var classifiedPostingsDtos = classifiedPostings.Select(ToDto).ToList();
         classifiedPostingsDtos = [.. classifiedPostingsDtos.OrderBy(p => p.Date)];
         string serializedClassifiedPostingsDtos = JsonSerializer.Serialize(classifiedPostingsDtos);
+        var fileInfo = new FileInfo(exportFileFullName);
+        if (fileInfo.Exists && fileInfo.Length >= serializedClassifiedPostingsDtos.Length) {
+            return;
+        }
+
         File.WriteAllText(exportFileFullName, serializedClassifiedPostingsDtos);
     }
 
-    private ClassifiedPostingDto ToDto(IClassifiedPosting posting) {
+    private static ClassifiedPostingDto ToDto(IClassifiedPosting posting) {
         return new ClassifiedPostingDto(posting);
     }
 }
