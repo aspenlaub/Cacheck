@@ -125,6 +125,9 @@ public partial class CacheckWindow : IAsyncDisposable {
 #else
         IFolder folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\Production\Dump", errorsAndInfos);
 #endif
+        if (CacheckApp.IsIntegrationTest) {
+            folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\IntegrationTest\Dump", errorsAndInfos);
+        }
         folder.CreateIfNecessary();
         string exportFileFullName = folder.FullName + @"\postings.json";
         exporter.ExportClassifiedPostings(exportFileFullName, classifiedPostings);
@@ -197,6 +200,7 @@ public partial class CacheckWindow : IAsyncDisposable {
     }
 
     // ReSharper disable once AsyncVoidMethod
+    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnRefreshMonthlyDetailsButtonClick(object sender, RoutedEventArgs e) {
         await OnRefreshMonthlyDetailsButtonClick();
     }
@@ -213,6 +217,7 @@ public partial class CacheckWindow : IAsyncDisposable {
     }
 
     // ReSharper disable once AsyncVoidMethod
+    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnChangeMonthClickAsync(object sender, RoutedEventArgs e) {
         await OnChangeMonthClickAsync();
     }
