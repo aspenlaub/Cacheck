@@ -17,12 +17,10 @@ public class PostingClassificationsMatcher(IPostingClassificationMatcher posting
 
         matchingClassifications = postingClassifications
             .Where(c => !c.IsUnassigned && postingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
-        if (matchingClassifications.Any()) {
-            return matchingClassifications;
-        }
-
-        return postingClassifications
-            .Where(c => c.IsUnassigned && postingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
+        return matchingClassifications.Count != 0
+            ? matchingClassifications
+            : postingClassifications
+                .Where(c => c.IsUnassigned && postingClassificationMatcher.DoesPostingMatchClassification(posting, c)).ToList();
     }
 
     public IList<IPosting> MatchingPostings(IList<IPosting> postings, IList<IPostingClassification> postingClassifications,
