@@ -27,6 +27,7 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<ClassifiedPosting>().As<IClassifiedPosting>();
         builder.RegisterType<ClassifiedPostingsCalculator>().As<IClassifiedPostingsCalculator>();
         builder.RegisterType<ClassifiedPostingsExporter>().As<IClassifiedPostingsExporter>();
+        builder.RegisterType<ClassifiedPostingsImporter>().As<IClassifiedPostingsImporter>();
         builder.RegisterType<DataCollector>()
                .WithParameter((p, _) => p.Name == "isIntegrationTest", (_, _) => CacheckApp.IsIntegrationTest)
                .As<IDataCollector>();
