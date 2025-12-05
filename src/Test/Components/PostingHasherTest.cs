@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +17,9 @@ public class PostingHasherTest {
         IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
         IPostingCollector postingCollector = container.Resolve<IPostingCollector>();
         IList<IPosting> postings = await postingCollector.CollectPostingsAsync(false);
+        if (postings.AreAllPostingsPreClassified()) {
+            Assert.Inconclusive("Test requires postings in the source folder");
+        }
         if (postings.Count < 24) {
             Assert.Inconclusive("Not enough production postings");
         }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
@@ -46,6 +47,10 @@ public class IndividualPostingClassificationsSourceTest {
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
         IList<IPosting> postings = await _PostingCollector.CollectPostingsAsync(false);
+        if (postings.AreAllPostingsPreClassified()) {
+            Assert.Inconclusive("Test requires postings in the source folder");
+        }
+
         if (postings.Count < 24) {
             Assert.Inconclusive("Not enough production postings");
         }

@@ -15,26 +15,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository secretRepository,
                 IFolderResolver folderResolver, ISourceFileReader sourceFileReader,
                 IFundamentalTransactionsReader fundamentalTransactionsReader,
-                ITransactionIntoPostingsConverter transactionIntoPostingConverter) : IPostingCollector {
+                ITransactionIntoPostingsConverter transactionIntoPostingConverter,
+                IClassifiedPostingsImporter importer) : IPostingCollector {
 
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
-        List<IPosting> allPostings = [];
-
         IFolder sourceFolder = await GetSourceFolderAsync(isIntegrationTest);
-        if (sourceFolder == null) { return allPostings; }
+        if (sourceFolder == null) { return []; }
 
-        var files = Directory.GetFiles(sourceFolder.FullName, "*.txt").ToList();
         var errorsAndInfos = new ErrorsAndInfos();
-        foreach (string file in files) {
-            await dataPresenter.WriteLineAsync($"File: {file}");
-            IList<IPosting> postings = sourceFileReader.ReadPostings(file, errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                await dataPresenter.WriteErrorsAsync(errorsAndInfos);
-                return allPostings;
-            }
+        List<IPosting> allPostings = await LoadPostingsFromSourceFolder(sourceFolder, errorsAndInfos);
+        if (allPostings.Count == 0) {
+            string importFileFullName = await PreClassifiedPostingsSettings.ClassifiedPostingsFileFullNameAsync(folderResolver, errorsAndInfos);
+            if (errorsAndInfos.AnyErrors()) { return []; }
 
-            await dataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
-            allPostings.AddRange(postings);
+            allPostings = [.. await importer.ImportClassifiedPostingsAsync(importFileFullName, errorsAndInfos)];
+            return errorsAndInfos.AnyErrors() ? [] : allPostings;
         }
 
         IList<Transaction> transactions = await fundamentalTransactionsReader.LoadTransactionsIfAvailableAsync(errorsAndInfos);
@@ -49,11 +44,29 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
 
         DateTime minDate = allPostings.Min(p => p.Date);
         DateTime maxDate = allPostings.Max(p => p.Date);
-        transactions = transactions.Where(t
+        transactions = [.. transactions.Where(t
             => t.Date.Year >= minDate.Year && (t.Date.Year < maxDate.Year || t.Date.Year == maxDate.Year && t.Date.Month <= maxDate.Month)
-        ).ToList();
+        )];
 
         allPostings.AddRange(transactions.SelectMany(transactionIntoPostingConverter.Convert));
+
+        return allPostings;
+    }
+
+    private async Task<List<IPosting>> LoadPostingsFromSourceFolder(IFolder sourceFolder, ErrorsAndInfos errorsAndInfos) {
+        List<IPosting> allPostings = [];
+        List<string> files = [.. Directory.GetFiles(sourceFolder.FullName, "*.txt")];
+        foreach (string file in files) {
+            await dataPresenter.WriteLineAsync($"File: {file}");
+            IList<IPosting> postings = sourceFileReader.ReadPostings(file, errorsAndInfos);
+            if (errorsAndInfos.AnyErrors()) {
+                await dataPresenter.WriteErrorsAsync(errorsAndInfos);
+                return allPostings;
+            }
+
+            await dataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
+            allPostings.AddRange(postings);
+        }
 
         return allPostings;
     }

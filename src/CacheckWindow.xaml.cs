@@ -7,11 +7,11 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Input;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.TashClient.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.GUI;
@@ -31,7 +31,9 @@ public partial class CacheckWindow : IAsyncDisposable {
     private static IContainer Container { get; set; }
 
     private CacheckApplication _CacheckApp;
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
     private ITashTimer<CacheckApplicationModel> _TashTimer;
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 
     public CacheckWindow() {
         InitializeComponent();
@@ -87,6 +89,8 @@ public partial class CacheckWindow : IAsyncDisposable {
         if (_TashTimer == null) { return; }
 
         await _TashTimer.StopTimerAndConfirmDeadAsync(false);
+
+        GC.SuppressFinalize(this);
     }
 
     // ReSharper disable once AsyncVoidMethod
@@ -120,16 +124,9 @@ public partial class CacheckWindow : IAsyncDisposable {
             postingClassifications, DateTime.MinValue, 0, "", "");
         IClassifiedPostingsExporter exporter = Container.Resolve<IClassifiedPostingsExporter>();
         IFolderResolver folderResolver = Container.Resolve<IFolderResolver>();
-#if DEBUG
-        IFolder folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\Qualification\Dump", errorsAndInfos);
-#else
-        IFolder folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\Production\Dump", errorsAndInfos);
-#endif
-        if (CacheckApp.IsIntegrationTest) {
-            folder = await folderResolver.ResolveAsync(@"$(MainUserFolder)\Documents\ArborDocs\Cacheck\IntegrationTest\Dump", errorsAndInfos);
-        }
-        folder.CreateIfNecessary();
-        string exportFileFullName = folder.FullName + @"\postings.json";
+        string exportFileFullName = await PreClassifiedPostingsSettings.ClassifiedPostingsFileFullNameAsync(folderResolver, errorsAndInfos);
+        if (errorsAndInfos.AnyErrors()) { return; }
+
         exporter.ExportClassifiedPostings(exportFileFullName, classifiedPostings);
     }
 
@@ -222,7 +219,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         await OnChangeMonthClickAsync();
     }
 
-    private async Task OnChangeMonthClickAsync() {
+    private static async Task OnChangeMonthClickAsync() {
         await Task.Delay(TimeSpan.FromSeconds(1));
     }
 }

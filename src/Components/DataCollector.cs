@@ -123,7 +123,7 @@ public class DataCollector : IDataCollector {
         _CalculationLogger.Flush();
     }
 
-    private async Task<List<IInverseClassificationPair>> CollectInverseClassifications(IErrorsAndInfos errorsAndInfos) {
+    private async Task<List<IInverseClassificationPair>> CollectInverseClassifications(ErrorsAndInfos errorsAndInfos) {
         InverseClassifications inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -172,7 +172,7 @@ public class DataCollector : IDataCollector {
         return (allTimePostings, allPostings);
     }
 
-    private async Task DoEliminationAnalysis(IEnumerable<IInverseClassificationPair> inverseClassifications, IList<IPosting> allPostings,
+    private async Task DoEliminationAnalysis(IEnumerable<IInverseClassificationPair> inverseClassifications, List<IPosting> allPostings,
                                              IList<IPostingClassification> postingClassifications) {
         if (allPostings.AreAllPostingsPreClassified()) {
             throw new NotImplementedException("Pre-classified postings cannot yet be used here");
@@ -201,7 +201,7 @@ public class DataCollector : IDataCollector {
         }
     }
 
-    private IEnumerable<PostingClassification> CreateUnassignedClassifications() {
+    private static IEnumerable<PostingClassification> CreateUnassignedClassifications() {
         return (List<PostingClassification>) [
             new() { IsUnassigned = true, Classification = "UnassignedDebit", Credit = false, Clue = Guid.NewGuid().ToString() },
             new() { IsUnassigned = true, Classification = "UnassignedCredit", Credit = true, Clue = Guid.NewGuid().ToString() }
