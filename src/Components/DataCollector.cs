@@ -161,6 +161,10 @@ public class DataCollector : IDataCollector {
             throw new NotImplementedException("Pre-classified postings cannot yet be used here");
         }
 
+        if (allTimePostings.Count == 0) {
+            return (allTimePostings, []);
+        }
+
         DateTime maxDate = allTimePostings.Max(p => p.Date);
         DateTime minDate = maxDate.Month >= 7 ? new DateTime(maxDate.Year - 4, 1, 1) : new DateTime(maxDate.Year - 5, 7, 1);
         var allPostings = allTimePostings.Where(p => p.Date >= minDate).ToList();
@@ -170,6 +174,13 @@ public class DataCollector : IDataCollector {
 
     private async Task DoEliminationAnalysis(IEnumerable<IInverseClassificationPair> inverseClassifications, IList<IPosting> allPostings,
                                              IList<IPostingClassification> postingClassifications) {
+        if (allPostings.AreAllPostingsPreClassified()) {
+            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
+        }
+        if (allPostings.Count == 0) {
+            return;
+        }
+
         string singleClassification = _DataPresenter.SingleClassification();
         int minAmount = singleClassification == "" ? 70 : 10;
         DateTime aYearAgo = allPostings.Max(p => p.Date).AddYears(-1);

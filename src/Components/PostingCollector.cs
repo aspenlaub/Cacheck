@@ -43,6 +43,10 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
             return allPostings;
         }
 
+        if (allPostings.Count == 0) {
+            return allPostings;
+        }
+
         DateTime minDate = allPostings.Min(p => p.Date);
         DateTime maxDate = allPostings.Max(p => p.Date);
         transactions = transactions.Where(t

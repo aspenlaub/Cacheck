@@ -16,6 +16,9 @@ public class SingleMonthHandler(ICacheckApplicationModel model, IGuiAndAppHandle
         if (postings.AreAllPostingsPreClassified()) {
             throw new NotImplementedException("Pre-classified postings cannot yet be used here");
         }
+        if (postings.Count == 0) {
+            return;
+        }
 
         DateTime posting = postings.Max(p => p.Date);
         await UpdateSelectableValuesAsync(posting.Month, posting.Year);

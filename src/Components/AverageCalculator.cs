@@ -19,6 +19,9 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         if (allPostings.AreAllPostingsPreClassified()) {
             throw new NotImplementedException("Pre-classified postings cannot yet be used here");
         }
+        if (allPostings.Count == 0) {
+            return;
+        }
 
         int thisYear = allPostings.Max(p => p.Date.Year);
         DateTime halfAYearAgo = allPostings.Max(p => p.Date).AddMonths(-6);

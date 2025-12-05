@@ -17,6 +17,9 @@ public class MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggreg
         if (allPostings.AreAllPostingsPreClassified()) {
             throw new NotImplementedException("Pre-classified postings cannot yet be used here");
         }
+        if (allPostings.Count == 0) {
+            return;
+        }
 
         var fairPostings = postingClassificationsMatcher
                            .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)
