@@ -24,7 +24,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
 
         var errorsAndInfos = new ErrorsAndInfos();
         List<IPosting> allPostings = await LoadPostingsFromSourceFolder(sourceFolder, errorsAndInfos);
-        if (allPostings.Count == 0) {
+        if (allPostings.Count == 0 && !isIntegrationTest) {
             string importFileFullName = await PreClassifiedPostingsSettings.ClassifiedPostingsFileFullNameAsync(folderResolver, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) { return []; }
 
