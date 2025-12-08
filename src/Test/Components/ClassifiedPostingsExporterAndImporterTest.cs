@@ -37,7 +37,7 @@ public class ClassifiedPostingsExporterAndImporterTest {
         List<IPostingClassification> postingClassifications = await dataCollector.CollectPostingClassificationsAsync(errorsAndInfos);
         Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
         _ClassifiedPostings = await _Calculator.CalculateAndShowClassifiedPostingsAsync(_AllTimePostings,
-            postingClassifications, DateTime.MinValue, 0, "", "");                                                                            
+            postingClassifications, DateTime.MinValue, 0, "", "");
         _ExportSut = new ClassifiedPostingsExporter();
         _ImportSut = new ClassifiedPostingsImporter();
     }
