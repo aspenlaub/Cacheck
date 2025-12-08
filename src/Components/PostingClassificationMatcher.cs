@@ -7,12 +7,12 @@ public class PostingClassificationMatcher(IPostingHasher postingHasher) : IPosti
 
     public bool DoesPostingMatchClassification(IPosting posting, IPostingClassification classification) {
         return classification.IsUnassigned
-            ? DoesPostingMatchUnassignedClassification(posting,classification)
-                : classification.IsIndividual
-                ? DoesPostingMatchIndividualClassification(posting, classification)
-                : DoesPostingMatchDebitCredit(posting, classification)
-                  && DoesPostingMatchClue(posting, classification)
-                  && DoesPostingMatchYearAndMonth(posting, classification);
+                ? DoesPostingMatchUnassignedClassification(posting, classification)
+                : classification.IsIndividual && !(posting is IPreClassifiedPosting)
+                    ? DoesPostingMatchIndividualClassification(posting, classification)
+                    : DoesPostingMatchDebitCredit(posting, classification)
+                      && DoesPostingMatchClue(posting, classification)
+                      && DoesPostingMatchYearAndMonth(posting, classification);
     }
 
     private static bool DoesPostingMatchDebitCredit(IPosting posting, IPostingClassification classification) {
@@ -20,7 +20,11 @@ public class PostingClassificationMatcher(IPostingHasher postingHasher) : IPosti
     }
 
     private static bool DoesPostingMatchClue(IPosting posting, IPostingClassification classification) {
-        return string.IsNullOrEmpty(classification.Clue) || posting.Remark.Contains(classification.Clue, StringComparison.OrdinalIgnoreCase);
+        return string.IsNullOrEmpty(classification.Clue)
+            || (posting is IPreClassifiedPosting preClassifiedPosting
+                ? preClassifiedPosting.Classification == classification.Classification
+                : posting.Remark.Contains(classification.Clue, StringComparison.OrdinalIgnoreCase)
+                );
     }
 
     private static bool DoesPostingMatchYearAndMonth(IPosting posting, IPostingClassification classification) {

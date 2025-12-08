@@ -17,7 +17,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 string singleClassification, string singleClassificationInverse) {
 
         if (allPostings.AreAllPostingsPreClassified()) {
-            return [.. allPostings.Cast<IPreClassifiedPosting>().Select(FromDto)];
+            return [.. allPostings.Cast<IPreClassifiedPosting>().Select(PreClassifiedPostingExtensions.FromDto)];
         }
 
         IList<IClassifiedPosting> classifiedPostings = CalculateClassifiedPostings(allPostings, postingClassifications, minDate, minAmount,
@@ -25,17 +25,6 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
         await dataPresenter.Handlers.ClassifiedPostingsHandler
             .CollectionChangedAsync([.. classifiedPostings]);
         return classifiedPostings;
-    }
-
-    private static IClassifiedPosting FromDto(IPreClassifiedPosting preClassifiedPosting) {
-        return new ClassifiedPosting {
-            Amount = preClassifiedPosting.Amount,
-            Classification = preClassifiedPosting.Classification,
-            Date = preClassifiedPosting.Date,
-            Guid = preClassifiedPosting.Guid,
-            Ineliminable = preClassifiedPosting.Ineliminable,
-            IsIndividual = preClassifiedPosting.IsIndividual
-        };
     }
 
     public IList<IClassifiedPosting> CalculateClassifiedPostings(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,

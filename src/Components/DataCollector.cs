@@ -64,10 +64,6 @@ public class DataCollector : IDataCollector {
 
         (IList<IPosting> allTimePostings, List<IPosting> allPostings) = await CollectPostingsAsync();
 
-        if (allPostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
-
         List<IPostingClassification> postingClassifications = await CollectPostingClassificationsAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);
@@ -156,11 +152,6 @@ public class DataCollector : IDataCollector {
 
     private async Task<(IList<IPosting> allTimePostings, List<IPosting> allPostings)> CollectPostingsAsync() {
         IList <IPosting> allTimePostings = await _PostingCollector.CollectPostingsAsync(_IsIntegrationTest);
-
-        if (allTimePostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
-
         if (allTimePostings.Count == 0) {
             return (allTimePostings, []);
         }
@@ -174,9 +165,6 @@ public class DataCollector : IDataCollector {
 
     private async Task DoEliminationAnalysis(IEnumerable<IInverseClassificationPair> inverseClassifications, List<IPosting> allPostings,
                                              IList<IPostingClassification> postingClassifications) {
-        if (allPostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
         if (allPostings.Count == 0) {
             return;
         }
@@ -224,10 +212,6 @@ public class DataCollector : IDataCollector {
     }
 
     private async Task DoSingleMonthAnalysis(IList<IPosting> allTimePostings, IList<IPostingClassification> postingClassifications) {
-        if (allTimePostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
-
         (int singleMonthNumber, int currentYear) = _DataPresenter.SingleMonthNumberAndYear();
         await _SingleMonthDeltasCalculator.CalculateAndShowSingleMonthDeltasAsync(allTimePostings,
           postingClassifications, singleMonthNumber, currentYear);

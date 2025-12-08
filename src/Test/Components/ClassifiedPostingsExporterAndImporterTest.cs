@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
@@ -43,6 +44,8 @@ public class ClassifiedPostingsExporterAndImporterTest {
 
     [TestMethod]
     public async Task CanExportClassifiedPostings() {
+        if (_AllTimePostings.AreAllPostingsPreClassified()) { return; }
+
         string exportFileFullName = ExportToFileReturnName(_ClassifiedPostings);
         string json = await File.ReadAllTextAsync(exportFileFullName, TestContext.CancellationToken);
         List<ClassifiedPostingDto> deserializedPostings = JsonSerializer.Deserialize<List<ClassifiedPostingDto>>(json);
@@ -51,6 +54,8 @@ public class ClassifiedPostingsExporterAndImporterTest {
 
     [TestMethod]
     public async Task CanImportClassifiedPostings() {
+        if (_AllTimePostings.AreAllPostingsPreClassified()) { return; }
+
         string exportFileFullName = ExportToFileReturnName(_ClassifiedPostings);
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> importedPostings = await _ImportSut.ImportClassifiedPostingsAsync(exportFileFullName, errorsAndInfos);

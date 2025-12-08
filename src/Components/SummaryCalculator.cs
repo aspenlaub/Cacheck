@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -16,10 +15,6 @@ public class SummaryCalculator(IDataPresenter dataPresenter, IPostingAggregator 
 
     public async Task<bool> CalculateAndShowSummaryAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
                                 IList<IInverseClassificationPair> inverseClassifications) {
-        if (allPostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
-
         var errorsAndInfos = new ErrorsAndInfos();
         var fairPostings = postingClassificationsMatcher
             .MatchingPostings(allPostings, postingClassifications, c => c?.Unfair != true)

@@ -11,8 +11,7 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
     public bool IsIndividual { get; set; }
     public bool Ineliminable { get; set; }
 
-    public string Remark => "";
-    public static string PostingHash => "";
+    public string Remark => throw new NotSupportedException();
 
     public ClassifiedPostingDto() {
     }

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
@@ -116,6 +117,8 @@ public partial class CacheckWindow : IAsyncDisposable {
         IPostingCollector postingCollector = Container.Resolve<IPostingCollector>();
         IClassifiedPostingsCalculator calculator = Container.Resolve<IClassifiedPostingsCalculator>();
         IList<IPosting> allTimePostings = await postingCollector.CollectPostingsAsync(false);
+        if (allTimePostings.AreAllPostingsPreClassified()) { return; }
+
         var errorsAndInfos = new ErrorsAndInfos();
         List<IPostingClassification> postingClassifications = await dataCollector.CollectPostingClassificationsAsync(errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) { return; }

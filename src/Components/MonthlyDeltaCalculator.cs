@@ -14,9 +14,6 @@ public class MonthlyDeltaCalculator(IDataPresenter dataPresenter, IPostingAggreg
                 IPostingClassificationsMatcher postingClassificationsMatcher) : IMonthlyDeltaCalculator {
 
     public async Task CalculateAndShowMonthlyDeltaAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications) {
-        if (allPostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
         if (allPostings.Count == 0) {
             return;
         }

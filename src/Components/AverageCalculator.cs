@@ -16,9 +16,6 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
     public async Task CalculateAndShowAverageAsync(IList<IPosting> allPostings, IList<IPostingClassification> postingClassifications,
             IList<IInverseClassificationPair> inverseClassifications) {
         var errorsAndInfos = new ErrorsAndInfos();
-        if (allPostings.AreAllPostingsPreClassified()) {
-            throw new NotImplementedException("Pre-classified postings cannot yet be used here");
-        }
         if (allPostings.Count == 0) {
             return;
         }
