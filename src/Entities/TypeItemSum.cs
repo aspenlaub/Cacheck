@@ -1,4 +1,5 @@
-﻿using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+﻿using System;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 // ReSharper disable UnusedMember.Global
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -17,4 +18,8 @@ public class TypeItemSum : ITypeItemSum {
     public double SumLastTwoYears { get; set; }
     public double TwoYearSumBeforeLastYear { get; set; }
     public double TwoYearSumTwoYearsBeforeLastYear { get; set; }
+
+    public override string ToString() {
+        return $@"{Item}({Type}): {Math.Round(Sum, 2)}";
+    }
 }
