@@ -119,7 +119,7 @@ public class DataCollector : IDataCollector {
         _CalculationLogger.Flush();
     }
 
-    private async Task<List<IInverseClassificationPair>> CollectInverseClassifications(ErrorsAndInfos errorsAndInfos) {
+    public async Task<List<IInverseClassificationPair>> CollectInverseClassifications(ErrorsAndInfos errorsAndInfos) {
         InverseClassifications inverseClassificationsSecret = await _SecretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
         if (errorsAndInfos.AnyErrors()) {
             await _DataPresenter.WriteErrorsAsync(errorsAndInfos);

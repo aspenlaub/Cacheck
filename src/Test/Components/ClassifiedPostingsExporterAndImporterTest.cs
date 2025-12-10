@@ -12,6 +12,7 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Autofac;
+using Autofac.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
@@ -72,6 +73,38 @@ public class ClassifiedPostingsExporterAndImporterTest {
             Assert.AreEqual(expectedClassifiedPosting.Date, actualClassifiedPosting.Date);
             Assert.AreEqual(expectedClassifiedPosting.Ineliminable, actualClassifiedPosting.Ineliminable);
             Assert.AreEqual(expectedClassifiedPosting.IsIndividual, actualClassifiedPosting.IsIndividual);
+        }
+    }
+
+    [TestMethod]
+    public async Task SummaryIsIdenticalForImportedClassifiedPostings() {
+        if (_AllTimePostings.AreAllPostingsPreClassified()) { return; }
+
+        string exportFileFullName = ExportToFileReturnName(_ClassifiedPostings);
+        var errorsAndInfos = new ErrorsAndInfos();
+        IList<IPosting> importedPostings = await _ImportSut.ImportClassifiedPostingsAsync(exportFileFullName, errorsAndInfos);
+        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.HasCount(_ClassifiedPostings.Count, importedPostings);
+
+        IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
+        var fakeDataPresenter = container.Resolve<IDataPresenter>() as FakeDataPresenter;
+        Assert.IsNotNull(fakeDataPresenter);
+        IDataCollector dataCollector = container.Resolve<IDataCollector>();
+        ISummaryCalculator summaryCalculator = container.Resolve<ISummaryCalculator>();
+        List<IPostingClassification> postingClassifications = await dataCollector.CollectPostingClassificationsAsync(errorsAndInfos);
+        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        List<IInverseClassificationPair> inverseClassifications = await dataCollector.CollectInverseClassifications(errorsAndInfos);
+
+        Assert.IsTrue(await summaryCalculator.CalculateAndShowSummaryAsync(_AllTimePostings, postingClassifications, inverseClassifications));
+        List<ITypeItemSum> expectedOverallSums = fakeDataPresenter.OverallSums;
+        Assert.IsTrue(await summaryCalculator.CalculateAndShowSummaryAsync(importedPostings, postingClassifications, inverseClassifications));
+        List<ITypeItemSum> actualOverallSums = fakeDataPresenter.OverallSums;
+        Assert.HasCount(expectedOverallSums.Count, actualOverallSums);
+        for (int i = 0; i < expectedOverallSums.Count; i++) {
+            ITypeItemSum expectedOverallSum = expectedOverallSums[i];
+            ITypeItemSum actualOverallSum = actualOverallSums[i];
+            Assert.AreEqual(expectedOverallSum.Item, actualOverallSum.Item);
+            Assert.AreEqual(expectedOverallSum.Sum, actualOverallSum.Sum);
         }
     }
 
