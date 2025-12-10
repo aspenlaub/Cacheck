@@ -53,6 +53,14 @@ public partial class CacheckWindow : IAsyncDisposable {
 
     private async Task OnLoadedAsync() {
         await BuildContainerIfNecessaryAsync();
+
+        IPostingCollector postingCollector = Container.Resolve<IPostingCollector>();
+        IList<IPosting> allTimePostings = await postingCollector.CollectPostingsAsync(false);
+        if (allTimePostings.AreAllPostingsPreClassified()) {
+            ClassificationsTab.Visibility = Visibility.Hidden;
+            MonthsTab.Visibility = Visibility.Hidden;
+        }
+
         _CacheckApp = Container.Resolve<CacheckApplication>();
         await _CacheckApp.OnLoadedAsync();
 

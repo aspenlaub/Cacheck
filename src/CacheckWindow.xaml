@@ -171,7 +171,7 @@
                     </Grid>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Classifications" Padding="60,5,60,5">
+            <TabItem Name="ClassificationsTab" Header="Classifications" Padding="60,5,60,5">
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Label Name="SingleClassificationLabel" Margin="5">Single Classification</Label>
@@ -194,7 +194,7 @@
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Months" Padding="60,5,60,5">
+            <TabItem Name="MonthsTab" Header="Months" Padding="60,5,60,5">
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Label Name="SingleMonthLabel" Margin="5">Single Month</Label>
