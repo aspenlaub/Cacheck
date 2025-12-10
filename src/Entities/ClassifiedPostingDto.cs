@@ -10,6 +10,7 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
     public string Classification { get; set; }
     public bool IsIndividual { get; set; }
     public bool Ineliminable { get; set; }
+    public bool Unfair { get; set; }
 
     public string Remark => "";
 
@@ -23,5 +24,6 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
         Date = posting.Date;
         Ineliminable = posting.Ineliminable;
         IsIndividual = posting.IsIndividual;
+        Unfair = posting.Unfair;
     }
 }

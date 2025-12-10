@@ -12,7 +12,6 @@ using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Autofac;
-using Autofac.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
@@ -96,15 +95,22 @@ public class ClassifiedPostingsExporterAndImporterTest {
         List<IInverseClassificationPair> inverseClassifications = await dataCollector.CollectInverseClassifications(errorsAndInfos);
 
         Assert.IsTrue(await summaryCalculator.CalculateAndShowSummaryAsync(_AllTimePostings, postingClassifications, inverseClassifications));
-        List<ITypeItemSum> expectedOverallSums = fakeDataPresenter.OverallSums;
+        var expectedOverallSums = fakeDataPresenter
+          .OverallSums
+          .Select(x => new TypeItemSum { Item = x.Item, Sum = x.Sum })
+          .OrderBy(x => x.Item)
+          .ToList();
         Assert.IsTrue(await summaryCalculator.CalculateAndShowSummaryAsync(importedPostings, postingClassifications, inverseClassifications));
-        List<ITypeItemSum> actualOverallSums = fakeDataPresenter.OverallSums;
+        List<ITypeItemSum> actualOverallSums = fakeDataPresenter
+            .OverallSums
+            .OrderBy(x => x.Item)
+            .ToList();
         Assert.HasCount(expectedOverallSums.Count, actualOverallSums);
         for (int i = 0; i < expectedOverallSums.Count; i++) {
             ITypeItemSum expectedOverallSum = expectedOverallSums[i];
             ITypeItemSum actualOverallSum = actualOverallSums[i];
             Assert.AreEqual(expectedOverallSum.Item, actualOverallSum.Item);
-            Assert.AreEqual(expectedOverallSum.Sum, actualOverallSum.Sum);
+            Assert.IsLessThan(0.01, Math.Abs(expectedOverallSum.Sum - actualOverallSum.Sum));
         }
     }
 

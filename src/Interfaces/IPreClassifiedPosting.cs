@@ -4,4 +4,5 @@ public interface IPreClassifiedPosting : IPosting {
     string Classification { get; }
     bool IsIndividual { get; }
     bool Ineliminable { get; }
+    bool Unfair { get; }
 }

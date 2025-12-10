@@ -48,7 +48,8 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
                 Remark = posting.Remark,
                 IsIndividual = classification.IsIndividual,
                 PostingHash = classification.PostingHash,
-                Ineliminable = classification.Ineliminable
+                Ineliminable = classification.Ineliminable,
+                Unfair = classification.Unfair
             };
             classifiedPostings.Add(classifiedPosting);
         }

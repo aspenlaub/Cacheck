@@ -12,4 +12,5 @@ public interface IClassifiedPosting : ICollectionViewSourceEntity {
     bool IsIndividual { get; set; }
     string PostingHash { get; set; }
     bool Ineliminable { get; set; }
+    bool Unfair { get; set; }
 }

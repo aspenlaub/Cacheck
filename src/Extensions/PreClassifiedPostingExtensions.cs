@@ -12,7 +12,8 @@ public static class PreClassifiedPostingExtensions {
                 Date = preClassifiedPosting.Date,
                 Guid = preClassifiedPosting.Guid,
                 Ineliminable = preClassifiedPosting.Ineliminable,
-                IsIndividual = preClassifiedPosting.IsIndividual
+                IsIndividual = preClassifiedPosting.IsIndividual,
+                Unfair = preClassifiedPosting.Unfair
             };
         }
     }

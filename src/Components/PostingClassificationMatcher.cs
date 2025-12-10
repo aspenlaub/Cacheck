@@ -22,7 +22,7 @@ public class PostingClassificationMatcher(IPostingHasher postingHasher) : IPosti
     private static bool DoesPostingMatchClue(IPosting posting, IPostingClassification classification) {
         return string.IsNullOrEmpty(classification.Clue)
             || (posting is IPreClassifiedPosting preClassifiedPosting
-                ? preClassifiedPosting.Classification == classification.Classification
+                ? preClassifiedPosting.Classification == classification.Classification && preClassifiedPosting.Unfair == classification.Unfair
                 : posting.Remark.Contains(classification.Clue, StringComparison.OrdinalIgnoreCase)
                 );
     }

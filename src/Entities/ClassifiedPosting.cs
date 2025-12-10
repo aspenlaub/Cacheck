@@ -13,5 +13,6 @@ public class ClassifiedPosting : IClassifiedPosting {
     public bool IsIndividual { get; set; }
     public string PostingHash { get; set; }
     public bool Ineliminable { get; set; }
+    public bool Unfair { get; set; }
     public string FormattedDate => $"{Date.Year}-{Date.Month:D2}-{Date.Day:D2}";
 }
