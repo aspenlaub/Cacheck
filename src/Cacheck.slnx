@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Cacheck.csproj" />
+  <Project Path="Integration/Test/Cacheck.Integration.Test.csproj" />
+  <Project Path="Test/Cacheck.Test.csproj" />
+</Solution>
