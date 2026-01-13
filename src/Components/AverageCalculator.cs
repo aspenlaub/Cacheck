@@ -20,12 +20,12 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
             return;
         }
 
-        int thisYear = allPostings.Max(p => p.Date.Year);
-        DateTime halfAYearAgo = allPostings.Max(p => p.Date).AddMonths(-6);
+        DateTime maxPostingDate = allPostings.Max(p => p.Date);
+        int thisYear = maxPostingDate.Year;
+        DateTime halfAYearAgo = maxPostingDate.AddMonths(maxPostingDate.Day > 15 ? -5 : -6);
         halfAYearAgo = new DateTime(halfAYearAgo.Year, halfAYearAgo.Month, 1);
-        DateTime aYearAgo = allPostings.Max(p => p.Date).AddMonths(-12);
-        aYearAgo = new DateTime(aYearAgo.Year, aYearAgo.Month, 1);
-        var twoYearsAgo = new DateTime(aYearAgo.Year - 1, aYearAgo.Month, 1);
+        DateTime aYearAgo = halfAYearAgo.AddMonths(-6);
+        DateTime twoYearsAgo = aYearAgo.AddYears(-1);
 
         var yearPostingsLastYear = allPostings.Where(p => p.Date.Year == thisYear - 1).ToList();
         IDictionary<IFormattedClassification, IAggregatedPosting> detailedYearAggregationLastYear
