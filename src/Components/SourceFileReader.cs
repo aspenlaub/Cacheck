@@ -143,6 +143,8 @@ public class SourceFileReader : ISourceFileReader {
         DateTime date;
         if (month == fromDate.Value.Month || month == fromDate.Value.Month + 1) {
             date = new DateTime(fromDate.Value.Year, month, day);
+        } else if (month == 1 || fromDate.Value.Month == 12) {
+            date = new DateTime(fromDate.Value.Year + 1, month, day);
         } else if (month == fromDate.Value.Month - 1) {
             throw new NotImplementedException();
         } else {
