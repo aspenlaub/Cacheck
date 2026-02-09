@@ -20,7 +20,7 @@ public class FundamentalTransactionsReaderTest {
 
     [TestMethod]
     public async Task CanLoadTransactionsIfAvailable() {
-        IContainer container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
+        IContainer container = new ContainerBuilder().UsePegh("Cacheck").Build();
         IFolderResolver resolver = container.Resolve<IFolderResolver>();
 
         IFundamentalTransactionsReader sut = new FundamentalTransactionsReader(resolver);

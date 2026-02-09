@@ -20,7 +20,7 @@ public class PostingAggregatorTest {
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext _) {
-        IContainer container = new ContainerBuilder().UsePegh("Cacheck", new DummyCsArgumentPrompter()).Build();
+        IContainer container = new ContainerBuilder().UsePegh("Cacheck").Build();
         var classificationsMatcher = new PostingClassificationsMatcher(
             new PostingClassificationMatcher(new PostingHasher())
         );

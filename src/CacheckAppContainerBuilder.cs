@@ -4,7 +4,6 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet;
 using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
@@ -13,7 +12,7 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck;
 
 public static class CacheckAppContainerBuilder {
     public static async Task<ContainerBuilder> UseCacheckVishizhukelNetAndPeghAsync(this ContainerBuilder builder, CacheckWindow cacheckWindow) {
-        await builder.UseVishizhukelNetDvinAndPeghAsync("Cacheck", new DummyCsArgumentPrompter());
+        await builder.UseVishizhukelNetDvinAndPeghAsync("Cacheck");
 
         builder.RegisterType<AverageCalculator>().As<IAverageCalculator>();
         builder.RegisterType<AggregatedPostingsNetter>().As<IAggregatedPostingsNetter>();
