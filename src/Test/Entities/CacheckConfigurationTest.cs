@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,11 +18,11 @@ public class CacheckConfigurationTest {
         ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
         CacheckConfiguration secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsFalse(string.IsNullOrEmpty(secret.SourceFolder), "Source folder is empty");
         IFolderResolver resolver = container.Resolve<IFolderResolver>();
         IFolder sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsTrue(sourceFolder.Exists(), $"Source folder \"{secret.SourceFolder}\" does not exist");
     }
 
@@ -31,7 +32,7 @@ public class CacheckConfigurationTest {
         ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
         PostingClassifications secret = await secretRepository.GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsGreaterThanOrEqualTo(5, secret.Count, "At least five classifications expected");
         Assert.IsTrue(secret.Any(s => s.Credit));
         Assert.IsTrue(secret.Any(s => !s.Credit));
@@ -43,7 +44,7 @@ public class CacheckConfigurationTest {
         ISecretRepository secretRepository = container.Resolve<ISecretRepository>();
         var errorsAndInfos = new ErrorsAndInfos();
         InverseClassifications secret = await secretRepository.GetAsync(new InverseClassificationsSecret(), errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsGreaterThanOrEqualTo(5, secret.Count, "At least five inverse classifications expected");
         Assert.IsTrue(secret.Any(s => s.Classification == "Savings" && s.InverseClassification == "SacrificedSavings"));
     }

@@ -4,9 +4,9 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Data;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -45,7 +45,7 @@ public class PostingAggregatorTest {
             [ _TestData.PostingC1 ],
             [ _TestData.PostingClassificationC1 ],
             errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(1, result);
         IFormattedClassification key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == _TestData.PostingClassificationC1.Classification);
         Assert.IsNotNull(key);
@@ -59,7 +59,7 @@ public class PostingAggregatorTest {
             [ _TestData.PostingC1 ],
             [ _TestData.PostingClassificationC1, _TestData.PostingClassificationD2 ],
             errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(1, result);
         IFormattedClassification key = result.Keys.FirstOrDefault(x => x.Sign == "+" && x.Classification == _TestData.PostingClassificationC1.Classification);
         Assert.IsNotNull(key);
@@ -76,7 +76,7 @@ public class PostingAggregatorTest {
             ],
             [ _TestData.PostingClassificationD, _TestData.PostingClassificationC ],
             errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(2, result);
         IFormattedClassification key = result.Keys.FirstOrDefault(x => x.Sign == "-" && x.Classification == _TestData.PostingClassificationD.Classification);
         Assert.IsNotNull(key);

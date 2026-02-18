@@ -7,6 +7,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities.Fundamental;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 

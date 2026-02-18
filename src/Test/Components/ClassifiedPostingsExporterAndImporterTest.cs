@@ -11,6 +11,8 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -35,7 +37,7 @@ public class ClassifiedPostingsExporterAndImporterTest {
         _AllTimePostings = await postingCollector.CollectPostingsAsync(false);
         var errorsAndInfos = new ErrorsAndInfos();
         List<IPostingClassification> postingClassifications = await dataCollector.CollectPostingClassificationsAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         _ClassifiedPostings = await _Calculator.CalculateAndShowClassifiedPostingsAsync(_AllTimePostings,
             postingClassifications, DateTime.MinValue, 0, "", "");
         _ExportSut = new ClassifiedPostingsExporter();
@@ -59,7 +61,7 @@ public class ClassifiedPostingsExporterAndImporterTest {
         string exportFileFullName = ExportToFileReturnName(_ClassifiedPostings);
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> importedPostings = await _ImportSut.ImportClassifiedPostingsAsync(exportFileFullName, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(_ClassifiedPostings.Count, importedPostings);
         IList<IClassifiedPosting> classifiedPostings
             = await _Calculator.CalculateAndShowClassifiedPostingsAsync(importedPostings, [], DateTime.MinValue, 0, "", "");
@@ -82,7 +84,7 @@ public class ClassifiedPostingsExporterAndImporterTest {
         string exportFileFullName = ExportToFileReturnName(_ClassifiedPostings);
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> importedPostings = await _ImportSut.ImportClassifiedPostingsAsync(exportFileFullName, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(_ClassifiedPostings.Count, importedPostings);
 
         IContainer container = (await new ContainerBuilder().UseCacheckVishizhukelNetAndPeghWithFakesAsync(null)).Build();
@@ -91,7 +93,7 @@ public class ClassifiedPostingsExporterAndImporterTest {
         IDataCollector dataCollector = container.Resolve<IDataCollector>();
         ISummaryCalculator summaryCalculator = container.Resolve<ISummaryCalculator>();
         List<IPostingClassification> postingClassifications = await dataCollector.CollectPostingClassificationsAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         List<IInverseClassificationPair> inverseClassifications = await dataCollector.CollectInverseClassifications(errorsAndInfos);
 
         Assert.IsTrue(await summaryCalculator.CalculateAndShowSummaryAsync(_AllTimePostings, postingClassifications, inverseClassifications));

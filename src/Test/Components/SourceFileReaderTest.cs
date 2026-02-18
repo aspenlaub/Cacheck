@@ -6,6 +6,8 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,7 +30,7 @@ public class SourceFileReaderTest {
         ISourceFileReader sut = container.Resolve<ISourceFileReader>();
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> postings = sut.ReadPostings(_sampleSourceFileName, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(2, postings);
         Assert.AreEqual(DateOne, postings[0].Date);
         Assert.AreEqual(AmountOne, postings[0].Amount);
@@ -46,7 +48,7 @@ public class SourceFileReaderTest {
         ISourceFileReader sut = container.Resolve<ISourceFileReader>();
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IPosting> postings = sut.ReadPostings(_sampleSourceFileName, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.HasCount(2, postings);
         Assert.AreEqual(DateOne, postings[0].Date);
         Assert.AreEqual(AmountOne, postings[0].Amount);

@@ -6,9 +6,10 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities.Fundamental;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Components;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,12 +27,12 @@ public class FundamentalTransactionsReaderTest {
         IFundamentalTransactionsReader sut = new FundamentalTransactionsReader(resolver);
         var errorsAndInfos = new ErrorsAndInfos();
         IFolder folder = await sut.FundamentalDumpFolderAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         if (!folder.Exists()) { return; }
         if (!File.Exists(folder.FullName + @"\" + _transactionsJsonFileName)) { return; }
 
         IList<Transaction> transactions = await sut.LoadTransactionsIfAvailableAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.AreNotEqual(0, transactions.Count);
 
         Assert.IsTrue(transactions.Any(t => t.Date.Year == 2022));

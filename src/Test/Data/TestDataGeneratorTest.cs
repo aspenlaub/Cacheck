@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,7 +32,7 @@ public class TestDataGeneratorTest {
         var actualPostings = new List<IPosting>();
         var errorsAndInfos = new ErrorsAndInfos();
         foreach (IList<IPosting> postings in files.Select(file => reader.ReadPostings(file, errorsAndInfos))) {
-            Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+            Assert.That.ThereWereNoErrors(errorsAndInfos);
             actualPostings.AddRange(postings);
         }
 

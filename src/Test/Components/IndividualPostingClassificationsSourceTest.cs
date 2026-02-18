@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Entities;
-using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Seoa.Extensions;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Autofac;
-using Microsoft.Testing.Platform.OutputDevice;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Test.Components;
@@ -30,7 +29,7 @@ public class IndividualPostingClassificationsSourceTest {
     public async Task CanGetIndividualPostingClassifications() {
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IIndividualPostingClassification> individualPostingClassifications = [.. await _Sut.GetAsync(errorsAndInfos)];
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         individualPostingClassifications = [.. individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists))];
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
         Assert.IsTrue(individualPostingClassifications.Any(i
@@ -44,7 +43,7 @@ public class IndividualPostingClassificationsSourceTest {
         var errorsAndInfos = new ErrorsAndInfos();
         IList<IIndividualPostingClassification> individualPostingClassifications = [.. await _Sut.GetAsync(errorsAndInfos)];
         individualPostingClassifications = [.. individualPostingClassifications.Where(i => i.PostingHash != nameof(OneIndividualPostingClassificationExists))];
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsTrue(individualPostingClassifications.Any(), "Individual posting classifications should exist");
         IList<IPosting> postings = await _PostingCollector.CollectPostingsAsync(false);
         if (postings.AreAllPostingsPreClassified()) {
@@ -90,13 +89,13 @@ public class IndividualPostingClassificationsSourceTest {
         };
         var errorsAndInfos = new ErrorsAndInfos();
         IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         if (individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash)) { return; }
 
         await _Sut.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsTrue(individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash),
             "Individual posting classification could not be added");
     }
@@ -111,25 +110,25 @@ public class IndividualPostingClassificationsSourceTest {
         };
         var errorsAndInfos = new ErrorsAndInfos();
         IEnumerable<IIndividualPostingClassification> individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         if (individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash)) {
             await _Sut.RemoveAsync(individualPostingClassification);
             individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-            Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+            Assert.That.ThereWereNoErrors(errorsAndInfos);
             Assert.IsFalse(individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash),
                 "Individual posting classification could not be removed");
         }
 
         await _Sut.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsTrue(individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash),
             "Individual posting classification could not be added");
 
         await _Sut.RemoveAsync(individualPostingClassification);
         individualPostingClassifications = await _Sut.GetAsync(errorsAndInfos);
-        Assert.IsFalse(errorsAndInfos.AnyErrors(), errorsAndInfos.ErrorsToString());
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsFalse(individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash),
             "Individual posting classification could not be removed");
     }
