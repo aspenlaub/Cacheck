@@ -12,6 +12,7 @@
     <Deterministic>false</Deterministic>
     <AssemblyTitle>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</AssemblyTitle>
     <AssemblyProduct>Aspenlaub.Net.GitHub.CSharp.Cacheck.Integration.Test</AssemblyProduct>
+    <MSBuildEnableWorkloadResolver>false</MSBuildEnableWorkloadResolver>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
