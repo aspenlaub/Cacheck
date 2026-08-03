@@ -60,7 +60,10 @@ public partial class CacheckWindow : IAsyncDisposable {
         IPostingCollector postingCollector = Container.Resolve<IPostingCollector>();
         IList<IPosting> allTimePostings = await postingCollector.CollectPostingsAsync(false);
         if (allTimePostings.AreAllPostingsPreClassified()) {
-            ClassificationsTab.Visibility = Visibility.Hidden;
+            #if DEBUG
+            #else
+                ClassificationsTab.Visibility = Visibility.Hidden;
+            #endif
             MonthsTab.Visibility = Visibility.Hidden;
         }
 
@@ -132,7 +135,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         if (errorsAndInfos.AnyErrors()) { return; }
 
         IList<IClassifiedPosting> classifiedPostings = await calculator.CalculateAndShowClassifiedPostingsAsync(allTimePostings,
-                                                                                                                postingClassifications, DateTime.MinValue, 0, "", "");
+            postingClassifications, DateTime.MinValue, 0, "", "");
         IClassifiedPostingsExporter exporter = Container.Resolve<IClassifiedPostingsExporter>();
         IFolderResolver folderResolver = Container.Resolve<IFolderResolver>();
         string exportFileFullName = await PreClassifiedPostingsSettings.ClassifiedPostingsFileFullNameAsync(folderResolver, errorsAndInfos);

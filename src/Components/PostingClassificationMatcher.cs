@@ -22,9 +22,13 @@ public class PostingClassificationMatcher(IPostingHasher postingHasher) : IPosti
     private static bool DoesPostingMatchClue(IPosting posting, IPostingClassification classification) {
         return string.IsNullOrEmpty(classification.Clue)
             || (posting is IPreClassifiedPosting preClassifiedPosting
-                ? preClassifiedPosting.Classification == classification.Classification && preClassifiedPosting.Unfair == classification.Unfair
+                ? DoesPreClassifiedPostingMatchClue(preClassifiedPosting, classification)
                 : posting.Remark.Contains(classification.Clue, StringComparison.OrdinalIgnoreCase)
                 );
+    }
+
+    private static bool DoesPreClassifiedPostingMatchClue(IPreClassifiedPosting posting, IPostingClassification classification) {
+        return posting.Classification == classification.Classification && posting.Unfair == classification.Unfair;
     }
 
     private static bool DoesPostingMatchYearAndMonth(IPosting posting, IPostingClassification classification) {
