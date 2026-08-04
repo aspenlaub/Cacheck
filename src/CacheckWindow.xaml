@@ -178,9 +178,13 @@
                         <ComboBox Name="SingleClassification" Margin="5" MinWidth="240"/>
                     </StackPanel>
                     <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
-                              Name="ClassifiedPostings" ItemsSource="{Binding Source={StaticResource ClassifiedPostings}}" AutoGenerateColumns="False">
+                              Name="ClassifiedPostings" ItemsSource="{Binding Source={StaticResource ClassifiedPostings}}"
+                              AutoGenerateColumns="False" ContextMenuOpening="ClassifiedPostings_ContextMenuOpening">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
+                                <MenuItem x:Name="FavoriteClassification" Header="(Favorite Classification #1)" />
+                                <MenuItem x:Name="SecondFavoriteClassification" Header="(Favorite Classification #2)" />
+                                <MenuItem x:Name="ThirdFavoriteClassification" Header="(Favorite Classification #3)" />
                                 <MenuItem Header="Change classification" Click="OnChangeClassificationClickAsync"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>

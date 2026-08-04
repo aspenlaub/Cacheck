@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Aspenlaub.Net.GitHub.CSharp.Amazonian;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
@@ -236,5 +237,8 @@ public partial class CacheckWindow : IAsyncDisposable {
 
     private static async Task OnChangeMonthClickAsync() {
         await Task.Delay(TimeSpan.FromSeconds(1));
+    }
+
+    private void ClassifiedPostings_ContextMenuOpening(object sender, ContextMenuEventArgs e) {
     }
 }
