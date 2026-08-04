@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Aspenlaub.Net.GitHub.CSharp.Amazonian.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Amazonian.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities.Fundamental;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
@@ -16,7 +18,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
                 IFolderResolver folderResolver, ISourceFileReader sourceFileReader,
                 IFundamentalTransactionsReader fundamentalTransactionsReader,
                 ITransactionIntoPostingsConverter transactionIntoPostingConverter,
-                IClassifiedPostingsImporter importer) : IPostingCollector {
+                IClassifiedPostingsImporter importer, IAmazonianRepository amazonianRepository) : IPostingCollector {
 
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
         IFolder sourceFolder = await GetSourceFolderAsync(isIntegrationTest);
@@ -24,12 +26,13 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
 
         var errorsAndInfos = new ErrorsAndInfos();
         List<IPosting> allPostings = await LoadPostingsFromSourceFolder(sourceFolder, errorsAndInfos);
+        allPostings = await AdjustAmazonianPostingsAsync(allPostings);
         if (allPostings.Count == 0 && !isIntegrationTest) {
             string importFileFullName = await PreClassifiedPostingsSettings.ClassifiedPostingsFileFullNameAsync(folderResolver, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) { return []; }
 
             allPostings = [.. await importer.ImportClassifiedPostingsAsync(importFileFullName, errorsAndInfos)];
-            return errorsAndInfos.AnyErrors() ? [] : allPostings;
+            return errorsAndInfos.AnyErrors() ? [] : await AdjustAmazonianPostingsAsync(allPostings);
         }
 
         IList<Transaction> transactions = await fundamentalTransactionsReader.LoadTransactionsIfAvailableAsync(errorsAndInfos);
@@ -50,6 +53,18 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
 
         allPostings.AddRange(transactions.SelectMany(transactionIntoPostingConverter.Convert));
 
+        return allPostings;
+    }
+
+    private async Task<List<IPosting>> AdjustAmazonianPostingsAsync(List<IPosting> allPostings) {
+        foreach (IPosting posting in allPostings.Where(p => p.Remark.Contains("amazon", StringComparison.InvariantCultureIgnoreCase))) {
+            AmazonianOrder amazonianOrder = await amazonianRepository.FindOrderForPostingAsync(posting.Remark);
+            if (amazonianOrder == null) {
+                continue;
+            }
+
+            posting.Remark = string.Join("\r\n", amazonianOrder.Products) + "\r\n" + posting.Remark;
+        }
         return allPostings;
     }
 

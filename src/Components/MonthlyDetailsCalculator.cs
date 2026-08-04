@@ -99,7 +99,7 @@ public class MonthlyDetailsCalculator(IDataPresenter dataPresenter, IPostingAggr
         }
 
         await dataPresenter.Handlers.MonthlyDetailsHandler.CollectionChangedAsync(
-            monthlyDetailsList.OfType<ICollectionViewSourceEntity>().ToList()
+            [.. monthlyDetailsList]
         );
     }
 }

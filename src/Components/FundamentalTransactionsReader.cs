@@ -29,7 +29,7 @@ public class FundamentalTransactionsReader(IFolderResolver folderResolver) : IFu
 
         await using var stream = new FileStream(fileName, FileMode.Open);
         List<Transaction> transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(stream) ?? [];
-        transactions = transactions.Where(t => t.TransactionType != TransactionType.Buy && t.TransactionType != TransactionType.Sell).ToList();
+        transactions = [.. transactions.Where(t => t.TransactionType != TransactionType.Buy && t.TransactionType != TransactionType.Sell)];
         return transactions;
     }
 }

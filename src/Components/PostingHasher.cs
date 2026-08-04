@@ -18,7 +18,7 @@ public class PostingHasher : IPostingHasher {
                    + (posting.Amount >= 0 ? "0" : "9")
                    + Math.Ceiling(Math.Abs(posting.Amount));
 
-        _cache[posting] = posting.Remark.ToCharArray()
+        _cache[posting] = posting.OriginalRemark.ToCharArray()
              .Select(ConvertNonDigits)
              .Where(char.IsDigit)
              .Aggregate(s, (current, c) => current + c);
@@ -26,16 +26,12 @@ public class PostingHasher : IPostingHasher {
         return _cache[posting];
     }
 
-    private char ConvertNonDigits(char c) {
-        switch (c) {
-            case ' ':
-                return '0';
-            case '.':
-                return '1';
-            case '/':
-                return '2';
-            default:
-                return c;
-        }
+    private static char ConvertNonDigits(char c) {
+        return c switch {
+            ' ' => '0',
+            '.' => '1',
+            '/' => '2',
+            _ => c
+        };
     }
 }

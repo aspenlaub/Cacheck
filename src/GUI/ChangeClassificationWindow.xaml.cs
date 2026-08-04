@@ -8,23 +8,21 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.GUI;
 /// Interaction logic for ChangeClassificationWindow.xaml
 /// </summary>
 public partial class ChangeClassificationWindow {
-    private IPosting _Posting;
     public IPosting Posting {
-        get { return _Posting; }
+        get;
         set {
-            _Posting = value;
-            Date.Text = _Posting.Date.ToShortDateString();
-            Amount.Text = _Posting.Amount.ToString("F2");
-            Remark.Text = _Posting.Remark;
+            field = value;
+            Date.Text = field.Date.ToShortDateString();
+            Amount.Text = field.Amount.ToString("F2");
+            Remark.Text = field.Remark;
         }
     }
 
-    private string _PostingHash;
     public string PostingHash {
-        get { return _PostingHash; }
+        get;
         set {
-            _PostingHash = value;
-            Hash.Text = _PostingHash;
+            field = value;
+            Hash.Text = field;
         }
     }
 

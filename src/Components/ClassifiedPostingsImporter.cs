@@ -24,6 +24,7 @@ public class ClassifiedPostingsImporter : IClassifiedPostingsImporter {
             errorsAndInfos.Errors.Add(string.Format(Properties.Resources.FileCouldNotBeDeserialized, importFileFullName, e.Message));
             return [];
         }
+
         return classifiedPostingDtos;
     }
 }

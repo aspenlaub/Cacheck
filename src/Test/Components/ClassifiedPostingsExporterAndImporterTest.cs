@@ -103,10 +103,11 @@ public class ClassifiedPostingsExporterAndImporterTest {
           .OrderBy(x => x.Item)
           .ToList();
         Assert.IsTrue(await summaryCalculator.CalculateAndShowSummaryAsync(importedPostings, postingClassifications, inverseClassifications));
-        List<ITypeItemSum> actualOverallSums = fakeDataPresenter
-            .OverallSums
-            .OrderBy(x => x.Item)
-            .ToList();
+        List<ITypeItemSum> actualOverallSums = [
+            .. fakeDataPresenter
+               .OverallSums
+               .OrderBy(x => x.Item)
+        ];
         Assert.HasCount(expectedOverallSums.Count, actualOverallSums);
         for (int i = 0; i < expectedOverallSums.Count; i++) {
             ITypeItemSum expectedOverallSum = expectedOverallSums[i];

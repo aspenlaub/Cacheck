@@ -13,7 +13,8 @@ public static class PreClassifiedPostingExtensions {
                 Guid = preClassifiedPosting.Guid,
                 Ineliminable = preClassifiedPosting.Ineliminable,
                 IsIndividual = preClassifiedPosting.IsIndividual,
-                Unfair = preClassifiedPosting.Unfair
+                Unfair = preClassifiedPosting.Unfair,
+                Remark = preClassifiedPosting.Remark
             };
         }
     }

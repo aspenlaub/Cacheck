@@ -12,7 +12,17 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
     public bool Ineliminable { get; set; }
     public bool Unfair { get; set; }
 
-    public string Remark => "";
+    public string Remark {
+        get;
+        set {
+            if (string.IsNullOrEmpty(OriginalRemark)) {
+                OriginalRemark = value;
+            }
+
+            field = value;
+        }
+    } = "";
+    public string OriginalRemark { get; private set;  } = "";
 
     public ClassifiedPostingDto() {
     }
