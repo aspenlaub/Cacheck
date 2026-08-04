@@ -120,6 +120,9 @@
   <data name="CacheckWindowTitle" xml:space="preserve">
     <value>Cacheck</value>
   </data>
+  <data name="ChangeClassificationTo" xml:space="preserve">
+    <value>Change classification to '{0}'</value>
+  </data>
   <data name="FileCouldNotBeDeserialized" xml:space="preserve">
     <value>File "{0}" could not be deserialized ("{1}")</value>
   </data>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Skladasu.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -15,6 +16,22 @@ public class IndividualPostingClassificationsSource(ISecretRepositoryFactory sec
 
     public async Task<IEnumerable<IIndividualPostingClassification>> GetAsync(IErrorsAndInfos errorsAndInfos) {
         return await _SecretRepository.GetAsync(new IndividualPostingClassificationsSecret(), errorsAndInfos);
+    }
+
+    public async Task<IList<string>> GetFavoritesAsync() {
+        var errorsAndInfos = new ErrorsAndInfos();
+        var postingClassifications = (await GetAsync(errorsAndInfos)).ToList();
+        return errorsAndInfos.AnyErrors()
+            ? new List<string>()
+            : postingClassifications
+                 .GroupBy(pc => pc.Classification)
+                 .Select(group => new {
+                     Classification = group.Key,
+                     Count = group.Count()
+                 })
+                 .OrderByDescending(x => x.Count)
+                 .Select(x => x.Classification)
+                 .ToList();
     }
 
     public async Task RemoveAsync(IndividualPostingClassification individualPostingClassification) {

@@ -132,4 +132,10 @@ public class IndividualPostingClassificationsSourceTest {
         Assert.IsFalse(individualPostingClassifications.Any(i => i.PostingHash == individualPostingClassification.PostingHash),
             "Individual posting classification could not be removed");
     }
+    [TestMethod]
+    public async Task CanGetFavoriteIndividualPostingClassifications() {
+        IList<string> favorites = await _Sut.GetFavoritesAsync();
+        Assert.IsTrue(favorites.Count >= 4);
+        Assert.AreEqual("Linda", favorites[0]);
+    }
 }

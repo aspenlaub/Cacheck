@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Aspenlaub.Net.GitHub.CSharp.Amazonian;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Application;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -23,6 +22,8 @@ using Aspenlaub.Net.GitHub.CSharp.VishizhukelNet.Interfaces;
 using Autofac;
 using IContainer = Autofac.IContainer;
 using WindowsApplication = System.Windows.Application;
+
+// ReSharper disable AsyncVoidEventHandlerMethod
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck;
 
@@ -153,12 +154,27 @@ public partial class CacheckWindow : IAsyncDisposable {
         Container = builder.Build();
     }
 
-    // ReSharper disable once AsyncVoidMethod
     private async void OnChangeClassificationClickAsync(object sender, RoutedEventArgs e) {
-        await OnChangeClassificationClickAsync();
+        await OnChangeClassificationClickAsync(false, -1);
     }
 
-    private async Task OnChangeClassificationClickAsync() {
+    private async void OnChangeToFavoriteClassificationClickAsync(object sender, RoutedEventArgs e) {
+        await OnChangeClassificationClickAsync(true, 0);
+    }
+
+    private async void OnChangeToSecondFavoriteClassificationClickAsync(object sender, RoutedEventArgs e) {
+        await OnChangeClassificationClickAsync(true, 1);
+    }
+
+    private async void OnChangeToThirdFavoriteClassificationClickAsync(object sender, RoutedEventArgs e) {
+        await OnChangeClassificationClickAsync(true, 2);
+    }
+
+    private async void OnChangeToFourthFavoriteClassificationClickAsync(object sender, RoutedEventArgs e) {
+        await OnChangeClassificationClickAsync(true, 3);
+    }
+
+    private async Task OnChangeClassificationClickAsync(bool setToFavorite, int indexOfFavorite) {
         var postings = ClassifiedPostings.SelectedCells.Select(c => c.Item).OfType<ClassifiedPosting>().Distinct().ToList();
         if (postings.Count != 1) {
             MessageBox.Show($"{postings.Count} posting/s selected", Title, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -171,10 +187,15 @@ public partial class CacheckWindow : IAsyncDisposable {
 
         var posting = new Posting { Date = postings[0].Date, Amount = postings[0].Amount, Remark = postings[0].Remark };
         IPostingHasher hasher = Container.Resolve<IPostingHasher>();
-        string hash = hasher.Hash(posting);
-        var changeClassificationWindow = new ChangeClassificationWindow {
-            Posting = posting, PostingHash = hash
-        };
+        string postingHash = hasher.Hash(posting);
+        ChangeClassificationWindow changeClassificationWindow = setToFavorite
+            ? null
+            : new ChangeClassificationWindow {
+                  Posting = posting, PostingHash = postingHash
+              };
+        string favoriteClassification = setToFavorite
+            ? (await _CacheckApp.GetIndividualPostingClassificationFavoritesAsync())[indexOfFavorite]
+            : "";
 
         var errorsAndInfos = new ErrorsAndInfos();
         PostingClassifications postingClassificationsSecret = await Container.Resolve<ISecretRepository>().GetAsync(new PostingClassificationsSecret(), errorsAndInfos);
@@ -184,22 +205,23 @@ public partial class CacheckWindow : IAsyncDisposable {
         }
 
         bool credit = posting.Amount >= 0;
-        var postingClassifications = postingClassificationsSecret
-                .OfType<IPostingClassification>()
-                .Where(c => c.Credit == credit)
-                .Select(c => c.Classification)
-                .Distinct()
-                .Order()
-                .ToList();
-        changeClassificationWindow.SetClassificationChoices(postingClassifications);
-        if (changeClassificationWindow.ShowDialog() != true) {
-            return;
+        if (!setToFavorite) {
+            var postingClassifications = postingClassificationsSecret
+                    .OfType<IPostingClassification>()
+                    .Where(c => c.Credit == credit)
+                    .Select(c => c.Classification)
+                    .Distinct()
+                    .Order()
+                    .ToList();
+            changeClassificationWindow.SetClassificationChoices(postingClassifications);
+            if (changeClassificationWindow.ShowDialog() != true) {
+                return;
+            }
         }
-
         var individualPostingClassification = new IndividualPostingClassification {
-            Classification = changeClassificationWindow.SelectedClassification,
+            Classification = setToFavorite ? favoriteClassification : changeClassificationWindow.SelectedClassification,
             Credit = credit,
-            PostingHash = changeClassificationWindow.Hash.Text
+            PostingHash = setToFavorite ? postingHash : changeClassificationWindow.Hash.Text
         };
         IIndividualPostingClassificationsSource source = Container.Resolve<IIndividualPostingClassificationsSource>();
         await source.AddOrUpdateAsync(individualPostingClassification, errorsAndInfos);
@@ -212,8 +234,6 @@ public partial class CacheckWindow : IAsyncDisposable {
         }
     }
 
-    // ReSharper disable once AsyncVoidMethod
-    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnRefreshMonthlyDetailsButtonClick(object sender, RoutedEventArgs e) {
         await OnRefreshMonthlyDetailsButtonClick();
     }
@@ -239,6 +259,12 @@ public partial class CacheckWindow : IAsyncDisposable {
         await Task.Delay(TimeSpan.FromSeconds(1));
     }
 
-    private void ClassifiedPostings_ContextMenuOpening(object sender, ContextMenuEventArgs e) {
+    private async void ClassifiedPostings_ContextMenuOpening(object sender, ContextMenuEventArgs e) {
+        IList<string> favorites = await _CacheckApp.GetIndividualPostingClassificationFavoritesAsync();
+
+        FavoriteClassification.Header = string.Format(Properties.Resources.ChangeClassificationTo, favorites[0]);
+        SecondFavoriteClassification.Header = string.Format(Properties.Resources.ChangeClassificationTo, favorites[1]);
+        ThirdFavoriteClassification.Header = string.Format(Properties.Resources.ChangeClassificationTo, favorites[2]);
+        FourthFavoriteClassification.Header = string.Format(Properties.Resources.ChangeClassificationTo, favorites[3]);
     }
 }

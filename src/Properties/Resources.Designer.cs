@@ -70,6 +70,15 @@ namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change classification to &apos;{0}&apos;.
+        /// </summary>
+        internal static string ChangeClassificationTo {
+            get {
+                return ResourceManager.GetString("ChangeClassificationTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File &quot;{0}&quot; could not be deserialized (&quot;{1}&quot;).
         /// </summary>
         internal static string FileCouldNotBeDeserialized {

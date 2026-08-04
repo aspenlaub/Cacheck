@@ -182,10 +182,11 @@
                               AutoGenerateColumns="False" ContextMenuOpening="ClassifiedPostings_ContextMenuOpening">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem x:Name="FavoriteClassification" Header="(Favorite Classification #1)" />
-                                <MenuItem x:Name="SecondFavoriteClassification" Header="(Favorite Classification #2)" />
-                                <MenuItem x:Name="ThirdFavoriteClassification" Header="(Favorite Classification #3)" />
-                                <MenuItem Header="Change classification" Click="OnChangeClassificationClickAsync"/>
+                                <MenuItem x:Name="FavoriteClassification" Header="(Favorite Classification #1)" Click="OnChangeToFavoriteClassificationClickAsync" />
+                                <MenuItem x:Name="SecondFavoriteClassification" Header="(Favorite Classification #2)" Click="OnChangeToSecondFavoriteClassificationClickAsync" />
+                                <MenuItem x:Name="ThirdFavoriteClassification" Header="(Favorite Classification #3)" Click="OnChangeToThirdFavoriteClassificationClickAsync" />
+                                <MenuItem x:Name="FourthFavoriteClassification" Header="(Favorite Classification #4)" Click="OnChangeToFourthFavoriteClassificationClickAsync" />
+                                <MenuItem Header="Change to other classification" Click="OnChangeClassificationClickAsync"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>

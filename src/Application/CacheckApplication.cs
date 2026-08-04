@@ -19,7 +19,8 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
                 IGuiAndApplicationSynchronizer<CacheckApplicationModel> guiAndApplicationSynchronizer,
                 CacheckApplicationModel model, ITashAccessor tashAccessor, ISimpleLogger simpleLogger,
                 IMethodNamesFromStackFramesExtractor methodNamesFromStackFramesExtractor,
-                IPostingClassificationsMatcher postingClassificationsMatcher)
+                IPostingClassificationsMatcher postingClassificationsMatcher,
+                IIndividualPostingClassificationsSource individualPostingClassificationsSource)
                     : ApplicationBase<IGuiAndApplicationSynchronizer<CacheckApplicationModel>,
                           CacheckApplicationModel>(buttonNameToCommandMapper, toggleButtonNameToHandlerMapper,
                             guiAndApplicationSynchronizer, model, simpleLogger), IDataPresenter {
@@ -108,5 +109,14 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
 
     public (int, int) SingleMonthNumberAndYear() {
         return int.TryParse(Model.SingleMonth.SelectedItem?.Guid, out int number) ? (number % 100, number / 100) : (0, 0);
+    }
+
+    private IList<string> _IndividualPostingClassificationFavorites;
+
+    public async Task<IList<string>> GetIndividualPostingClassificationFavoritesAsync() {
+        _IndividualPostingClassificationFavorites
+            ??= await individualPostingClassificationsSource.GetFavoritesAsync();
+
+        return _IndividualPostingClassificationFavorites;
     }
 }
