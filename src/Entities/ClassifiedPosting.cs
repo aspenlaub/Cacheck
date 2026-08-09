@@ -10,6 +10,7 @@ public class ClassifiedPosting : IClassifiedPosting {
     public string Classification { get; set; }
     public string Clue { get; set; }
     public string Remark { get; set; }
+    public string OriginalRemark { get; set; }
     public bool IsIndividual { get; set; }
     public string PostingHash { get; set; }
     public bool Ineliminable { get; set; }

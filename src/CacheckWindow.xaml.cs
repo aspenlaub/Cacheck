@@ -185,7 +185,7 @@ public partial class CacheckWindow : IAsyncDisposable {
             return;
         }
 
-        var posting = new Posting { Date = postings[0].Date, Amount = postings[0].Amount, Remark = postings[0].Remark };
+        var posting = new Posting { Date = postings[0].Date, Amount = postings[0].Amount, Remark = postings[0].OriginalRemark };
         IPostingHasher hasher = Container.Resolve<IPostingHasher>();
         string postingHash = hasher.Hash(posting);
         ChangeClassificationWindow changeClassificationWindow = setToFavorite

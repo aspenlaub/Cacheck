@@ -14,7 +14,8 @@ public static class PreClassifiedPostingExtensions {
                 Ineliminable = preClassifiedPosting.Ineliminable,
                 IsIndividual = preClassifiedPosting.IsIndividual,
                 Unfair = preClassifiedPosting.Unfair,
-                Remark = preClassifiedPosting.Remark
+                Remark = preClassifiedPosting.Remark,
+                OriginalRemark = preClassifiedPosting.OriginalRemark
             };
         }
     }
