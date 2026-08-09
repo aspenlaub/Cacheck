@@ -29,7 +29,9 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
             string singleClassification, string singleClassificationInverse) {
         return [.. allPostings.Cast<IPreClassifiedPosting>()
             .Select(PreClassifiedPostingExtensions.FromDto)
-            .Where(p => p.Classification == singleClassification || p.Classification == singleClassificationInverse)
+            .Where(p
+                => p.Classification == singleClassification || p.Classification == singleClassificationInverse
+                || string.IsNullOrEmpty(singleClassification))
         ];
     }
 
