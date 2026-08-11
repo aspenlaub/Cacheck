@@ -155,17 +155,9 @@ public class SourceFileReader : ISourceFileReader {
             throw new NotImplementedException();
         }
 
-        int sign;
-        switch (line[^1]) {
-            case 'H':
-                sign = 1;
-                break;
-            case 'S':
-                sign = -1;
-                break;
-            default:
-                throw new NotImplementedException();
-        }
+        int sign = line[^1] switch {
+            'H' => 1, 'S' => -1, _ => throw new NotImplementedException()
+        };
 
         line = line.Substring(0, line.Length - 1).Trim();
 
@@ -197,11 +189,11 @@ public class SourceFileReader : ISourceFileReader {
 
         if (line.Length < 6) { return; }
 
-        if (!Char.IsDigit(line[0])) { return; }
-        if (!Char.IsDigit(line[1])) { return; }
+        if (!char.IsDigit(line[0])) { return; }
+        if (!char.IsDigit(line[1])) { return; }
         if (line[2] != '.') { return; }
-        if (!Char.IsDigit(line[3])) { return; }
-        if (!Char.IsDigit(line[4])) { return; }
+        if (!char.IsDigit(line[3])) { return; }
+        if (!char.IsDigit(line[4])) { return; }
         if (line[5] != '.') { return; }
 
         day = int.Parse(line.Substring(0, 2));

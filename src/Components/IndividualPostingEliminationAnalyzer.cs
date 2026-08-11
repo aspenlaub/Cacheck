@@ -11,12 +11,12 @@ public class IndividualPostingEliminationAnalyzer(IPotentialCueExtractor potenti
             if (classifiedPosting.Ineliminable || !classifiedPosting.IsIndividual) { continue; }
 
             var potentialCues = potentialCueExtractor
-                .ExtractPotentialCues(classifiedPosting.Remark)
-                .Where(cue => !classifiedPostings.Any(cp => !cp.IsIndividual && cp.Remark.Contains(cue)))
+                .ExtractPotentialCues(classifiedPosting.OriginalRemark)
+                .Where(cue => !classifiedPostings.Any(cp => !cp.IsIndividual && cp.OriginalRemark.Contains(cue)))
                 .ToHashSet();
             if (potentialCues.Count == 0) { continue; }
 
-            var classicCues = potentialCues.Where(cue => 1 == classifiedPostings.Count(cp => cp.Remark.Contains(cue))).ToList();
+            var classicCues = potentialCues.Where(cue => 1 == classifiedPostings.Count(cp => cp.OriginalRemark.Contains(cue))).ToList();
             if (classicCues.Count == 0) { continue; }
 
             string debitCredit = classifiedPosting.Amount < 0 ? "Debit" : "Credit";

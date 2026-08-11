@@ -11,6 +11,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
+using Aspenlaub.Net.GitHub.CSharp.Skladasu.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
@@ -63,12 +64,22 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
                 continue;
             }
 
+            if (amazonianOrder.Products.Any(p => posting.Remark.Contains(p, StringComparison.Ordinal))) {
+                continue;
+            }
+
             posting.Remark = string.Join("\r\n", amazonianOrder.Products) + "\r\n" + posting.Remark;
         }
         return allPostings;
     }
 
-    private async Task<List<IPosting>> LoadPostingsFromSourceFolder(IFolder sourceFolder, ErrorsAndInfos errorsAndInfos) {
+    private readonly Dictionary<string, List<IPosting>> _LoadPostingsFromSourceFolderCache = new Dictionary<string, List<IPosting>>();
+
+    private async Task<List<IPosting>> LoadPostingsFromSourceFolder(IFolder sourceFolder, IErrorsAndInfos errorsAndInfos) {
+        if (_LoadPostingsFromSourceFolderCache.TryGetValue(sourceFolder.FullName, out List<IPosting> cachedPostings)) {
+            return cachedPostings;
+        }
+
         List<IPosting> allPostings = [];
         List<string> files = [.. Directory.GetFiles(sourceFolder.FullName, "*.txt")];
         foreach (string file in files) {
@@ -83,6 +94,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
             allPostings.AddRange(postings);
         }
 
+        _LoadPostingsFromSourceFolderCache[sourceFolder.FullName] = allPostings;
         return allPostings;
     }
 
