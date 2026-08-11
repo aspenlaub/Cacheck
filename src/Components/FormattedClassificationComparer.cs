@@ -1,6 +1,8 @@
 ﻿using System;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
+#pragma warning disable IDE0046
+
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class FormattedClassificationComparer : IFormattedClassificationComparer {

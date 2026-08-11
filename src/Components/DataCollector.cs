@@ -164,8 +164,8 @@ public class DataCollector : IDataCollector {
         return (allTimePostings, allPostings);
     }
 
-    private async Task DoEliminationAnalysis(IEnumerable<IInverseClassificationPair> inverseClassifications, List<IPosting> allPostings,
-                                             IList<IPostingClassification> postingClassifications) {
+    private async Task DoEliminationAnalysis(IEnumerable<IInverseClassificationPair> inverseClassifications, IList<IPosting> allPostings,
+            IList<IPostingClassification> postingClassifications) {
         if (allPostings.Count == 0) {
             return;
         }

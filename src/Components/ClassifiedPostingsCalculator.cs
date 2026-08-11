@@ -25,7 +25,7 @@ public class ClassifiedPostingsCalculator(IDataPresenter dataPresenter,
         return classifiedPostings;
     }
 
-    private static IList<IClassifiedPosting> RelevantPreClassifiedPostings(IList<IPosting> allPostings,
+    private static IList<IClassifiedPosting> RelevantPreClassifiedPostings(IEnumerable<IPosting> allPostings,
             string singleClassification, string singleClassificationInverse) {
         return [.. allPostings.Cast<IPreClassifiedPosting>()
             .Select(PreClassifiedPostingExtensions.FromDto)

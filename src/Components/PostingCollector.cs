@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Amazonian.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Amazonian.Interfaces;
@@ -9,6 +10,7 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities.Fundamental;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+using Aspenlaub.Net.GitHub.CSharp.Pegh.Extensions;
 using Aspenlaub.Net.GitHub.CSharp.Pegh.Interfaces;
 using Aspenlaub.Net.GitHub.CSharp.Skladasu.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Skladasu.Interfaces;
@@ -24,9 +26,11 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
     public async Task<IList<IPosting>> CollectPostingsAsync(bool isIntegrationTest) {
         IFolder sourceFolder = await GetSourceFolderAsync(isIntegrationTest);
         if (sourceFolder == null) { return []; }
+        IFolder jsonFolder = await GetJsonFolderAsync(isIntegrationTest);
+        jsonFolder?.CreateIfNecessary();
 
         var errorsAndInfos = new ErrorsAndInfos();
-        List<IPosting> allPostings = await LoadPostingsFromSourceFolder(sourceFolder, errorsAndInfos);
+        List<IPosting> allPostings = await LoadPostingsFromSourceFolder(sourceFolder, jsonFolder, errorsAndInfos);
         allPostings = await AdjustAmazonianPostingsAsync(allPostings);
         if (allPostings.Count == 0 && !isIntegrationTest) {
             string importFileFullName = await PreClassifiedPostingsSettings.ClassifiedPostingsFileFullNameAsync(folderResolver, errorsAndInfos);
@@ -73,10 +77,10 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
         return allPostings;
     }
 
-    private readonly Dictionary<string, List<IPosting>> _LoadPostingsFromSourceFolderCache = new Dictionary<string, List<IPosting>>();
+    private static readonly Dictionary<string, List<IPosting>> _loadPostingsFromSourceFolderCache = new Dictionary<string, List<IPosting>>();
 
-    private async Task<List<IPosting>> LoadPostingsFromSourceFolder(IFolder sourceFolder, IErrorsAndInfos errorsAndInfos) {
-        if (_LoadPostingsFromSourceFolderCache.TryGetValue(sourceFolder.FullName, out List<IPosting> cachedPostings)) {
+    private async Task<List<IPosting>> LoadPostingsFromSourceFolder(IFolder sourceFolder, IFolder jsonFolder, IErrorsAndInfos errorsAndInfos) {
+        if (_loadPostingsFromSourceFolderCache.TryGetValue(sourceFolder.FullName, out List<IPosting> cachedPostings)) {
             return cachedPostings;
         }
 
@@ -84,17 +88,30 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
         List<string> files = [.. Directory.GetFiles(sourceFolder.FullName, "*.txt")];
         foreach (string file in files) {
             await dataPresenter.WriteLineAsync($"File: {file}");
+
+            string jsonFile = jsonFolder == null ? "" : file.Replace(sourceFolder.FullName, jsonFolder.FullName).Replace(".txt", ".json");
+            if (File.Exists(jsonFile)) {
+                List<Posting> postingsFromJson = JsonSerializer.Deserialize<List<Posting>>(await File.ReadAllTextAsync(jsonFile));
+                await dataPresenter.WriteLineAsync($"{postingsFromJson.Count} posting/-s found in JSON");
+                allPostings.AddRange(postingsFromJson);
+                continue;
+            }
+
             IList<IPosting> postings = sourceFileReader.ReadPostings(file, errorsAndInfos);
             if (errorsAndInfos.AnyErrors()) {
                 await dataPresenter.WriteErrorsAsync(errorsAndInfos);
                 return allPostings;
             }
 
+            if (jsonFolder != null && !File.Exists(jsonFile)) {
+                await File.WriteAllTextAsync(jsonFile, JsonSerializer.Serialize(postings.ToList()));
+            }
+
             await dataPresenter.WriteLineAsync($"{postings.Count} posting/-s found");
             allPostings.AddRange(postings);
         }
 
-        _LoadPostingsFromSourceFolderCache[sourceFolder.FullName] = allPostings;
+        _loadPostingsFromSourceFolderCache[sourceFolder.FullName] = [.. allPostings];
         return allPostings;
     }
 
@@ -105,11 +122,7 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
         if (isIntegrationTest) {
             sourceFolder = Folders.IntegrationTestFolder;
         } else {
-            CacheckConfiguration secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
-            if (errorsAndInfos.AnyErrors()) {
-                await dataPresenter.WriteErrorsAsync(errorsAndInfos);
-                return null;
-            }
+            CacheckConfiguration secret = await GetCacheckConfiguration(errorsAndInfos);
 
             sourceFolder = await folderResolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
             if (!errorsAndInfos.AnyErrors()) {
@@ -121,5 +134,33 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
         }
 
         return sourceFolder;
+    }
+
+    private async Task<IFolder> GetJsonFolderAsync(bool isIntegrationTest) {
+        var errorsAndInfos = new ErrorsAndInfos();
+
+        if (isIntegrationTest) {
+            return null;
+        }
+
+        CacheckConfiguration secret = await GetCacheckConfiguration(errorsAndInfos);
+        IFolder jsonFolder = await folderResolver.ResolveAsync(secret.JsonFolder, errorsAndInfos);
+        if (!errorsAndInfos.AnyErrors()) {
+            return jsonFolder;
+        }
+
+        await dataPresenter.WriteErrorsAsync(errorsAndInfos);
+        return null;
+    }
+
+    private async Task<CacheckConfiguration> GetCacheckConfiguration(IErrorsAndInfos errorsAndInfos) {
+        CacheckConfiguration secret = await secretRepository.GetAsync(new CacheckConfigurationSecret(), errorsAndInfos);
+        if (!errorsAndInfos.AnyErrors()) {
+            return secret;
+        }
+
+        await dataPresenter.WriteErrorsAsync(errorsAndInfos);
+        return secret;
+
     }
 }

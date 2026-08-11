@@ -24,6 +24,10 @@ public class CacheckConfigurationTest {
         IFolder sourceFolder = await resolver.ResolveAsync(secret.SourceFolder, errorsAndInfos);
         Assert.That.ThereWereNoErrors(errorsAndInfos);
         Assert.IsTrue(sourceFolder.Exists(), $"Source folder \"{secret.SourceFolder}\" does not exist");
+        Assert.IsFalse(string.IsNullOrEmpty(secret.JsonFolder), "Json folder is empty");
+        IFolder jsonFolder = await resolver.ResolveAsync(secret.JsonFolder, errorsAndInfos);
+        Assert.That.ThereWereNoErrors(errorsAndInfos);
+        Assert.IsTrue(jsonFolder.Exists(), $"Json folder \"{secret.JsonFolder}\" does not exist");
     }
 
     [TestMethod]

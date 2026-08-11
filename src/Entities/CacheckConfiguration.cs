@@ -11,6 +11,9 @@ public class CacheckConfiguration : IGuid, ISecretResult<CacheckConfiguration> {
     [XmlElement("sourcefolder")]
     public string SourceFolder { get; set; }
 
+    [XmlElement("jsonfolder")]
+    public string JsonFolder { get; set; }
+
     public CacheckConfiguration Clone() {
         var clone = (CacheckConfiguration)MemberwiseClone();
         clone.Guid = System.Guid.NewGuid().ToString();
