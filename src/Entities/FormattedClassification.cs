@@ -1,4 +1,6 @@
-﻿using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
+﻿using System.Collections.Generic;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 

@@ -159,8 +159,21 @@ public class AverageCalculator(IDataPresenter dataPresenter, IPostingAggregator 
         int numberOfDistinctMonthsPastTwelveMonths = pastTwelveMonthsPostings.Any() ? pastTwelveMonthsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
         int numberOfDistinctMonthsPast24Months = past24MonthsPostings.Any() ? past24MonthsPostings.Select(p => p.Date.Month * 100 + p.Date.Year).Distinct().Count() : 1;
 
-        var classificationAverageList = detailedAggregation.OrderBy(result => result.Key.CombinedClassification).ToList().Select(
-            result => CreateTypeItemSum(result.Key,
+        List<IFormattedClassification> keys = [..
+            detailedAggregation.Keys
+           .Union(pastHalfYearsDetailedAggregation.Keys)
+           .Union(pastTwelveMonthsDetailedAggregation.Keys)
+           .Union(detailedYearAggregationLastYear.Keys)
+           .Union(detailedYearAggregationYearBeforeLast.Keys)
+           .Union(detailedYearAggregationTwoYearsBeforeLast.Keys)
+           .Union(past24MonthsDetailedAggregation.Keys)
+           .Union(detailedTwoYearAggregationLastYear.Keys)
+           .Union(detailedTwoYearAggregationYearBeforeLast.Keys)
+           .Union(detailedTwoYearAggregationTwoYearsBeforeLast.Keys)
+           .Distinct(new FormattedClassificationComparer())
+           .OrderBy(x => x.CombinedClassification)];
+        var classificationAverageList = keys.Select(
+            key => CreateTypeItemSum(key,
                 pastHalfYearsDetailedAggregationList, numberOfDistinctMonthsPastHalfYear,
                 pastTwelveMonthsDetailedAggregationList, numberOfDistinctMonthsPastTwelveMonths,
                 detailedYearAggregationListLastYear, numberOfDistinctMonthsInYearLastYear,
