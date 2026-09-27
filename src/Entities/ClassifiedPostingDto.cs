@@ -36,4 +36,8 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
         IsIndividual = posting.IsIndividual;
         Unfair = posting.Unfair;
     }
+
+    public override string ToString() {
+        return $"{Date.ToShortDateString()}, {Amount}, {Remark}";
+    }
 }
