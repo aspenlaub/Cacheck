@@ -7,9 +7,9 @@ using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class ClassifiedPostingsExporter : IClassifiedPostingsExporter {
+public class ClassifiedPostingsExporter(IPostingsReducer reducer) : IClassifiedPostingsExporter {
     public void ExportClassifiedPostings(string exportFileFullName, IList<IClassifiedPosting> classifiedPostings) {
-        var classifiedPostingsDtos = classifiedPostings.Select(ToDto).ToList();
+        List<IPosting> classifiedPostingsDtos = reducer.RemoveDuplicates([.. classifiedPostings.Select(ToDto)], true);
         classifiedPostingsDtos = [.. classifiedPostingsDtos.OrderBy(p => p.Date)];
         string serializedClassifiedPostingsDtos = JsonSerializer.Serialize(classifiedPostingsDtos);
         var fileInfo = new FileInfo(exportFileFullName);

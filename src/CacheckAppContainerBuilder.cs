@@ -45,6 +45,7 @@ public static class CacheckAppContainerBuilder {
         builder.RegisterType<PostingClassificationsMatcher>().As<IPostingClassificationsMatcher>();
         builder.RegisterType<PostingCollector>().As<IPostingCollector>();
         builder.RegisterType<PostingHasher>().As<IPostingHasher>();
+        builder.RegisterType<PostingsReducer>().As<IPostingsReducer>();
         builder.RegisterType<PotentialCueExtractor>().As<IPotentialCueExtractor>();
         builder.RegisterType<SecretRepositoryFactory>().As<ISecretRepositoryFactory>();
         builder.RegisterType<SingleMonthDeltasCalculator>().As<ISingleMonthDeltasCalculator>();

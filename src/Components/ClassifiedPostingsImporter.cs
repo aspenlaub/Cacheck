@@ -9,7 +9,7 @@ using Aspenlaub.Net.GitHub.CSharp.Skladasu.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
-public class ClassifiedPostingsImporter : IClassifiedPostingsImporter {
+public class ClassifiedPostingsImporter(IPostingsReducer reducer) : IClassifiedPostingsImporter {
     public async Task<IList<IPosting>> ImportClassifiedPostingsAsync(string importFileFullName, IErrorsAndInfos errorsAndInfos) {
         if (!File.Exists(importFileFullName)) {
             errorsAndInfos.Errors.Add(string.Format(Properties.Resources.FileNotFound, importFileFullName));
@@ -25,6 +25,6 @@ public class ClassifiedPostingsImporter : IClassifiedPostingsImporter {
             return [];
         }
 
-        return classifiedPostingDtos;
+        return reducer.RemoveDuplicates(classifiedPostingDtos, false);
     }
 }
