@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Components;
 
 public class PostingsReducer : IPostingsReducer {
-    public List<IPosting> RemoveDuplicates(List<IPosting> dtos, bool export) {
+    public List<ClassifiedPostingDto> RemoveDuplicates(List<ClassifiedPostingDto> dtos, bool export) {
         if (dtos.Count == 0) {
             return dtos;
         }

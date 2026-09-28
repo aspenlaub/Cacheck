@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -16,7 +17,7 @@ public class ClassifiedPostingsImporter(IPostingsReducer reducer) : IClassifiedP
             return [];
         }
 
-        List<IPosting> classifiedPostingDtos;
+        List<ClassifiedPostingDto> classifiedPostingDtos;
         try {
             string json = await File.ReadAllTextAsync(importFileFullName);
             classifiedPostingDtos = [.. JsonSerializer.Deserialize<List<ClassifiedPostingDto>>(json)];
@@ -25,6 +26,6 @@ public class ClassifiedPostingsImporter(IPostingsReducer reducer) : IClassifiedP
             return [];
         }
 
-        return reducer.RemoveDuplicates(classifiedPostingDtos, false);
+        return [.. reducer.RemoveDuplicates(classifiedPostingDtos, false)];
     }
 }

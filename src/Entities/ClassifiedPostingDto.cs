@@ -23,6 +23,7 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
             }
 
             field = value;
+            Sha1 = Sha1FromRemark(value);
         }
     } = "";
     public string OriginalRemark { get; private set;  } = "";
@@ -34,11 +35,11 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
         Guid = posting.Guid;
         Amount = posting.Amount;
         Classification = posting.Classification;
+        Sha1 = Sha1FromRemark(posting.Remark);
         Date = posting.Date;
         Ineliminable = posting.Ineliminable;
         IsIndividual = posting.IsIndividual;
         Unfair = posting.Unfair;
-        Sha1 = Sha1FromRemark(posting.Remark);
     }
 
     private static string Sha1FromRemark(string clearText) {

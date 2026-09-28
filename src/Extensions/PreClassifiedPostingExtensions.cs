@@ -15,7 +15,8 @@ public static class PreClassifiedPostingExtensions {
                 IsIndividual = preClassifiedPosting.IsIndividual,
                 Unfair = preClassifiedPosting.Unfair,
                 Remark = preClassifiedPosting.Remark,
-                OriginalRemark = preClassifiedPosting.OriginalRemark
+                OriginalRemark = preClassifiedPosting.OriginalRemark,
+                Sha1 = preClassifiedPosting.Sha1
             };
         }
     }

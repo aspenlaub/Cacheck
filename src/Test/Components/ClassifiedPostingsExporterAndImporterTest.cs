@@ -42,7 +42,7 @@ public class ClassifiedPostingsExporterAndImporterTest {
         _ClassifiedPostings = await _Calculator.CalculateAndShowClassifiedPostingsAsync(_AllTimePostings,
             postingClassifications, DateTime.MinValue, 0, "", "");
         var reducer = new Mock<IPostingsReducer>();
-        reducer.Setup(x => x.RemoveDuplicates(It.IsAny<List<IPosting>>(), It.IsAny<bool>())).Returns<List<IPosting>, bool>((x, _) => x);
+        reducer.Setup(x => x.RemoveDuplicates(It.IsAny<List<ClassifiedPostingDto>>(), It.IsAny<bool>())).Returns<List<ClassifiedPostingDto>, bool>((x, _) => x);
         _ExportSut = new ClassifiedPostingsExporter(reducer.Object);
         _ImportSut = new ClassifiedPostingsImporter(reducer.Object);
     }
