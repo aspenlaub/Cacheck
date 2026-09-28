@@ -56,7 +56,16 @@ public class PostingCollector(IDataPresenter dataPresenter, ISecretRepository se
             => t.Date.Year >= minDate.Year && (t.Date.Year < maxDate.Year || t.Date.Year == maxDate.Year && t.Date.Month <= maxDate.Month)
         )];
 
-        allPostings.AddRange(transactions.SelectMany(transactionIntoPostingConverter.Convert));
+        var postingsFromTransactions = transactions.SelectMany(transactionIntoPostingConverter.Convert).ToList();
+        foreach (IPosting posting in postingsFromTransactions) {
+            if (allPostings.Any(x => x.Date == posting.Date
+                    && Math.Abs(x.Amount - posting.Amount) < 0.001
+                    && x.Remark == posting.Remark)) {
+                continue;
+            }
+
+            allPostings.Add(posting);
+        }
 
         return allPostings;
     }

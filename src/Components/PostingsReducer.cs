@@ -11,10 +11,11 @@ public class PostingsReducer : IPostingsReducer {
             return dtos;
         }
         var dtoStrings = dtos.Select(x => x.ToString()).ToList();
+        var duplicateDtoStrings = dtoStrings.GroupBy(x => x).Where(x => x.Count() > 1).Select(x => x.Key).ToList();
         var uniqueDtoStrings = dtoStrings.Distinct().ToList();
-        return (export && uniqueDtoStrings.Count != dtoStrings.Count)
+        return (export && duplicateDtoStrings.Count != 0)
             ? throw new NotSupportedException("There should not be any duplicates")
-            : (uniqueDtoStrings.Count * 10 < dtoStrings.Count * 9)
+            : (duplicateDtoStrings.Count * 10 > dtoStrings.Count)
                 ?  throw new NotSupportedException("Too many duplicates")
                 : uniqueDtoStrings.Count == 1
                     ? throw new NotSupportedException($"Override ToString for {dtoStrings[0]}")

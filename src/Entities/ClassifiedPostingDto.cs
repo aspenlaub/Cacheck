@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 using Aspenlaub.Net.GitHub.CSharp.Cacheck.Interfaces;
 
 namespace Aspenlaub.Net.GitHub.CSharp.Cacheck.Entities;
@@ -35,9 +37,19 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
         Ineliminable = posting.Ineliminable;
         IsIndividual = posting.IsIndividual;
         Unfair = posting.Unfair;
+        OriginalRemark = Sha1(posting.OriginalRemark);
+        if (posting.Remark != posting.OriginalRemark) {
+            Remark = Sha1(posting.Remark);
+        }
+    }
+
+    private static string Sha1(string clearText) {
+        return Convert.ToBase64String(SHA1.HashData(Encoding.UTF8.GetBytes(clearText)));
     }
 
     public override string ToString() {
-        return $"{Date.ToShortDateString()}, {Amount}, {Remark}";
+        return string.IsNullOrEmpty(Remark)
+            ? $"{Date.ToShortDateString()}, {Amount}, {Classification}, {OriginalRemark}"
+            : $"{Date.ToShortDateString()}, {Amount}, {Classification}, {Remark}, {OriginalRemark}";
     }
 }
