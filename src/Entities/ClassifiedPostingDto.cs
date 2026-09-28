@@ -10,6 +10,7 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
     public DateTime Date { get; set; }
     public double Amount { get; set; }
     public string Classification { get; set; }
+    public string Sha1 { get; set; }
     public bool IsIndividual { get; set; }
     public bool Ineliminable { get; set; }
     public bool Unfair { get; set; }
@@ -37,19 +38,16 @@ public class ClassifiedPostingDto : IPreClassifiedPosting {
         Ineliminable = posting.Ineliminable;
         IsIndividual = posting.IsIndividual;
         Unfair = posting.Unfair;
-        OriginalRemark = Sha1(posting.OriginalRemark);
-        if (posting.Remark != posting.OriginalRemark) {
-            Remark = Sha1(posting.Remark);
-        }
+        Sha1 = Sha1FromRemark(posting.Remark);
     }
 
-    private static string Sha1(string clearText) {
+    private static string Sha1FromRemark(string clearText) {
         return Convert.ToBase64String(SHA1.HashData(Encoding.UTF8.GetBytes(clearText)));
     }
 
     public override string ToString() {
-        return string.IsNullOrEmpty(Remark)
-            ? $"{Date.ToShortDateString()}, {Amount}, {Classification}, {OriginalRemark}"
-            : $"{Date.ToShortDateString()}, {Amount}, {Classification}, {Remark}, {OriginalRemark}";
+        return string.IsNullOrEmpty(Sha1)
+            ? $"{Date.ToShortDateString()}, {Amount}, {Classification}"
+            : $"{Date.ToShortDateString()}, {Amount}, {Classification}, {Sha1}";
     }
 }

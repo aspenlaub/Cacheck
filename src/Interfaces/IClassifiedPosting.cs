@@ -10,6 +10,7 @@ public interface IClassifiedPosting : ICollectionViewSourceEntity {
     string Clue { get; set; }
     string Remark { get; set; }
     string OriginalRemark { get; }
+    string Sha1 { get; set; }
     bool IsIndividual { get; set; }
     string PostingHash { get; set; }
     bool Ineliminable { get; set; }
