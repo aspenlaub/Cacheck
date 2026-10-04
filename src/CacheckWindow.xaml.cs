@@ -82,6 +82,7 @@ public partial class CacheckWindow : IAsyncDisposable {
         guiToAppGate.RegisterAsyncDataGridCallback(SingleMonthDeltas, handlers.SingleMonthDeltasHandler.CollectionChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(Log, handlers.LogTextHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleClassification, handlers.SingleClassificationHandler.SelectedIndexChangedAsync);
+        guiToAppGate.RegisterAsyncSelectorCallback(SingleClassificationPeriod, handlers.SingleClassificationHandler.SelectedPeriodIndexChangedAsync);
         guiToAppGate.RegisterAsyncSelectorCallback(SingleMonth, handlers.SingleMonthHandler.SelectedIndexChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(MinimumAmount, handlers.MinimumAmountHandler.TextChangedAsync);
         guiToAppGate.RegisterAsyncTextBoxCallback(FromDay, handlers.FromDayHandler.TextChangedAsync);

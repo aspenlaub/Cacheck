@@ -13,6 +13,7 @@ public interface IDataPresenter {
 
     void SetDataCollector(IDataCollector dataCollector);
     string SingleClassification();
+    string SingleClassificationPeriod();
     double MinimumAmount();
     int FromDay();
     int ToDay();

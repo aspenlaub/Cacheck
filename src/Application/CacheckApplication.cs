@@ -95,6 +95,10 @@ public class CacheckApplication(IButtonNameToCommandMapper buttonNameToCommandMa
         return Model.SingleClassification.SelectedItem?.Name ?? "";
     }
 
+    public string SingleClassificationPeriod() {
+        return Model.SingleClassificationPeriod.SelectedItem?.Name ?? "";
+    }
+
     public double MinimumAmount() {
         return double.TryParse(Model.MinimumAmount.Text, out double minimumAmount) ? minimumAmount : 0;
     }

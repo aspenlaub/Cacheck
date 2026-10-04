@@ -171,9 +171,10 @@ public class DataCollector : IDataCollector {
         }
 
         string singleClassification = _DataPresenter.SingleClassification();
+        string singleClassificationPeriod = _DataPresenter.SingleClassificationPeriod();
         int minAmount = singleClassification == "" ? 70 : 10;
-        DateTime aYearAgo = allPostings.Max(p => p.Date).AddYears(-1);
-        aYearAgo = new DateTime(aYearAgo.Year, aYearAgo.Month, 1);
+        DateTime minDate = allPostings.Max(p => p.Date).AddYears(singleClassificationPeriod.Contains("years", StringComparison.InvariantCultureIgnoreCase) ? -4 : -1);
+        minDate = new DateTime(minDate.Year, minDate.Month, 1);
         IInverseClassificationPair inverseClassification
             = inverseClassifications.SingleOrDefault(
                 ic => ic.Classification == singleClassification || ic.InverseClassification == singleClassification
@@ -183,7 +184,7 @@ public class DataCollector : IDataCollector {
                 ? inverseClassification.InverseClassification
                 : inverseClassification.Classification;
         IList<IClassifiedPosting> classifiedPostings = await _ClassifiedPostingsCalculator.CalculateAndShowClassifiedPostingsAsync(allPostings, postingClassifications,
-            aYearAgo, minAmount, singleClassification, singleClassificationInverse);
+            minDate, minAmount, singleClassification, singleClassificationInverse);
         IList<string> eliminationAnalyzerResults = _IndividualPostingEliminationAnalyzer.AnalyzeClassifiedPostings(classifiedPostings);
         foreach(string eliminationAnalyzerResult in eliminationAnalyzerResults) {
             await _DataPresenter.WriteLineAsync(eliminationAnalyzerResult);

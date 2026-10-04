@@ -22,23 +22,51 @@ public class SingleClassificationHandler(ICacheckApplicationModel model,
     }
 
     public async Task UpdateSelectableValuesAsync(bool areWeCollecting) {
-        var selectables = Classifications.GroupBy(c => c.Classification).Select(c => c.Key)
-            .OrderBy(c => c)
-            .Select(c => new Selectable { Guid = c, Name = c })
-            .ToList();
+        bool sync = UpdateSelectableClassificationValues()
+            || await UpdateSelectableClassificationPeriodValuesAsync();
+        if (!sync) { return; }
 
-        if (model.SingleClassification.AreSelectablesIdentical(selectables)) { return; }
-
-        model.SingleClassification.UpdateSelectables(selectables);
         await guiAndAppHandler.EnableOrDisableButtonsThenSyncGuiAndAppAsync();
 
         if (areWeCollecting) { return; }
 
-        await dataCollectorGetter().CollectAndShowAsync();
+        await CollectAndShowAsync();
+    }
+
+    private async Task CollectAndShowAsync() {
+        IDataCollector theDataCollectorGetter = dataCollectorGetter();
+        if (theDataCollectorGetter == null) { return; }
+
+        await theDataCollectorGetter.CollectAndShowAsync();
+    }
+
+    private bool UpdateSelectableClassificationValues() {
+        var selectables = Classifications.GroupBy(c => c.Classification).Select(c => c.Key)
+             .OrderBy(c => c)
+             .Select(c => new Selectable { Guid = c, Name = c })
+             .ToList();
+
+        if (model.SingleClassification.AreSelectablesIdentical(selectables)) { return false; }
+
+        model.SingleClassification.UpdateSelectables(selectables);
+        return true;
+    }
+
+    private async Task<bool> UpdateSelectableClassificationPeriodValuesAsync() {
+        List<Selectable> selectables = [
+                new Selectable { Guid = "OneYear", Name = "One year" },
+                new Selectable { Guid = "FewYears", Name = "A few years" }
+        ];
+
+        if (model.SingleClassificationPeriod.AreSelectablesIdentical(selectables)) { return false; }
+
+        model.SingleClassificationPeriod.UpdateSelectables(selectables);
+        await SelectedPeriodIndexChangedAsync(0);
+        return true;
     }
 
     public async Task UpdateSelectableValuesAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
-            IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
+                                                  IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting) {
         var usedClassifications = postingClassificationsMatcher.MatchingClassifications(postings, classifications)
             .Where(c => !IsInverseClassification(c, inverseClassifications)).ToList();
         Classifications = new List<IPostingClassification>(usedClassifications);
@@ -56,6 +84,13 @@ public class SingleClassificationHandler(ICacheckApplicationModel model,
         if (model.SingleClassification.SelectedIndex == selectedIndex) { return; }
 
         model.SingleClassification.SelectedIndex = selectedIndex;
-        await dataCollectorGetter().CollectAndShowAsync();
+        await CollectAndShowAsync();
+    }
+
+    public async Task SelectedPeriodIndexChangedAsync(int selectedIndex) {
+        if (model.SingleClassificationPeriod.SelectedIndex == selectedIndex) { return; }
+
+        model.SingleClassificationPeriod.SelectedIndex = selectedIndex;
+        await CollectAndShowAsync();
     }
 }

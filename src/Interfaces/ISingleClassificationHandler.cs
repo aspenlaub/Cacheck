@@ -8,4 +8,6 @@ public interface ISingleClassificationHandler : ISimpleSelectorHandler {
     Task UpdateSelectableValuesAsync(bool areWeCollecting);
     Task UpdateSelectableValuesAsync(IList<IPostingClassification> classifications, IList<IPosting> postings,
         IList<IInverseClassificationPair> inverseClassifications, bool areWeCollecting);
+
+    Task SelectedPeriodIndexChangedAsync(int selectedIndex);
 }

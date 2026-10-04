@@ -18,6 +18,10 @@ public class FakeCacheckSingleClassificationHandler : ISingleClassificationHandl
         await Task.CompletedTask;
     }
 
+    public async Task SelectedPeriodIndexChangedAsync(int selectedIndex) {
+        await Task.CompletedTask;
+    }
+
     public async Task SelectedIndexChangedAsync(int selectedIndex) {
         await Task.CompletedTask;
     }

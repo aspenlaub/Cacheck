@@ -31,6 +31,10 @@ public class FakeDataPresenter(ICacheckApplicationModel model,
         return "";
     }
 
+    public string SingleClassificationPeriod() {
+        return "";
+    }
+
     public double MinimumAmount() {
         return 100;
     }

@@ -176,6 +176,8 @@
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Label Name="SingleClassificationLabel" Margin="5">Single Classification</Label>
                         <ComboBox Name="SingleClassification" Margin="5" MinWidth="240"/>
+                        <Label Name="SingleClassificationPeriodLabel" Margin="5">Period</Label>
+                        <ComboBox Name="SingleClassificationPeriod" Margin="5" MinWidth="120"/>
                     </StackPanel>
                     <DataGrid Background="LightGoldenrodYellow" EnableRowVirtualization="False"
                               Name="ClassifiedPostings" ItemsSource="{Binding Source={StaticResource ClassifiedPostings}}"

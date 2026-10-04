@@ -12,6 +12,7 @@ public interface ICacheckApplicationModel : IApplicationModelBase {
     ICollectionViewSource SingleMonthDeltas { get; }
     ITextBox Log { get; }
     ISelector SingleClassification { get; }
+    ISelector SingleClassificationPeriod { get; }
     ISelector SingleMonth { get; }
     ITextBox MinimumAmount { get; }
     ITextBox FromDay { get; }
