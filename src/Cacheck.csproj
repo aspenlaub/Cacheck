@@ -65,7 +65,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Amazonian" Version="2.4.2620.962" />
-    <PackageReference Include="VishizhukelNet" Version="2.0.2628.978" />
+    <PackageReference Include="Amazonian" Version="2.4.2644.515" />
+    <PackageReference Include="VishizhukelNet" Version="2.0.2644.671" />
   </ItemGroup>
 </Project>
