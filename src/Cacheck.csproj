@@ -66,6 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Amazonian" Version="2.4.2653.795" />
-    <PackageReference Include="VishizhukelNet" Version="2.0.2653.699" />
+    <PackageReference Include="VishizhukelNet" Version="2.0.2665.796" />
   </ItemGroup>
 </Project>
